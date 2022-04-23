@@ -1,12 +1,26 @@
 // import { AppDataSource } from './data-source';
+require('dotenv/config');
+
 import express, { Request, Response } from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 import Auth from './resolvers/auth';
 import { createConnection } from 'typeorm';
 
 const app = express();
+
+app.use(express.json());
+app.use(cookieParser());
+app.use(
+  cors({
+    origin: 'https://studio.apollographql.com',
+    credentials: true,
+  })
+);
+
 const PORT = 5000;
 
 const start = async () => {
@@ -18,7 +32,10 @@ const start = async () => {
       schema: await buildSchema({
         resolvers: [Auth],
       }),
-      context: (req: Request, res: Response) => ({ req, res })
+      context: ({ req, res }) => ({
+        req,
+        res,
+      }),
     });
     await apolloServer.start();
     apolloServer.applyMiddleware({ app });

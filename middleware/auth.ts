@@ -1,13 +1,16 @@
-import { NextFunction, Request, Response } from 'express';
+import { MiddlewareFn } from 'type-graphql';
 import jwt from 'jsonwebtoken';
 import UserEntity from '../entities/User';
+import { MyContext } from '../type';
 
-export default async (req: Request, res: Response, next: NextFunction) => {
+const Auth: MiddlewareFn = async ({ context }, next) => {
+  const { req, res } = context as MyContext;
+
   try {
     const token = req.cookies.token;
     if (!token) throw { message: 'Unauthenticated' };
 
-    const { login }: any = jwt.verify(token, process.env.JWT_SECRET);
+    const { login }: any = jwt.verify(token, process.env.JWT_SECRET!);
 
     const user = await UserEntity.findOneBy({ login });
     if (!user) throw { message: 'Unauthenticated' };
@@ -18,3 +21,5 @@ export default async (req: Request, res: Response, next: NextFunction) => {
     return res.status(401).json({ message: 'Unauthenticated' });
   }
 };
+
+export default Auth;

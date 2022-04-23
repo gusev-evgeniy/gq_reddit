@@ -1,35 +1,51 @@
-import { Arg, Ctx, Field, Mutation, ObjectType, Query, Resolver, Int } from "type-graphql";
-import { DataSource } from "typeorm";
+import { Arg, Ctx, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
 import User from "../entities/User";
 
-@ObjectType()
-class ResponseWithCount {
-  @Field(type => [User])
-  User: User[]
+import bcrypt from 'bcrypt';
+import { createJWT } from "../utils/auth";
+import { MyContext } from "../type";
+import cookie from 'cookie'
 
-  @Field(type => Int)
-  totalCount: number
-}
+import AuthMiddleware from '../middleware/auth';
 
 @Resolver()
 export default class Auth {
-  @Query(() => [User]) 
-  async getAll(): Promise<User[]> {
-    try {
-      const users = await User.find();
 
-      return users;
+  @Query(() => String)
+  async login(
+    @Arg('login', { nullable: false }) login: string,
+    @Arg('password', { nullable: false }) password: string,
+    @Ctx() { req, res }: MyContext
+  ) {
+    try {
+      const user = await User.findOneBy({ login });
+      if (!user) throw { login: "Wrong login" };
+      console.log('ctx', req)
+      console.log('res', res)
+      const isCorrectPassword = bcrypt.compareSync(password, user.password);
+      if (!isCorrectPassword) throw { password: "Wrong password" };
+
+      const token = createJWT(user);
+      console.log('token', token)
+      req.res.set('Set-Cookie', cookie.serialize('token', token, {
+        httpOnly: true,
+        path: '/',
+        maxAge: 60 * 60 * 24 * 7 // 1 week
+      }))
+
+      return "Success";
     } catch (error) {
-      console.log(error);
+      console.log(error)
+      return error;
     }
   }
 
-  @Query(() => User)
-  async login(
-    @Arg('login', { nullable: false }) login: string,
-    @Arg('password', { nullable: false }) password: string
+  @Query(() => String)
+  @UseMiddleware(AuthMiddleware)
+  async getUser(
+    @Ctx() { res }: MyContext
   ) {
-
+    return res.locals.user;
   }
 
   @Mutation(() => String)
@@ -39,13 +55,11 @@ export default class Auth {
     @Arg('password', { nullable: false }) password: string
   ) {
     try {
-      console.log('email, login, password', email, login, password)
       const user = User.create({ email, login, password });
       await user.save();
 
       return "Success";
-    } catch (error) {
-
+    } catch (error: any) {
       if (error.code === '23505') {
         if (error.detail.includes('email')) {
           return "User with this email already exist"
