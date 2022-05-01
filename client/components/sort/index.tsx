@@ -1,8 +1,16 @@
-import React from 'react';
-import { StyledPaddingItem } from '../../styles';
+import React from 'react';import { StyledPaddingItem } from '../../styles';
+import { StyledSort, StyledSortButton } from './styles';
 
 export const Sort = () => {
   return (
-    <StyledPaddingItem >index</StyledPaddingItem>
+    <StyledPaddingItem>
+      <StyledSort>
+        <div className='buttons'>
+          <StyledSortButton>New</StyledSortButton>
+          <StyledSortButton>Hot</StyledSortButton>
+        </div>
+        <StyledSortButton>Order</StyledSortButton>
+      </StyledSort>
+    </StyledPaddingItem>
   );
 };

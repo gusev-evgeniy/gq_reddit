@@ -1,7 +1,17 @@
 import React from 'react';
+import { Post } from './post';
 
 export const Posts = () => {
   return (
-    <>index</>
+    <>
+    <Post/>
+    <Post/>
+    <Post/>
+    <Post/>
+    <Post/>
+    <Post/>
+    <Post/>
+    <Post/>
+    </>
   );
 };

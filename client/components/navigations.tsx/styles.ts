@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-
 export const StyledNav = styled.nav`
   background-color: #fff;
   width: 100%;
@@ -24,25 +23,6 @@ export const StyledNav = styled.nav`
       font-size: 22px;
     }
   }
-  
-  input {
-    font-size: 16px;
-    line-height: 16px;
-    color: #1c1c1c;
-    height: 36px;
-    width: 60%;
-    border: 1px solid #EDEFF1;
-    background-color: #F6F7F8;
-    border-radius: 4px;
-    margin: 0px 20px 0 40px;
-    outline: none;
-    padding: 5px 5px 5px 40px;
-    
-    :hover {
-      background-color: #fff;
-      border: 1px solid #0079D3;
-    }
-  }
 
   .buttons {
     width: 20%;
@@ -57,12 +37,12 @@ export const StyledNav = styled.nav`
     height: 32px;
     width: 50px;
     padding: 2px 0 2px 0;
-    background-color: #fff;;
+    background-color: #fff;
     border-radius: 4px;
     border: 0px;
-    
+
     :hover {
-      border: 1px solid #EDEFF1;
+      border: 1px solid #edeff1;
       transition: 0s;
     }
   }
@@ -74,7 +54,7 @@ const Button = styled.button`
   line-height: 17px;
   text-align: center;
   border-radius: 25px;
-  `;
+`;
 
 const NavButton = styled(Button)`
   height: 32px;
@@ -82,8 +62,8 @@ const NavButton = styled(Button)`
 `;
 
 export const OutlineNavButton = styled(NavButton)`
-  color: #0079D3;
-  border: 1px solid #0079D3;
+  color: #0079d3;
+  border: 1px solid #0079d3;
   background-color: #fff;
   width: 37%;
 
@@ -95,10 +75,42 @@ export const OutlineNavButton = styled(NavButton)`
 export const PaintedNavButton = styled(NavButton)`
   color: #fff;
   width: 40%;
-  background-color: #0079D3;
-  border: 1px solid #0079D3;
+  background-color: #0079d3;
+  border: 1px solid #0079d3;
 
   :hover {
     background-color: rgba(0, 121, 211, 0.9);
+  }
+`;
+
+export const NavigationSearch = styled.div`
+  width: 60%;
+  margin: 0px 20px 0 40px;
+  position: relative;
+
+  input {
+    font-size: 16px;
+    line-height: 16px;
+    color: #1c1c1c;
+    height: 36px;
+    width: 100%;
+    border: 1px solid #EDEFF1;
+    background-color: #F6F7F8;
+    border-radius: 4px;
+    outline: none;
+    padding: 5px 5px 5px 40px;
+    
+    :hover {
+      background-color: #fff;
+      border: 1px solid #0079D3;
+    }
+  }
+
+  .search_icon {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    }
   }
 `;
