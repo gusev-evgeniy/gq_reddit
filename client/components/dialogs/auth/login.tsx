@@ -1,12 +1,15 @@
-import React, { useState } from 'react';import { useForm } from 'react-hook-form';
+import React, { FC, useContext, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
 import { AuthWrapper } from './authWrapper';
 
-import { FormButton, FormInput } from '../styles';
-import { useLazyQuery, useMutation } from '@apollo/client';
-import { LOGIN, SIGN_UP } from '../../../api/auth';
+import { AlertMessage, FormInput } from '../styles';
+import { useLazyQuery } from '@apollo/client';
+import { LOGIN } from '../../../api/auth';
+import { UserContext } from '../../../context/user';
+import { SubmitButton } from './SubmitButton';
 
 const nameValidateMessage = 'Username must be between 3 and 20 characters';
 
@@ -17,7 +20,12 @@ const schema = yup
   })
   .required();
 
-export const Login = () => {
+  type Props = {
+    onClose: () => void;
+  };
+  
+
+export const Login: FC<Props> = ({ onClose }) => {
   const [error, setError] = useState<string | undefined>();
 
   const {
@@ -27,12 +35,13 @@ export const Login = () => {
   } = useForm({
     resolver: yupResolver(schema),
   });
-  const [login] = useLazyQuery(LOGIN);
+  const [login, { loading }] = useLazyQuery(LOGIN);
 
   const onSubmit = async (formData: object) => {
-    console.log('formData', formData);
     try {
-      await login({ variables: { ...formData } });
+      const { data } = await login({ variables: { ...formData } });
+      console.log('data.registr', data.registr);
+      onClose();
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -40,14 +49,13 @@ export const Login = () => {
     }
   };
 
-  const disabled = Object.keys(dirtyFields).length < 2;
+  const disabled = Object.keys(dirtyFields).length < Object.keys(schema.fields).length;
 
   return (
     <AuthWrapper>
       <>
         <h2>Log in</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
-
           <FormInput isError={errors.login?.message || error}>
             <input placeholder=' ' {...register('login')} />
             <label htmlFor='login'>USERNAME</label>
@@ -59,9 +67,9 @@ export const Login = () => {
             <label htmlFor='password'>PASSWORD</label>
           </FormInput>
 
-          {!!error && <p>{error}</p>}
+          <SubmitButton disabled={disabled} loading={loading}/>
 
-          <FormButton type='submit' disabled={disabled} className='button' />
+          {!!error && <AlertMessage>{error}</AlertMessage>}
         </form>
       </>
     </AuthWrapper>

@@ -7,6 +7,8 @@ const Auth: MiddlewareFn = async ({ context }, next) => {
   const { req, res } = context as MyContext;
 
   try {
+    console.log('req.cookies.token', req.cookies.token)
+    console.log('req.header', req.header)
     const token = req.cookies.token;
     if (!token) throw { message: 'Unauthenticated' };
 

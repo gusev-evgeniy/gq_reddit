@@ -1,12 +1,15 @@
-import React, { useState } from 'react';import { useForm } from 'react-hook-form';
+import React, { useContext, useState, FC } from 'react';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
 import { AuthWrapper } from './authWrapper';
 
-import { FormButton, FormInput } from '../styles';
+import { AlertMessage, FormInput, SuccessMessage } from '../styles';
 import { useMutation } from '@apollo/client';
 import { SIGN_UP } from '../../../api/auth';
+import { UserContext } from '../../../context/user';
+import { SubmitButton } from './SubmitButton';
 
 const nameValidateMessage = 'Username must be between 3 and 20 characters';
 const passwordValidateMessage = 'Password must be at least 6 characters long';
@@ -19,9 +22,15 @@ const schema = yup
   })
   .required();
 
-export const SignUp = () => {
-  const [error, setError] = useState<string | undefined>();
+type Props = {
+  onClose: () => void;
+};
 
+export const SignUp: FC<Props> = ({ onClose }) => {
+  const [error, setError] = useState<string | undefined>();
+  const [success, setSuccess] = useState(false);
+  const [user,] = useContext(UserContext);
+  console.log('user', user);
   const {
     register,
     handleSubmit,
@@ -29,12 +38,12 @@ export const SignUp = () => {
   } = useForm({
     resolver: yupResolver(schema),
   });
-  const [registr] = useMutation(SIGN_UP);
+  const [registr, { loading }] = useMutation(SIGN_UP);
 
   const onSubmit = async (formData: object) => {
     try {
-      const { data } = await registr({ variables: { ...formData } });
-      console.log('data', data);
+      await registr({ variables: { ...formData } });
+      setSuccess(true);
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -42,9 +51,7 @@ export const SignUp = () => {
     }
   };
 
-  const disabled = Object.keys(dirtyFields).length < 3;
-
-  console.log('error', typeof error);
+  const disabled = Object.keys(dirtyFields).length < Object.keys(schema.fields).length;
 
   return (
     <AuthWrapper>
@@ -69,9 +76,16 @@ export const SignUp = () => {
             <p>{errors.password?.message}</p>
           </FormInput>
 
-          {!!error && <p>{error}</p>}
+          <SubmitButton disabled={disabled} loading={loading}/>
 
-          <FormButton type='submit' disabled={disabled} className='button' />
+          {!!error && <AlertMessage>{error}</AlertMessage>}
+          {success && (
+            <SuccessMessage>
+              User created successful.
+              <br />
+              You will be directed to start page
+            </SuccessMessage>
+          )}
         </form>
       </>
     </AuthWrapper>

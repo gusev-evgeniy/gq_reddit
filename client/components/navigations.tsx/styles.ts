@@ -59,13 +59,14 @@ const Button = styled.button`
 const NavButton = styled(Button)`
   height: 32px;
   margin-right: 5px;
+  min-width: 90px;
+  width: 40%;
 `;
 
 export const OutlineNavButton = styled(NavButton)`
   color: #0079d3;
   border: 1px solid #0079d3;
   background-color: #fff;
-  width: 37%;
 
   :hover {
     background-color: rgba(0, 121, 211, 0.1);
@@ -74,7 +75,6 @@ export const OutlineNavButton = styled(NavButton)`
 
 export const PaintedNavButton = styled(NavButton)`
   color: #fff;
-  width: 40%;
   background-color: #0079d3;
   border: 1px solid #0079d3;
 

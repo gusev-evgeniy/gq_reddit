@@ -1,5 +1,9 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
+import { ApolloProvider } from '@apollo/client';
+
+import { UserProvider } from '../context/user';
+import { client } from '../api';
 
 import '../global.scss';
 
@@ -15,7 +19,11 @@ function MyApp({ Component, pageProps }: AppProps) {
         />
         <title>Reddit</title>
       </Head>
-      <Component {...pageProps} />;
+      <ApolloProvider client={client}>
+        <UserProvider>
+          <Component {...pageProps} />
+        </UserProvider>
+      </ApolloProvider>
     </>
   );
 }

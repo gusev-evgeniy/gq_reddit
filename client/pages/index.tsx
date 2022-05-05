@@ -1,5 +1,4 @@
-import { ApolloProvider } from '@apollo/client';
-import { useEffect, useState } from 'react';
+import { ApolloProvider, useLazyQuery, useQuery } from '@apollo/client';import { useEffect, useState } from 'react';
 
 import { client } from '../api';
 
@@ -12,12 +11,30 @@ import { Tranding } from '../components/tranding';
 import { DialogType } from '../types/dialog';
 
 import { StyledTopicName } from '../styles';
+import { ME } from '../api/auth';
 
 export default function Home() {
   const [dialog, setDialog] = useState<DialogType | undefined>();
+  const [getMe, { loading, error }] = useLazyQuery(ME);
 
   const onOpenDialog = (type: DialogType) => setDialog(type);
   const onClose = () => setDialog(undefined);
+  console.log('error', error);
+  console.log('loading', loading);
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data } = await getMe();
+      return data;
+    }
+
+    try {
+      const data = fetchData();
+      console.log('data3333', data);
+    } catch (error) {
+        console.log('error', error);
+    }
+  }, []);
+
 
   useEffect(() => {
     if (dialog) {
@@ -26,7 +43,7 @@ export default function Home() {
   }, [dialog]);
 
   return (
-    <ApolloProvider client={client}>
+    <>
       <NavWrapper onOpenDialog={onOpenDialog}>
         <div className='container'>
           <Tranding />
@@ -39,7 +56,7 @@ export default function Home() {
           </div>
         </div>
       </NavWrapper>
-      {dialog && <Dialogs type={dialog} onClose={onClose}/>}
-    </ApolloProvider>
+      {dialog && <Dialogs type={dialog} onClose={onClose} />}
+    </>
   );
 }

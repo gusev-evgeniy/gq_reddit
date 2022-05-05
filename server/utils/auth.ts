@@ -8,3 +8,4 @@ export const createJWT = (user: UserEntity) => {
 
   return jwt.sign({ email, login }, process.env.JWT_SECRET!);
 }
+

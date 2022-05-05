@@ -20,7 +20,7 @@ export default class Auth {
     try {
       const user = await User.findOneBy({ login });
       if (!user) throw { login: "Wrong login" };
-      console.log('context', ctx.res)
+
       const isCorrectPassword = bcrypt.compareSync(password, user.password);
       if (!isCorrectPassword) throw { password: "Wrong password" };
 
@@ -38,11 +38,12 @@ export default class Auth {
     }
   }
 
-  @Query(() => String)
+  @Query(() => User)
   @UseMiddleware(AuthMiddleware)
-  async getUser(
+  async me(
     @Ctx() { res }: MyContext
   ) {
+    console.log('res.locals.user', res.locals.user)
     return res.locals.user;
   }
 
@@ -50,11 +51,19 @@ export default class Auth {
   async registr(
     @Arg('email', { nullable: false }) email: string,
     @Arg('login', { nullable: false }) login: string,
-    @Arg('password', { nullable: false }) password: string
+    @Arg('password', { nullable: false }) password: string,
+    @Ctx() ctx: MyContext
   ) {
     try {
       const user = User.create({ email, login, password });
       await user.save();
+
+      const token = createJWT(user);
+      ctx.res.set('Set-Cookie', cookie.serialize('token', token, {
+        httpOnly: true,
+        path: '/',
+        maxAge: 60 * 60 * 24 * 7 // 1 week
+      }))
 
       return "Success";
     } catch (error: any) {
