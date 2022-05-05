@@ -15,6 +15,7 @@ type Props = {
 export const NavWrapper: FC<Props> = ({ children, onOpenDialog }) => {
   
   const onSignUp = () => onOpenDialog('sign up');
+  const onLogIn = () => onOpenDialog('login');
   
   return (
     <>
@@ -30,7 +31,7 @@ export const NavWrapper: FC<Props> = ({ children, onOpenDialog }) => {
           <input type='text' placeholder='Search Reddit' />
         </NavigationSearch>
         <div className='buttons'>
-          <OutlineNavButton>Log In</OutlineNavButton>
+          <OutlineNavButton onClick={onLogIn}>Log In</OutlineNavButton>
           <PaintedNavButton onClick={onSignUp}>Sign Up</PaintedNavButton>
           <button className='user-button'>
             <Image width='18px' height='18px' src={user} alt='user' />

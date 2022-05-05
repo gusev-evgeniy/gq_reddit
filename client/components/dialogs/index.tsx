@@ -1,12 +1,14 @@
 import React, { FC } from 'react';
-import { SignUp } from './signUp';
 import { CloseButton, DialogWrapper } from './styles';
 
 import close from '../../images/close.svg';
 import Image from 'next/image';
+import { SignUp } from './auth/signUp';
+import { Login } from './auth/login';
 
 const components = {
   'sign up': <SignUp />,
+  'login': <Login />
 };
 type Components = typeof components;
 

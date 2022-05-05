@@ -1,1 +1,1 @@
-export type DialogType = 'sign up';
+export type DialogType = 'sign up' | 'login';

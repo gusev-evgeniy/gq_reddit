@@ -1,8 +1,12 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
+import React, { useState } from 'react';import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { FormButton, FormInput } from './styles';
+
+import { AuthWrapper } from './authWrapper';
+
+import { FormButton, FormInput } from '../styles';
+import { useMutation } from '@apollo/client';
+import { SIGN_UP } from '../../../api/auth';
 
 const nameValidateMessage = 'Username must be between 3 and 20 characters';
 const passwordValidateMessage = 'Password must be at least 6 characters long';
@@ -16,6 +20,8 @@ const schema = yup
   .required();
 
 export const SignUp = () => {
+  const [error, setError] = useState<string | undefined>();
+
   const {
     register,
     handleSubmit,
@@ -23,39 +29,51 @@ export const SignUp = () => {
   } = useForm({
     resolver: yupResolver(schema),
   });
-  const onSubmit = data => console.log(data);
+  const [registr] = useMutation(SIGN_UP);
+
+  const onSubmit = async (formData: object) => {
+    try {
+      const { data } = await registr({ variables: { ...formData } });
+      console.log('data', data);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      }
+    }
+  };
 
   const disabled = Object.keys(dirtyFields).length < 3;
 
-  console.log('errors', errors);
+  console.log('error', typeof error);
 
   return (
-    <div className='sign_up'>
-      <div className='image_side'></div>
-      <div className='form_side'>
+    <AuthWrapper>
+      <>
         <h2>Sign up</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <FormInput isError={errors.email?.message}>
+          <FormInput isError={errors.email?.message || error}>
             <input placeholder=' ' {...register('email')} />
             <label htmlFor='email'>EMAIL</label>
             <p>{errors.email?.message}</p>
           </FormInput>
 
-          <FormInput isError={errors.login?.message}>
+          <FormInput isError={errors.login?.message || error}>
             <input placeholder=' ' {...register('login')} />
             <label htmlFor='login'>USERNAME</label>
             <p>{errors.login?.message}</p>
           </FormInput>
 
-          <FormInput isError={errors.password?.message}>
+          <FormInput isError={errors.password?.message || error}>
             <input placeholder=' ' type='password' {...register('password')} />
-            <label htmlFor='login'>USERNAME</label>
+            <label htmlFor='password'>PASSWORD</label>
             <p>{errors.password?.message}</p>
           </FormInput>
 
+          {!!error && <p>{error}</p>}
+
           <FormButton type='submit' disabled={disabled} className='button' />
         </form>
-      </div>
-    </div>
+      </>
+    </AuthWrapper>
   );
 };
