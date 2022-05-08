@@ -1,4 +1,4 @@
-import { Arg, Ctx, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
+import { Arg, Ctx, Field, Mutation, ObjectType, Query, Resolver, UseMiddleware } from "type-graphql";
 import User from "../entities/User";
 
 import bcrypt from 'bcrypt';
@@ -43,7 +43,6 @@ export default class Auth {
   async me(
     @Ctx() { res }: MyContext
   ) {
-    console.log('res.locals.user', res.locals.user)
     return res.locals.user;
   }
 

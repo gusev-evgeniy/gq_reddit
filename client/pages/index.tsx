@@ -1,4 +1,5 @@
-import { ApolloProvider, useLazyQuery, useQuery } from '@apollo/client';import { useEffect, useState } from 'react';
+import { ApolloProvider, useLazyQuery, useQuery } from '@apollo/client';
+import { useContext, useEffect, useState } from 'react';
 
 import { client } from '../api';
 
@@ -12,29 +13,23 @@ import { DialogType } from '../types/dialog';
 
 import { StyledTopicName } from '../styles';
 import { ME } from '../api/auth';
+import { UserContext } from '../context/user';
 
 export default function Home() {
   const [dialog, setDialog] = useState<DialogType | undefined>();
-  const [getMe, { loading, error }] = useLazyQuery(ME);
+  const [user, setUser] = useContext(UserContext);
+  const { data } = useQuery(ME);
 
   const onOpenDialog = (type: DialogType) => setDialog(type);
   const onClose = () => setDialog(undefined);
-  console.log('error', error);
-  console.log('loading', loading);
+  console.log('user3333', user);
+
   useEffect(() => {
-    const fetchData = async () => {
-      const { data } = await getMe();
-      return data;
+    if (data) {
+      console.log(';data.me', data.me);
+      setUser(data.me);
     }
-
-    try {
-      const data = fetchData();
-      console.log('data3333', data);
-    } catch (error) {
-        console.log('error', error);
-    }
-  }, []);
-
+  }, [data, setUser]);
 
   useEffect(() => {
     if (dialog) {
