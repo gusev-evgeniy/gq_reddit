@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 export const StyledItem = styled.div`
   background-color: #fff;
   width: 100%;
