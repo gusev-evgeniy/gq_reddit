@@ -18,7 +18,7 @@ const Auth: MiddlewareFn = async ({ context }, next) => {
     res.locals.user = user;
     await next();
   } catch (error) {
-    return res.status(401).json({ message: 'Unauthenticated' });
+    // return res.status(401).json({ message: 'Unauthenticated' });
   }
 };
 

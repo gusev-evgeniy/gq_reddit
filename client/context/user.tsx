@@ -1,13 +1,14 @@
-import React, { createContext, FC, useState } from 'react';
+import React, { createContext, Dispatch, FC, SetStateAction, useState } from 'react';
+import { MeQuery } from '../generated/graphql';
+import { ProviderProps } from './type';
 
-type Props = {
-  children: React.ReactChild;
-};
+type User = MeQuery['me']|undefined;
+type Value =[ User, Dispatch<SetStateAction<User>>|undefined];
 
-export const UserContext = createContext<any>(null);
+export const UserContext = createContext<Value|null>([undefined, undefined]);
 
-export const UserProvider: FC<Props> = ({ children }) => {
-  const [user, setUser] = useState<any>();
+export const UserProvider: FC<ProviderProps> = ({ children }) => {
+  const [user, setUser] = useState<User>();
   
   return <UserContext.Provider value={[user, setUser]}>{children}</UserContext.Provider>;
 };

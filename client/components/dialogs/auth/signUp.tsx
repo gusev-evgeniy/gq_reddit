@@ -1,4 +1,4 @@
-import React, { useContext, useState, FC } from 'react';
+import React, { useState, FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -8,8 +8,8 @@ import { AuthWrapper } from './authWrapper';
 import { AlertMessage, FormInput, SuccessMessage } from '../styles';
 import { useMutation } from '@apollo/client';
 import { SIGN_UP } from '../../../api/auth';
-import { UserContext } from '../../../context/user';
-import { SubmitButton } from './SubmitButton';
+import { DialogProps } from '../type';
+import { SubmitButton } from './submitButton';
 
 const nameValidateMessage = 'Username must be between 3 and 20 characters';
 const passwordValidateMessage = 'Password must be at least 6 characters long';
@@ -22,15 +22,10 @@ const schema = yup
   })
   .required();
 
-type Props = {
-  onClose: () => void;
-};
-
-export const SignUp: FC<Props> = ({ onClose }) => {
+export const SignUp: FC<DialogProps> = () => {
   const [error, setError] = useState<string | undefined>();
   const [success, setSuccess] = useState(false);
-  const [user,] = useContext(UserContext);
-  console.log('user', user);
+
   const {
     register,
     handleSubmit,
@@ -57,7 +52,7 @@ export const SignUp: FC<Props> = ({ onClose }) => {
     <AuthWrapper>
       <>
         <h2>Sign up</h2>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)} autoComplete='off'>
           <FormInput isError={errors.email?.message || error}>
             <input placeholder=' ' {...register('email')} />
             <label htmlFor='email'>EMAIL</label>

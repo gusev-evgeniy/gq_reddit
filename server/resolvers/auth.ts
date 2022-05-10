@@ -1,10 +1,10 @@
-import { Arg, Ctx, Field, Mutation, ObjectType, Query, Resolver, UseMiddleware } from "type-graphql";
-import User from "../entities/User";
-
+import { Arg, Ctx, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
 import bcrypt from 'bcrypt';
+import cookie from 'cookie'
+
+import User from "../entities/User";
 import { createJWT } from "../utils/auth";
 import { MyContext } from "../type";
-import cookie from 'cookie'
 
 import AuthMiddleware from '../middleware/auth';
 

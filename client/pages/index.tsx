@@ -1,32 +1,30 @@
-import { ApolloProvider, useLazyQuery, useQuery } from '@apollo/client';
-import { useContext, useEffect, useState } from 'react';
-
-import { client } from '../api';
-
+import { useContext, useEffect, useLayoutEffect } from 'react';
 import { Dialogs } from '../components/dialogs';
 import { NavWrapper } from '../components/navigations.tsx';
 import { Posts } from '../components/posts';
 import { Sort } from '../components/sort';
 import { Tranding } from '../components/tranding';
 
-import { DialogType } from '../types/dialog';
-
 import { StyledTopicName } from '../styles';
-import { ME } from '../api/auth';
 import { UserContext } from '../context/user';
+import { useMeQuery } from '../generated/graphql';
+import { LinkForm } from '../components/editor/linkForm';
+import { DialogContext } from '../context/dialog';
+
+//TODO
+// 1. DIALOG out from home page(something like portal in React)
+// 2. getMe out from home page (fetch on start app. from any page)
+// 3. fix context or use stateManager(mobx or redux toolkit)
+
 
 export default function Home() {
-  const [dialog, setDialog] = useState<DialogType | undefined>();
-  const [user, setUser] = useContext(UserContext);
-  const { data } = useQuery(ME);
+  const [user, setUser] = useContext(UserContext)!;
+  const [dialog] = useContext(DialogContext);
+  
+  const { data, loading } = useMeQuery();
 
-  const onOpenDialog = (type: DialogType) => setDialog(type);
-  const onClose = () => setDialog(undefined);
-  console.log('user3333', user);
-
-  useEffect(() => {
-    if (data) {
-      console.log(';data.me', data.me);
+  useLayoutEffect(() => {
+    if (data && setUser) {
       setUser(data.me);
     }
   }, [data, setUser]);
@@ -37,21 +35,31 @@ export default function Home() {
     }
   }, [dialog]);
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
-      <NavWrapper onOpenDialog={onOpenDialog}>
+      <NavWrapper >
         <div className='container'>
-          <Tranding />
+          {!user && <Tranding />}
+
           <div className='main_page'>
             <div>
-              <StyledTopicName>Popular posts</StyledTopicName>
+              {!user ? (
+                <StyledTopicName>Popular posts</StyledTopicName>
+              ) : (
+                <LinkForm />
+              )}
               <Sort />
               <Posts />
             </div>
           </div>
         </div>
       </NavWrapper>
-      {dialog && <Dialogs type={dialog} onClose={onClose} />}
+
+      <Dialogs />
     </>
   );
 }

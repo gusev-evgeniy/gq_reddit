@@ -1,0 +1,9 @@
+  query ME {
+    me {
+      createdAt
+      email
+      login
+      UID
+      updatedAt
+    }
+  }

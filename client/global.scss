@@ -3,8 +3,8 @@
   margin: 0;
   box-sizing: border-box;
   font-family: 'IBM Plex Sans', sans-serif;
-
   transition: 0.2s;
+  text-decoration: none;
 }
 
 button {
@@ -31,7 +31,6 @@ body {
     grid-column-gap: 10px;
   }
 }
-
 
 .main_page {
   display: grid;

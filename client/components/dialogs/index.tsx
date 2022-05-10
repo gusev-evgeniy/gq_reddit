@@ -1,19 +1,23 @@
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import { CloseButton, DialogWrapper } from './styles';
 
 import close from '../../images/close.svg';
 import Image from 'next/image';
 import { SignUp } from './auth/signUp';
 import { Login } from './auth/login';
-import { DialogType } from '../../types/dialog';
+import { DialogContext } from '../../context/dialog';
 
+export const Dialogs: FC = () => {
+  const [dialog, setDialog] = useContext(DialogContext)!;
 
-type Props = {
-  type: DialogType;
-  onClose: () => void;
-};
+  if (!dialog) {
+    return null;
+  }
 
-export const Dialogs: FC<Props> = ({ type, onClose }) => {
+  const onClose = () => {
+    !!setDialog && setDialog(undefined);
+  };
+
   const components = {
     'sign up': <SignUp onClose={onClose}/>,
     'login': <Login onClose={onClose}/>
@@ -25,7 +29,7 @@ export const Dialogs: FC<Props> = ({ type, onClose }) => {
         <CloseButton onClick={onClose}>
           <Image width='30px' height='30px' src={close} alt='close' className='close' />
         </CloseButton>
-        {components[type]}
+        {components[dialog]}
       </div>
     </DialogWrapper>
   );

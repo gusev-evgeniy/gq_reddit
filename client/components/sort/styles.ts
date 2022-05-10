@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { ButtonIcon } from '../../styles';
 
 export const StyledSort = styled.div`
   display: flex;
@@ -10,12 +11,7 @@ export const StyledSort = styled.div`
   }
 `;
 
-export const StyledSortButton = styled.button`
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 17px;
-  background-color: inherit;
-  color: #0079d3;
+export const StyledSortButton = styled(ButtonIcon)`
   margin-right: 8px;
   padding: 6px 8px;
   border-radius: 20px;
@@ -28,3 +24,4 @@ export const StyledSortButton = styled.button`
     background-color:  #878A8C;
   }
 `;
+

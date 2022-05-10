@@ -1,4 +1,4 @@
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -8,8 +8,8 @@ import { AuthWrapper } from './authWrapper';
 import { AlertMessage, FormInput } from '../styles';
 import { useLazyQuery } from '@apollo/client';
 import { LOGIN } from '../../../api/auth';
-import { UserContext } from '../../../context/user';
-import { SubmitButton } from './SubmitButton';
+import { SubmitButton } from './submitButton';
+import { DialogProps } from '../type';
 
 const nameValidateMessage = 'Username must be between 3 and 20 characters';
 
@@ -20,12 +20,7 @@ const schema = yup
   })
   .required();
 
-  type Props = {
-    onClose: () => void;
-  };
-  
-
-export const Login: FC<Props> = ({ onClose }) => {
+export const Login: FC<DialogProps> = ({ onClose }) => {
   const [error, setError] = useState<string | undefined>();
 
   const {
@@ -39,8 +34,8 @@ export const Login: FC<Props> = ({ onClose }) => {
 
   const onSubmit = async (formData: object) => {
     try {
-      const { data } = await login({ variables: { ...formData } });
-      console.log('data.registr', data.registr);
+      console.log('formData', formData);
+      await login({ variables: { ...formData } });
       onClose();
     } catch (err) {
       if (err instanceof Error) {
@@ -55,7 +50,7 @@ export const Login: FC<Props> = ({ onClose }) => {
     <AuthWrapper>
       <>
         <h2>Log in</h2>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)} autoComplete='off'>
           <FormInput isError={errors.login?.message || error}>
             <input placeholder=' ' {...register('login')} />
             <label htmlFor='login'>USERNAME</label>
