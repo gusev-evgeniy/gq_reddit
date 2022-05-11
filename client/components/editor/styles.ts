@@ -67,16 +67,19 @@ export const StyledSelectCommunity = styled(StyledItem)`
 
 export const EditorForm = styled.form`
   width: 100%;
-  height: 100%;
+  min-height: 70vh;
+  height: 70vh;
   border: none;
-  padding: 10px;
-  position: relative;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+  padding: 10px;
 
   .button_wrapper {
     width: 100px;
-    align-self: flex-end;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
   }
 `;
 
@@ -114,4 +117,10 @@ export const TitleTextArea = styled.div`
     color: #9D9FA1;
     font-weight: 500;
   }
+`;
+
+export const FormWrapper = styled(StyledItem)`
+  padding-bottom: 50px;
+  position: relative;
+
 `;

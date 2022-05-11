@@ -1,3 +1,9 @@
   mutation Registr ($password: String!, $login: String!, $email: String!) {
-    registr(password: $password, login: $login, email: $email)
+    registr(password: $password, login: $login, email: $email) {
+      createdAt
+      email
+      login
+      UID
+      updatedAt
+    }
   }

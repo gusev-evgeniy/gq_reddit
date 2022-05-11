@@ -1,27 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import Header from '@editorjs/header';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import EditorJS from '@editorjs/editorjs';
-
-//TODO remove it
-let loaded = false;
 
 export const Editor = () => {
   const [text, setText] = useState<string|null>(null);
-  console.log('text', text);
+  const [test, setTest] = useState(true);
+  
+  useLayoutEffect(() => {
+    if (!test) {
+      new EditorJS({
+        holder: 'editor',
+        minHeight: 10,
+        placeholder: 'Text (optional)'
+      });
+
+    }
+
+  }, [test]);
 
   useEffect(() => {
-    if (loaded) return;
-
-    const editor = new EditorJS({
-      holder: 'editor',
-      minHeight: 10,
-      tools: {
-        header: Header,
-      },
-      placeholder: 'Text (optional)'
-    });
-
-    loaded = true;
+    return () => {
+      setTest(false);
+    };
   }, []);
 
   const onTest = ({ target }: any) => {

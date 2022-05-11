@@ -19,8 +19,9 @@ export type Scalars = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  registr: Scalars['String'];
+  registr: User;
 };
+
 
 export type MutationRegistrArgs = {
   email: Scalars['String'];
@@ -30,9 +31,10 @@ export type MutationRegistrArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  login: Scalars['String'];
+  login: User;
   me: User;
 };
+
 
 export type QueryLoginArgs = {
   login: Scalars['String'];
@@ -54,20 +56,34 @@ export type RegistrMutationVariables = Exact<{
   email: Scalars['String'];
 }>;
 
-export type RegistrMutation = { __typename?: 'Mutation'; registr: string };
 
-export type MeQueryVariables = Exact<{ [key: string]: never }>;
+export type RegistrMutation = { __typename?: 'Mutation', registr: { __typename?: 'User', createdAt: any, email: string, login: string, UID: string, updatedAt: any } };
 
-export type MeQuery = {
-  __typename?: 'Query';
-  me: { __typename?: 'User'; createdAt: any; email: string; login: string; UID: string; updatedAt: any };
-};
+export type LoginQueryVariables = Exact<{
+  password: Scalars['String'];
+  login: Scalars['String'];
+}>;
+
+
+export type LoginQuery = { __typename?: 'Query', login: { __typename?: 'User', createdAt: any, email: string, login: string, UID: string, updatedAt: any } };
+
+export type MeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', createdAt: any, email: string, login: string, UID: string, updatedAt: any } };
+
 
 export const RegistrDocument = gql`
-  mutation Registr($password: String!, $login: String!, $email: String!) {
-    registr(password: $password, login: $login, email: $email)
+    mutation Registr($password: String!, $login: String!, $email: String!) {
+  registr(password: $password, login: $login, email: $email) {
+    createdAt
+    email
+    login
+    UID
+    updatedAt
   }
-`;
+}
+    `;
 export type RegistrMutationFn = Apollo.MutationFunction<RegistrMutation, RegistrMutationVariables>;
 
 /**
@@ -89,26 +105,64 @@ export type RegistrMutationFn = Apollo.MutationFunction<RegistrMutation, Registr
  *   },
  * });
  */
-export function useRegistrMutation(
-  baseOptions?: Apollo.MutationHookOptions<RegistrMutation, RegistrMutationVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<RegistrMutation, RegistrMutationVariables>(RegistrDocument, options);
-}
+export function useRegistrMutation(baseOptions?: Apollo.MutationHookOptions<RegistrMutation, RegistrMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions};
+        return Apollo.useMutation<RegistrMutation, RegistrMutationVariables>(RegistrDocument, options);
+      }
 export type RegistrMutationHookResult = ReturnType<typeof useRegistrMutation>;
 export type RegistrMutationResult = Apollo.MutationResult<RegistrMutation>;
 export type RegistrMutationOptions = Apollo.BaseMutationOptions<RegistrMutation, RegistrMutationVariables>;
-export const MeDocument = gql`
-  query ME {
-    me {
-      createdAt
-      email
-      login
-      UID
-      updatedAt
-    }
+export const LoginDocument = gql`
+    query Login($password: String!, $login: String!) {
+  login(password: $password, login: $login) {
+    createdAt
+    email
+    login
+    UID
+    updatedAt
   }
-`;
+}
+    `;
+
+/**
+ * __useLoginQuery__
+ *
+ * To run a query within a React component, call `useLoginQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLoginQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLoginQuery({
+ *   variables: {
+ *      password: // value for 'password'
+ *      login: // value for 'login'
+ *   },
+ * });
+ */
+export function useLoginQuery(baseOptions: Apollo.QueryHookOptions<LoginQuery, LoginQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions};
+        return Apollo.useQuery<LoginQuery, LoginQueryVariables>(LoginDocument, options);
+      }
+export function useLoginLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LoginQuery, LoginQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions};
+          return Apollo.useLazyQuery<LoginQuery, LoginQueryVariables>(LoginDocument, options);
+        }
+export type LoginQueryHookResult = ReturnType<typeof useLoginQuery>;
+export type LoginLazyQueryHookResult = ReturnType<typeof useLoginLazyQuery>;
+export type LoginQueryResult = Apollo.QueryResult<LoginQuery, LoginQueryVariables>;
+export const MeDocument = gql`
+    query ME {
+  me {
+    createdAt
+    email
+    login
+    UID
+    updatedAt
+  }
+}
+    `;
 
 /**
  * __useMeQuery__
@@ -126,13 +180,13 @@ export const MeDocument = gql`
  * });
  */
 export function useMeQuery(baseOptions?: Apollo.QueryHookOptions<MeQuery, MeQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions};
+        return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, options);
+      }
 export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, options);
-}
+          const options = {...defaultOptions, ...baseOptions};
+          return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, options);
+        }
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
