@@ -78,10 +78,14 @@ export const OutlineNavButton = styled(NavButton)`
 export const PaintedNavButton = styled(NavButton)`
   color: #fff;
   background-color: #0079d3;
-  border: 1px solid #0079d3;
 
   :hover {
     background-color: rgba(0, 121, 211, 0.9);
+  }
+
+  :disabled {
+    background-color: #848484;
+    color: #C1C1C1;
   }
 `;
 

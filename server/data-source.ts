@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
+import Post from './entities/Post';
 import User from './entities/User';
 
 export const AppDataSource = new DataSource({
@@ -11,7 +12,7 @@ export const AppDataSource = new DataSource({
   database: 'reddit',
   synchronize: true,
   logging: false,
-  entities: [User],
+  entities: [User, Post],
   migrations: [],
   subscribers: [],
 });

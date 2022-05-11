@@ -1,28 +1,33 @@
-import React, { useEffect } from 'react';
-import EditorJS from '@editorjs/editorjs';
+import React, { useEffect, useState } from 'react';
 import Header from '@editorjs/header';
+import EditorJS from '@editorjs/editorjs';
 
-// eslint-disable-next-line react/display-name
+//TODO remove it
+let loaded = false;
+
 export const Editor = () => {
+  const [text, setText] = useState<string|null>(null);
+  console.log('text', text);
+
   useEffect(() => {
+    if (loaded) return;
+
     const editor = new EditorJS({
       holder: 'editor',
-      minHeight: 10
-      // tools: {
-      //   header: Header,
-      // },
+      minHeight: 10,
+      tools: {
+        header: Header,
+      },
+      placeholder: 'Text (optional)'
     });
 
-    return () => {
-      editor.isReady.then(() => {
-        editor.destroy();
-      })
-      .catch(e => console.error(`ERROR editor cleanup`, e));
-    };
+    loaded = true;
   }, []);
 
-  return (
-    <div id='editor'/>
-  );
+  const onTest = ({ target }: any) => {
+    setText(target.innerHTML);
+  };
+
+  return <div id='editor' onKeyUp={e => onTest(e)} onClick={e => onTest(e)}/>;
 };
 

@@ -47,7 +47,7 @@ export const StyledSelectCommunity = styled(StyledItem)`
   .ava {
     min-width: 22px;
     height: 22px;
-    border: 1px dashed #878A8C;
+    border: 1px dashed #878a8c;
     border-radius: 100%;
     margin-right: 6px;
   }
@@ -69,4 +69,49 @@ export const EditorForm = styled.form`
   width: 100%;
   height: 100%;
   border: none;
+  padding: 10px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
+  .button_wrapper {
+    width: 100px;
+    align-self: flex-end;
+  }
+`;
+
+export const TitleTextArea = styled.div`
+    position: relative;
+
+
+  textarea {
+    resize: none;
+    font-size: 14px;
+    line-height: 16px;
+    color: #1c1c1c;
+    width: 100%;
+    border: 1px solid #edeff1;
+    background-color: inherit;
+    border-radius: 4px;
+    outline: none;
+    padding: 10px 68px 10px 10px;
+    min-height: 38px;
+
+    ::-webkit-scrollbar {
+      display: none;
+    }
+
+    :focus {
+      border-color: black;
+    }
+  }
+
+  .title_length {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    font-size: 13px;
+    color: #9D9FA1;
+    font-weight: 500;
+  }
 `;

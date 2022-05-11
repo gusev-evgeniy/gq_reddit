@@ -1,4 +1,4 @@
-import { useContext, useEffect, useLayoutEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { Dialogs } from '../components/dialogs';
 import { NavWrapper } from '../components/navigations.tsx';
 import { Posts } from '../components/posts';
@@ -10,6 +10,7 @@ import { UserContext } from '../context/user';
 import { useMeQuery } from '../generated/graphql';
 import { LinkForm } from '../components/editor/linkForm';
 import { DialogContext } from '../context/dialog';
+import useIsomorphicLayoutEffect from '../hook/useIsomorphicLayoutEffect';
 
 //TODO
 // 1. DIALOG out from home page(something like portal in React)
@@ -23,7 +24,7 @@ export default function Home() {
   
   const { data, loading } = useMeQuery();
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (data && setUser) {
       setUser(data.me);
     }

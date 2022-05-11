@@ -28,7 +28,7 @@ export const Ava = styled.div`
 `;
 
 export const MainInput = styled.input`
-  font-size: 16px;
+  font-size: 15px;
   line-height: 16px;
   color: #1c1c1c;
   height: 36px;
@@ -44,7 +44,6 @@ export const MainInput = styled.input`
     border: 1px solid #0079d3;
   }
 `;
-
 
 export const ButtonIcon = styled.button`
   font-size: 14px;
