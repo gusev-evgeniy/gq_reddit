@@ -11,7 +11,7 @@ import AuthMiddleware from '../middleware/auth';
 @Resolver()
 export default class Auth {
 
-  @Query(() => String)
+  @Query(() => User)
   async login(
     @Arg('login', { nullable: false }) login: string,
     @Arg('password', { nullable: false }) password: string,
@@ -31,7 +31,7 @@ export default class Auth {
         maxAge: 60 * 60 * 24 * 7 // 1 week
       }))
 
-      return "Success";
+      return user;
     } catch (error) {
       console.log(error)
       return error;
@@ -46,7 +46,7 @@ export default class Auth {
     return res.locals.user;
   }
 
-  @Mutation(() => String)
+  @Mutation(() => User)
   async registr(
     @Arg('email', { nullable: false }) email: string,
     @Arg('login', { nullable: false }) login: string,
@@ -64,7 +64,7 @@ export default class Auth {
         maxAge: 60 * 60 * 24 * 7 // 1 week
       }))
 
-      return "Success";
+      return user;
     } catch (error: any) {
       if (error.code === '23505') {
         if (error.detail.includes('email')) {
