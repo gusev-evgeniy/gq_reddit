@@ -1,22 +1,30 @@
-import { Entity, Column, BeforeInsert, Index } from 'typeorm';
-import bcrypt from 'bcrypt';
+import { Entity, Column, Index, ManyToOne } from 'typeorm';
 
 import { Base } from '.';
 import { Field, ObjectType } from 'type-graphql';
+import User from './User';
+
+export interface PostInterface {
+  author: User;
+  title: string;
+  text?: string;
+}
 
 @ObjectType()
 @Entity('post')
 class Post extends Base {
   @Column({ length: 300 })
   @Field({ nullable: false })
-  @Index({ unique: true })
+  @Index()
   title: string;
 
   @Column({ length: 4000 })
-  @Field({ nullable: false })
-  @Index({ unique: true })
+  @Field()
+  @Index()
   text: string;
-  
+
+  @ManyToOne(() => User, user => user.posts)
+  author: User;
 }
 
 export default Post;

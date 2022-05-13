@@ -8,6 +8,7 @@ import cookieParser from 'cookie-parser';
 
 import Auth from './resolvers/auth';
 import { createConnection } from 'typeorm';
+import Post from './resolvers/post';
 
 const app = express();
 
@@ -23,7 +24,7 @@ const start = async () => {
 
     const apolloServer = new ApolloServer({
       schema: await buildSchema({
-        resolvers: [Auth],
+        resolvers: [Auth, Post],
       }),
       context: ({ req, res }) => ({
         req,

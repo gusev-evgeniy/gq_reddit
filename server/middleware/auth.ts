@@ -18,6 +18,7 @@ const Auth: MiddlewareFn = async ({ context }, next) => {
     res.locals.user = user;
     await next();
   } catch (error) {
+    console.log('Auth error', error)
     // return res.status(401).json({ message: 'Unauthenticated' });
   }
 };
