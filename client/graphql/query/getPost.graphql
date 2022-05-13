@@ -1,0 +1,5 @@
+query GetPost {
+  getPost {
+    text, title, UID
+  }
+}

@@ -1,14 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { FC, useEffect } from 'react';
 import Header from '@editorjs/header';
-import EditorJS from '@editorjs/editorjs';
+import EditorJS, {OutputData} from '@editorjs/editorjs';
+import { EditorProps } from '../../types/editor';
 
 //TODO remove it
 let loaded = false;
 
-export const Editor = () => {
-  const [text, setText] = useState<string|null>(null);
-  console.log('text', text);
+interface EditorProps {
+  onChange: (blocks: OutputData['blocks']) => void;
+  initialBlocks: OutputData['blocks'];
+}
 
+
+export const Editor: FC<EditorProps> = ({ onChange, initialBlocks }) => {
   useEffect(() => {
     if (loaded) return;
 
@@ -18,14 +22,22 @@ export const Editor = () => {
       tools: {
         header: Header,
       },
-      placeholder: 'Text (optional)'
+      data: {
+        blocks: initialBlocks
+      },
+      placeholder: 'Text (optional)',
+      async onChange() {
+        const {blocks} = await editor.save();
+        onChange(blocks);
+      },
+
     });
 
     loaded = true;
   }, []);
 
   const onTest = ({ target }: any) => {
-    setText(target.innerHTML);
+    onChange(target.innerHTML);
   };
 
   return <div id='editor' onKeyUp={e => onTest(e)} onClick={e => onTest(e)}/>;

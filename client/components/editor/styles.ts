@@ -65,7 +65,7 @@ export const StyledSelectCommunity = styled(StyledItem)`
   }
 `;
 
-export const EditorForm = styled.form`
+export const EditorForm = styled.div`
   width: 100%;
   height: 100%;
   border: none;
