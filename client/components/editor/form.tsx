@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
 import { StyledItem } from '../../styles';
-import { EditorForm, TitleTextArea } from './styles';
+import { EditorForm, FormWrapper, TitleTextArea } from './styles';
 import TextareaAutosize from 'react-textarea-autosize';
 import { PaintedNavButton } from '../navigations.tsx/styles';
 import { EditorProps } from '../../types/editor';
@@ -34,7 +34,7 @@ export const Form = () => {
   };
 
   return (
-    <StyledItem>
+    <FormWrapper>
       <EditorForm>
         <TitleTextArea>
           <span className='title_length'>
@@ -52,6 +52,6 @@ export const Form = () => {
           <PaintedNavButton disabled={disabled} onClick={onSubmit}>Submit</PaintedNavButton>
         </div>
       </EditorForm>
-    </StyledItem>
+    </FormWrapper>
   );
 };

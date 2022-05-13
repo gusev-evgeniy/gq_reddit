@@ -33,7 +33,10 @@ export const Editor: FC<EditorProps> = ({ onChange, initialBlocks }) => {
 
     });
 
-    loaded = true;
+  useEffect(() => {
+    return () => {
+      setTest(false);
+    };
   }, []);
 
   const onTest = ({ target }: any) => {

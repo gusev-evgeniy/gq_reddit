@@ -4,6 +4,7 @@ import Head from 'next/head';
 import '../global.scss';
 
 import { Providers } from '../context';
+import Layout from '../layout';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -12,7 +13,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         <title>Reddit</title>
       </Head>
       <Providers>
-        <Component {...pageProps} />
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
       </Providers>
     </>
   );

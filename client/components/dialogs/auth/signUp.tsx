@@ -1,4 +1,4 @@
-import React, { useState, FC } from 'react';
+import React, { useState, FC, useEffect, useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -6,10 +6,10 @@ import * as yup from 'yup';
 import { AuthWrapper } from './authWrapper';
 
 import { AlertMessage, FormInput, SuccessMessage } from '../styles';
-import { useMutation } from '@apollo/client';
-import { SIGN_UP } from '../../../api/auth';
 import { DialogProps } from '../type';
 import { SubmitButton } from './submitButton';
+import { RegistrMutationVariables, useRegistrMutation } from '../../../generated/graphql';
+import { UserContext } from '../../../context/user';
 
 const nameValidateMessage = 'Username must be between 3 and 20 characters';
 const passwordValidateMessage = 'Password must be at least 6 characters long';
@@ -22,22 +22,27 @@ const schema = yup
   })
   .required();
 
-export const SignUp: FC<DialogProps> = () => {
+export const SignUp: FC<DialogProps> = ({ onClose }) => {
   const [error, setError] = useState<string | undefined>();
   const [success, setSuccess] = useState(false);
+
+  const [, setUser] = useContext(UserContext)!;
+
+  const [registr, { loading, data }] = useRegistrMutation();
 
   const {
     register,
     handleSubmit,
     formState: { errors, dirtyFields },
-  } = useForm({
+  } = useForm<RegistrMutationVariables>({
     resolver: yupResolver(schema),
   });
-  const [registr, { loading }] = useMutation(SIGN_UP);
 
-  const onSubmit = async (formData: object) => {
+  
+  const onSubmit = async (formData: RegistrMutationVariables) => {
     try {
-      await registr({ variables: { ...formData } });
+      await registr({variables: {... formData}});
+      setError(undefined);
       setSuccess(true);
     } catch (err) {
       if (err instanceof Error) {
@@ -46,6 +51,17 @@ export const SignUp: FC<DialogProps> = () => {
     }
   };
 
+  useEffect(() => {
+    if (success) {
+      setTimeout(() => {
+        setUser && setUser(data?.registr);
+        onClose();
+      }, 3000);
+    }
+
+  }, [success, onClose, data, setUser]);
+  
+
   const disabled = Object.keys(dirtyFields).length < Object.keys(schema.fields).length;
 
   return (
@@ -53,19 +69,19 @@ export const SignUp: FC<DialogProps> = () => {
       <>
         <h2>Sign up</h2>
         <form onSubmit={handleSubmit(onSubmit)} autoComplete='off'>
-          <FormInput isError={errors.email?.message || error}>
+          <FormInput isError={Boolean(errors.email?.message || error)}>
             <input placeholder=' ' {...register('email')} />
             <label htmlFor='email'>EMAIL</label>
             <p>{errors.email?.message}</p>
           </FormInput>
 
-          <FormInput isError={errors.login?.message || error}>
+          <FormInput isError={Boolean(errors.login?.message || error)}>
             <input placeholder=' ' {...register('login')} />
             <label htmlFor='login'>USERNAME</label>
             <p>{errors.login?.message}</p>
           </FormInput>
 
-          <FormInput isError={errors.password?.message || error}>
+          <FormInput isError={Boolean(errors.password?.message || error)}>
             <input placeholder=' ' type='password' {...register('password')} />
             <label htmlFor='password'>PASSWORD</label>
             <p>{errors.password?.message}</p>

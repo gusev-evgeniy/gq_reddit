@@ -1,0 +1,9 @@
+  query Login($password: String!, $login: String!) {
+    login(password: $password, login: $login) {
+      createdAt
+      email
+      login
+      UID
+      updatedAt
+    }
+  }

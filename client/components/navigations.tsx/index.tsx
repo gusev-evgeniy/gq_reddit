@@ -11,11 +11,7 @@ import { UserContext } from '../../context/user';
 import { DialogContext } from '../../context/dialog';
 import Link from 'next/link';
 
-type Props = {
-  children: React.ReactChild;
-};
-
-export const NavWrapper: FC<Props> = ({ children }) => {
+export const Navigation: FC = () => {
   const [user] = useContext(UserContext)!;
   const [, setDialog] = useContext(DialogContext)!;
 
@@ -23,7 +19,6 @@ export const NavWrapper: FC<Props> = ({ children }) => {
   const onLogIn = () =>!!setDialog && setDialog('login');
 
   return (
-    <>
       <StyledNav>
         <Link href='/'>
           <a>
@@ -54,7 +49,5 @@ export const NavWrapper: FC<Props> = ({ children }) => {
           </button>
         </div>
       </StyledNav>
-      {children}
-    </>
   );
 };

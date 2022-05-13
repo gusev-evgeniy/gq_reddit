@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -6,10 +6,10 @@ import * as yup from 'yup';
 import { AuthWrapper } from './authWrapper';
 
 import { AlertMessage, FormInput } from '../styles';
-import { useLazyQuery } from '@apollo/client';
-import { LOGIN } from '../../../api/auth';
 import { SubmitButton } from './submitButton';
 import { DialogProps } from '../type';
+import { LoginQueryVariables, useLoginLazyQuery } from '../../../generated/graphql';
+import { UserContext } from '../../../context/user';
 
 const nameValidateMessage = 'Username must be between 3 and 20 characters';
 
@@ -22,20 +22,21 @@ const schema = yup
 
 export const Login: FC<DialogProps> = ({ onClose }) => {
   const [error, setError] = useState<string | undefined>();
+  const [, setUser] = useContext(UserContext)!;
 
   const {
     register,
     handleSubmit,
     formState: { errors, dirtyFields },
-  } = useForm({
+  } = useForm<LoginQueryVariables>({
     resolver: yupResolver(schema),
   });
-  const [login, { loading }] = useLazyQuery(LOGIN);
+  const [login, { loading, data }] = useLoginLazyQuery();
 
-  const onSubmit = async (formData: object) => {
+  const onSubmit = async (formData: LoginQueryVariables) => {
     try {
-      console.log('formData', formData);
       await login({ variables: { ...formData } });
+      setUser && setUser(data?.login);
       onClose();
     } catch (err) {
       if (err instanceof Error) {
@@ -51,13 +52,13 @@ export const Login: FC<DialogProps> = ({ onClose }) => {
       <>
         <h2>Log in</h2>
         <form onSubmit={handleSubmit(onSubmit)} autoComplete='off'>
-          <FormInput isError={errors.login?.message || error}>
+          <FormInput isError={Boolean(errors.login?.message || error)}>
             <input placeholder=' ' {...register('login')} />
             <label htmlFor='login'>USERNAME</label>
             <p>{errors.login?.message}</p>
           </FormInput>
 
-          <FormInput isError={errors.password?.message || error}>
+          <FormInput isError={Boolean(errors.password?.message || error)}>
             <input placeholder=' ' type='password' {...register('password')} />
             <label htmlFor='password'>PASSWORD</label>
           </FormInput>
