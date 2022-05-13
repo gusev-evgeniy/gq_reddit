@@ -73,19 +73,12 @@ export const EditorForm = styled.div`
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  padding: 10px;
-
-  .button_wrapper {
-    width: 100px;
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
-  }
+  padding-left: 15px;
 `;
 
 export const TitleTextArea = styled.div`
-    position: relative;
-
+  position: relative;
+  margin: 10px;
 
   textarea {
     resize: none;
@@ -114,7 +107,7 @@ export const TitleTextArea = styled.div`
     right: 10px;
     bottom: 10px;
     font-size: 13px;
-    color: #9D9FA1;
+    color: #9d9fa1;
     font-weight: 500;
   }
 `;
@@ -123,4 +116,10 @@ export const FormWrapper = styled(StyledItem)`
   padding-bottom: 50px;
   position: relative;
 
+  .button_wrapper {
+    width: 100px;
+    position: absolute;
+    right: 30px;
+    bottom: 10px;
+  }
 `;

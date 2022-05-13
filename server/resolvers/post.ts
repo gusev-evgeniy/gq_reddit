@@ -1,17 +1,44 @@
-import { Arg, Ctx, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
+import { Arg, Ctx, Field, InputType, InterfaceType, Mutation, ObjectType, Query, Resolver, UseMiddleware } from "type-graphql";
 
-import PostEntity, { PostInterface } from '../entities/Post';
+import PostEntity from '../entities/Post';
 import AuthMiddleware from '../middleware/auth';
 import { MyContext } from "../type";
+
+@InputType()
+class Data {
+  @Field()
+  text: string;
+}
+
+@InputType()
+abstract class Block {
+  @Field()
+  id?: string;
+
+  @Field(() => Data)
+  data: Data;
+
+  @Field()
+  type: string;
+}
+
+@ObjectType()
+class OffersResponse {
+  @Field(type => [PostEntity])
+  items: PostEntity[]
+
+  @Field(type => Number)
+  totalCount: number
+}
 
 @Resolver()
 export default class Post {
 
   @UseMiddleware(AuthMiddleware)
-  @Mutation(() => PostEntity)
+  @Mutation(() => String)
   async createPost(
     @Arg('title',{ nullable: false }) title: string,
-    @Arg('text') text: string,
+    @Arg('block', () => [Block], { nullable: true }) block: Block[],
     @Ctx() { res }: MyContext
   ) {
     if (!title) {
@@ -19,26 +46,27 @@ export default class Post {
     } 
 
     try {
-      const obj: PostInterface = {
+      const obj = {
         title,
-        author: res.locals.user
+        author: res.locals.user,
+        block
       }
-
-      if (text) obj.text = text;
+      console.log('obj', obj)
       const post = PostEntity.create(obj);
       await post.save()
 
-      return 
+      return "Success"
     } catch (error) {
       console.log('error', error);
     }
   }
 
-  @Query(() => [PostEntity])
+  @Query(() => OffersResponse)
  async getPost() {
    try {
-     const posts = await PostEntity.findAndCount();
-     return posts;
+     const [items, totalCount] = await PostEntity.findAndCount();
+
+     return { items, totalCount };
    } catch (error) {
     console.log('error', error);
    }

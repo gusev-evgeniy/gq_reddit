@@ -1,5 +1,8 @@
 query GetPost {
   getPost {
-    text, title, UID
+    totalCount,
+    items {
+      UID, title, block, createdAt, updatedAt
+    }
   }
 }

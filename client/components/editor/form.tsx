@@ -1,12 +1,16 @@
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
-import { StyledItem } from '../../styles';
-import { EditorForm, FormWrapper, TitleTextArea } from './styles';
 import TextareaAutosize from 'react-textarea-autosize';
-import { PaintedNavButton } from '../navigations.tsx/styles';
+import { OutputBlockData } from '@editorjs/editorjs';
+
 import { EditorProps } from '../../types/editor';
 
-const Editor = dynamic<any>(() => import('./editor').then(m => m.Editor), {
+import { EditorForm, FormWrapper, TitleTextArea } from './styles';
+import { PaintedNavButton } from '../navigations.tsx/styles';
+import { useCreatePostMutation } from '../../generated/graphql';
+import { SubmitButton } from '../dialogs/auth/submitButton';
+
+const Editor = dynamic<EditorProps>(() => import('./editor').then(m => m.Editor), {
   ssr: false,
 });
 
@@ -14,44 +18,41 @@ const MAX_TITLE_LENGTH = 300;
 
 export const Form = () => {
   const [title, setTitle] = useState('');
-  const [text, setText] = useState<string|null>(null);
-  const [blocks, setBlocks] = useState<any[]>([]);
+  const [blocks, setBlocks] = useState<OutputBlockData[]>([]);
+  const [setCreate, { loading, data, error }] = useCreatePostMutation();
   console.log('[blocks', blocks);
 
   const onKeyChange = ({ target }: any) => {
     setTitle(target.value);
   };
 
-  const onChange = (text: string) => {
-    setText(text);
+  const onSubmit = () => {
+    setCreate({
+      variables: { title, block: blocks }
+    });
   };
 
   const disabled = title.length === 0;
-
-  const onSubmit = () => {
-    console.log('text', text);
-    console.log('title', title);
-  };
-
+  console.log('data', data);
   return (
     <FormWrapper>
+      <TitleTextArea>
+        <span className='title_length'>
+          {title.length}/{MAX_TITLE_LENGTH}
+        </span>
+        <TextareaAutosize
+          rows={1}
+          maxLength={MAX_TITLE_LENGTH}
+          placeholder='Tile'
+          onKeyDown={e => onKeyChange(e)}
+        />
+      </TitleTextArea>
       <EditorForm>
-        <TitleTextArea>
-          <span className='title_length'>
-            {title.length}/{MAX_TITLE_LENGTH}
-          </span>
-          <TextareaAutosize
-            rows={1}
-            maxLength={MAX_TITLE_LENGTH}
-            placeholder='Tile'
-            onKeyDown={e => onKeyChange(e)}
-          />
-        </TitleTextArea>
-        <Editor initialBlocks={[]} onChange={(arr) => setBlocks(arr)}/>
-        <div className='button_wrapper'>
-          <PaintedNavButton disabled={disabled} onClick={onSubmit}>Submit</PaintedNavButton>
-        </div>
+        <Editor onChange={(arr: OutputBlockData[]) => setBlocks(arr)} />
       </EditorForm>
+      <div className='button_wrapper'>
+        <SubmitButton disabled={disabled} loading={loading} onClick={onSubmit}/>
+      </div>
     </FormWrapper>
   );
 };

@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { StyledPostItem, VoteDown, VoteUp } from './styled';
 
 import vote from '../../images/vote.svg';
 import Image from 'next/image';
+import { GetPostQuery } from '../../generated/graphql';
 
-export const Post = () => {
+type Props = GetPostQuery['getPost']['items'][0];
+
+export const Post: FC<Props> = ({ UID, title, block, createdAt }) => {
+  console.log('block', block.data);
+
   return (
       <StyledPostItem>
         <div className='rating'>
@@ -23,23 +28,18 @@ export const Post = () => {
               Posted by
               <span>u/catbulliesdog</span>
               {` `}
-              <span>13 hours ago</span>
+              <span>{createdAt}</span>
               <button>Join</button>
             </p>
           </div>
           <div className='body'>
-            <h2 className='title'>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Debitis, dignissimos.</h2>
-            <div className='text'>
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Atque, modi. Aspernatur, nostrum corporis
-              tempora eius mollitia aliquid commodi earum obcaecati dolor soluta sequi vero, error sapiente cumque odit
-              nisi dolore dignissimos aperiam! Quas cumque nemo nostrum fugit illo ut debitis commodi aperiam autem
-              minima nobis corporis perferendis in nisi quisquam atque magnam praesentium vel, fugiat iure rerum iusto
-              blanditiis id. At veritatis facilis sit impedit ex quae. Velit, tenetur repudiandae explicabo rem ex quo
-              fugit voluptatum labore? Alias soluta fuga amet, molestiae aspernatur dolores nesciunt quos, modi est in
-              accusantium quae quo consectetur ab id deserunt nemo nisi nulla quis voluptatum velit blanditiis?
-              Laboriosam vero perferendis veritatis adipisci cum mollitia ipsa praesentium eius repudiandae corrupti est
-              fugit cupiditate, excepturi quibusdam vel debitis fuga quia sint rerum numquam similique. Dolore tenetur
-              soluta distinctio incidunt totam, dolores animi atque perferendis ea fugiat!
+            <h2 className='title'>{title}</h2>
+            <div >
+              {block.map(({data}, index) => {
+                const htmlContent = {  __html: data.text };
+
+                return <div key={index} dangerouslySetInnerHTML={htmlContent} />;
+              })}
             </div>
           </div>
           <div className='footer'>

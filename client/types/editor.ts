@@ -1,3 +1,5 @@
+import { OutputBlockData } from "@editorjs/editorjs";
+
 export type EditorProps = {
-  onChange: (text: string) => void;
+  onChange: (arr: OutputBlockData[]) => void;
 };

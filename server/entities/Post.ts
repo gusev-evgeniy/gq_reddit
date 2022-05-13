@@ -1,27 +1,31 @@
 import { Entity, Column, Index, ManyToOne } from 'typeorm';
+import { GraphQLJSON } from 'graphql-type-json';
 
 import { Base } from '.';
 import { Field, ObjectType } from 'type-graphql';
 import User from './User';
 
-export interface PostInterface {
-  author: User;
-  title: string;
-  text?: string;
+export type Block = {
+  data: {
+    text: string;
+  };
+  id: string;
+  type: string;
 }
 
 @ObjectType()
 @Entity('post')
 class Post extends Base {
+
   @Column({ length: 300 })
   @Field({ nullable: false })
   @Index()
   title: string;
 
-  @Column({ length: 4000 })
-  @Field()
+  @Column({ type: 'jsonb' })
+  @Field(() => GraphQLJSON)
   @Index()
-  text: string;
+  block: object;
 
   @ManyToOne(() => User, user => user.posts)
   author: User;

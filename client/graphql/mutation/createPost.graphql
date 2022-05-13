@@ -1,5 +1,3 @@
-mutation CreatePost($text: String!, $title: String!) {
-  createPost(text: $text, title: $title) {
-    text, title, UID, updatedAt
-  }
+mutation CreatePost($block: [Block!]!, $title: String!) {
+  createPost(block: $block, title: $title)
 }
