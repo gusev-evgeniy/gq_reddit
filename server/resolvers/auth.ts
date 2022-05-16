@@ -1,4 +1,4 @@
-import { Arg, Ctx, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
+import { Arg, Ctx, Field, Mutation, ObjectType, Query, Resolver, UseMiddleware } from "type-graphql";
 import bcrypt from 'bcrypt';
 import cookie from 'cookie'
 
@@ -20,9 +20,10 @@ export default class Auth {
     try {
       const user = await User.findOneBy({ login });
       if (!user) throw { login: "Wrong login" };
-
+      console.log('1')
       const isCorrectPassword = bcrypt.compareSync(password, user.password);
       if (!isCorrectPassword) throw { password: "Wrong password" };
+      console.log('2')
 
       const token = createJWT(user);
       ctx.res.set('Set-Cookie', cookie.serialize('token', token, {

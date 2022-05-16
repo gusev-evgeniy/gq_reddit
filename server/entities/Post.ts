@@ -1,4 +1,4 @@
-import { Entity, Column, Index, ManyToOne } from 'typeorm';
+import { Entity, Column, Index, ManyToOne, JoinColumn } from 'typeorm';
 import { GraphQLJSON } from 'graphql-type-json';
 
 import { Base } from '.';
@@ -27,6 +27,7 @@ class Post extends Base {
   @Index()
   block: object;
 
+  @JoinColumn({ name: 'userUID' })
   @ManyToOne(() => User, user => user.posts)
   author: User;
 }

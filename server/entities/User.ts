@@ -21,7 +21,7 @@ class User extends Base {
   @Column()
   password: string;
 
-  @JoinColumn({ name: 'post_UID', referencedColumnName: 'UID' })
+  @JoinColumn({ name: 'postUID' })
   @OneToMany(() => Post, post => post.author)
   posts: Post[];
 

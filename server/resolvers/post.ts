@@ -64,7 +64,9 @@ export default class Post {
   @Query(() => OffersResponse)
  async getPost() {
    try {
-     const [items, totalCount] = await PostEntity.findAndCount();
+     const [items, totalCount] = await PostEntity.findAndCount({
+       order: { createdAt: "DESC" }
+     });
 
      return { items, totalCount };
    } catch (error) {

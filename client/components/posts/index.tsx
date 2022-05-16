@@ -1,6 +1,6 @@
 import React from 'react';
 import { useGetPostQuery } from '../../generated/graphql';
-import { Post } from './post';
+import { Post } from './post/middle';
 
 export const Posts = () => {
   const { loading, data, error } = useGetPostQuery();
@@ -13,9 +13,9 @@ export const Posts = () => {
 
   return (
     <>
-  {data?.getPost.items.map((post) => (
-    <Post key={post.UID} {...post}/>
-  ))}
+      {data?.getPost.items.map(post => (
+        <Post key={post.UID} {...post} />
+      ))}
     </>
   );
 };
