@@ -4,12 +4,14 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
 import { AuthWrapper } from './authWrapper';
-
-import { AlertMessage, FormInput } from '../styles';
 import { SubmitButton } from './submitButton';
-import { DialogProps } from '../type';
 import { LoginQueryVariables, useLoginLazyQuery } from '../../../generated/graphql';
 import { UserContext } from '../../../context/user';
+
+import { DialogProps } from '../type';
+
+import { AlertMessage, FormInput } from '../styles';
+
 
 const nameValidateMessage = 'Username must be between 3 and 20 characters';
 
@@ -23,7 +25,7 @@ const schema = yup
 export const Login: FC<DialogProps> = ({ onClose }) => {
   const [error, setError] = useState<string | undefined>();
   const [, setUser] = useContext(UserContext)!;
-
+  console.log('error', error);
   const {
     register,
     handleSubmit,
@@ -32,11 +34,16 @@ export const Login: FC<DialogProps> = ({ onClose }) => {
     resolver: yupResolver(schema),
   });
   const [login, { loading, data }] = useLoginLazyQuery();
-
+  console.log('data222', data);
   const onSubmit = async (formData: LoginQueryVariables) => {
     try {
       await login({ variables: { ...formData } });
-      setUser && setUser(data?.login);
+      console.log('2222222222', data);
+
+      if (setUser && data?.login) {
+        setUser && setUser(data?.login);
+      }
+
       onClose();
     } catch (err) {
       if (err instanceof Error) {
@@ -65,7 +72,9 @@ export const Login: FC<DialogProps> = ({ onClose }) => {
 
           <SubmitButton disabled={disabled} loading={loading}/>
 
-          {!!error && <AlertMessage>{error}</AlertMessage>}
+          {!!error && <AlertMessage>
+            Wrong login or password
+            </AlertMessage>}
         </form>
       </>
     </AuthWrapper>

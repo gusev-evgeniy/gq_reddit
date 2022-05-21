@@ -17,16 +17,17 @@ export type Block = {
 @Entity('post')
 class Post extends Base {
 
-  @Column({ length: 300 })
   @Field({ nullable: false })
+  @Column({ length: 300 })
   @Index()
   title: string;
 
-  @Column({ type: 'jsonb' })
   @Field(() => GraphQLJSON)
+  @Column({ type: 'jsonb' })
   @Index()
   block: object;
 
+  @Field()
   @JoinColumn({ name: 'userUID' })
   @ManyToOne(() => User, user => user.posts)
   author: User;

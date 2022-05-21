@@ -1,8 +1,19 @@
-import { Arg, Ctx, Field, InputType, InterfaceType, Mutation, ObjectType, Query, Resolver, UseMiddleware } from "type-graphql";
+import {
+  Arg,
+  Ctx,
+  Field,
+  InputType,
+  InterfaceType,
+  Mutation,
+  ObjectType,
+  Query,
+  Resolver,
+  UseMiddleware,
+} from 'type-graphql';
 
 import PostEntity from '../entities/Post';
 import AuthMiddleware from '../middleware/auth';
-import { MyContext } from "../type";
+import { MyContext } from '../type';
 
 @InputType()
 class Data {
@@ -25,52 +36,73 @@ abstract class Block {
 @ObjectType()
 class OffersResponse {
   @Field(type => [PostEntity])
-  items: PostEntity[]
+  items: PostEntity[];
 
   @Field(type => Number)
-  totalCount: number
+  totalCount: number;
+}
+
+@ObjectType()
+class GetPostResponse {
+  @Field(type => PostEntity)
+  items: PostEntity;
 }
 
 @Resolver()
 export default class Post {
-
   @UseMiddleware(AuthMiddleware)
-  @Mutation(() => String)
+  @Mutation(() => PostEntity)
   async createPost(
-    @Arg('title',{ nullable: false }) title: string,
+    @Arg('title', { nullable: false }) title: string,
     @Arg('block', () => [Block], { nullable: true }) block: Block[],
     @Ctx() { res }: MyContext
   ) {
     if (!title) {
-      throw new Error( "Title required")
-    } 
+      throw new Error('Title required');
+    }
 
     try {
       const obj = {
         title,
         author: res.locals.user,
-        block
-      }
-      console.log('obj', obj)
+        block,
+      };
+      console.log('obj', obj);
       const post = PostEntity.create(obj);
-      await post.save()
+      await post.save();
 
-      return "Success"
+      return post;
     } catch (error) {
       console.log('error', error);
     }
   }
 
   @Query(() => OffersResponse)
- async getPost() {
-   try {
-     const [items, totalCount] = await PostEntity.findAndCount({
-       order: { createdAt: "DESC" }
-     });
+  async posts() {
+    try {
+      const [items, totalCount] = await PostEntity.findAndCount({
+        order: { createdAt: 'DESC' },
+        relations: ['author']
+      });
+      console.log('items', items)
+      console.log('totalCount', totalCount)
+      return { items, totalCount };
+    } catch (error) {
+      console.log('error', error);
+    }
+  }
 
-     return { items, totalCount };
-   } catch (error) {
-    console.log('error', error);
-   }
- }
+  @Query(() => PostEntity, { nullable: true })
+  async post(
+    @Arg('UID', { nullable: false }) UID: string,
+  ) {
+    try {
+      return await PostEntity.findOne({
+        where: { UID },
+        relations: ['author']
+      });
+    } catch (error) {
+      console.log('error', error);
+    }
+  }
 }

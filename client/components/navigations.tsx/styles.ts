@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { MainInput } from '../../styles';
+import { MainButton, MainInput } from '../../styles';
 
 export const StyledNav = styled.nav`
   background-color: #fff;
@@ -58,34 +58,13 @@ const Button = styled.button`
   border-radius: 25px;
 `;
 
-const NavButton = styled(Button)`
-  height: 32px;
-  margin-right: 5px;
-  min-width: 90px;
-  width: 40%;
-`;
-
-export const OutlineNavButton = styled(NavButton)`
+export const OutlineNavButton = styled(MainButton)`
   color: #0079d3;
   border: 1px solid #0079d3;
   background-color: #fff;
 
   :hover {
     background-color: rgba(0, 121, 211, 0.1);
-  }
-`;
-
-export const PaintedNavButton = styled(NavButton)`
-  color: #fff;
-  background-color: #0079d3;
-
-  :hover {
-    background-color: rgba(0, 121, 211, 0.9);
-  }
-
-  :disabled {
-    background-color: #848484;
-    color: #C1C1C1;
   }
 `;
 

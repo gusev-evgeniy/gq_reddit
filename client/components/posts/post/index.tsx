@@ -1,16 +1,21 @@
 import React, { FC } from 'react';
-import { StyledPostItem, TextContent, VoteDown, VoteUp } from '../styled';
+import Image from 'next/image';
+
+import { GetPostQuery } from '../../../generated/graphql';
+import { PostHeader } from './postHeader';
+import { PostFooter } from './postFooter';
+
 
 import vote from '../../../images/vote.svg';
-import Image from 'next/image';
-import { GetPostQuery } from '../../../generated/graphql';
-import { Header } from './header';
 
-type Props = GetPostQuery['getPost']['items'][0];
+import { StyledPostItem, TextContent, VoteDown, VoteUp } from '../styled';
+import { CommentForm } from './commentForm';
 
-export const Post: FC<Props> = ({ title, block, createdAt }) => {
+type Props = GetPostQuery['post'] & { isLarge?: boolean };
+
+export const Post: FC<Props> = ({ title, block, createdAt, isLarge, author }) => {
   return (
-    <StyledPostItem>
+    <StyledPostItem isLarge={isLarge}>
       <div className='rating'>
         <VoteUp>
           <Image width='30px' height='30px' src={vote} alt='search_icon' />
@@ -21,10 +26,10 @@ export const Post: FC<Props> = ({ title, block, createdAt }) => {
         </VoteDown>
       </div>
       <div className='body_wrapper'>
-        <Header />
+        <PostHeader author={author} createdAt={createdAt}/>
         <div className='body'>
           <h2 className='title'>{title}</h2>
-          <TextContent>
+          <TextContent isLarge={isLarge}>
             {block.map(({ data }, index: number) => {
               const htmlContent = { __html: data.text };
 
@@ -32,13 +37,8 @@ export const Post: FC<Props> = ({ title, block, createdAt }) => {
             })}
           </TextContent>
         </div>
-        <div className='footer'>
-          <button>
-            <Image width='18px' height='18px' src={vote} alt='search_icon' />
-          </button>
-          <button>Share</button>
-          <button>Save</button>
-        </div>
+        <PostFooter isLarge={isLarge}/>
+      {!!isLarge && <CommentForm/>}
       </div>
     </StyledPostItem>
   );

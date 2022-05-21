@@ -1,20 +1,25 @@
+import { useRouter } from 'next/router';
 import React from 'react';
-import { useGetPostQuery } from '../../generated/graphql';
-import { Post } from './post/middle';
+import { useGetPostsQuery } from '../../generated/graphql';
+import { Post } from './post';
+import { StyledPostItem } from './styled';
 
 export const Posts = () => {
-  const { loading, data, error } = useGetPostQuery();
+  const router = useRouter();
+
+  const { loading, data, error } = useGetPostsQuery();
 
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  console.log('data', data);
-
+  //TODO temporary. remove Link.
   return (
     <>
-      {data?.getPost.items.map(post => (
-        <Post key={post.UID} {...post} />
+      {data?.posts.items.map(post => (
+          <StyledPostItem style={{cursor: "pointer"}} key={post.UID} onClick={() => router.push(`post/${post.UID}`)}>
+            <Post {...post} />
+          </StyledPostItem>
       ))}
     </>
   );

@@ -1,8 +1,0 @@
-query GetPost {
-  getPost {
-    totalCount,
-    items {
-      UID, title, block, createdAt, updatedAt
-    }
-  }
-}

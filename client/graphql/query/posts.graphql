@@ -1,0 +1,15 @@
+query GetPosts {
+  posts {
+    totalCount
+    items {
+      UID
+      title
+      block
+      createdAt
+      author {
+        UID
+        login
+      }
+    }
+  }
+}

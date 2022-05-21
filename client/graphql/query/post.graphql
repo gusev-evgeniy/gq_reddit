@@ -1,0 +1,12 @@
+query GetPost($uid: String!) {
+  post(UID: $uid) {
+    UID
+    title
+    createdAt
+    block
+    author {
+      UID
+      login
+    }
+  }
+}

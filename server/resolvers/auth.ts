@@ -8,33 +8,41 @@ import { MyContext } from "../type";
 
 import AuthMiddleware from '../middleware/auth';
 
+
+@ObjectType()
+class Errors {
+  @Field()
+  login?: string;
+
+  @Field()
+  password?: string;
+}
+
+
 @Resolver()
 export default class Auth {
 
-  @Query(() => User)
+  @Query(() => User, { nullable: true })
   async login(
     @Arg('login', { nullable: false }) login: string,
     @Arg('password', { nullable: false }) password: string,
     @Ctx() ctx: MyContext
   ) {
     try {
-      const user = await User.findOneBy({ login });
-      if (!user) throw { login: "Wrong login" };
-      console.log('1')
+      const user = await User.findOneByOrFail({ login });
+      console.log('user', user)
       const isCorrectPassword = bcrypt.compareSync(password, user.password);
+      console.log('isCorrectPassword', isCorrectPassword)
       if (!isCorrectPassword) throw { password: "Wrong password" };
-      console.log('2')
-
       const token = createJWT(user);
       ctx.res.set('Set-Cookie', cookie.serialize('token', token, {
         httpOnly: true,
         path: '/',
         maxAge: 60 * 60 * 24 * 7 // 1 week
       }))
-
+      console.log('user', user)
       return user;
     } catch (error) {
-      console.log(error)
       return error;
     }
   }

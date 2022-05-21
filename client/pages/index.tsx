@@ -6,7 +6,8 @@ import { Tranding } from '../components/tranding';
 import { StyledTopicName } from '../styles';
 import { UserContext } from '../context/user';
 import { LinkForm } from '../components/editor/linkForm';
-import { useGetPostQuery } from '../generated/graphql';
+
+//TODO login data return undefined;
 
 export default function Home() {
   const [user,] = useContext(UserContext)!;

@@ -1,3 +1,5 @@
 mutation CreatePost($block: [Block!]!, $title: String!) {
-  createPost(block: $block, title: $title)
+  createPost(block: $block, title: $title) {
+    UID
+  }
 }

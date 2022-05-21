@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { FC, useContext } from 'react';
-import { SearchWrapper, OutlineNavButton, PaintedNavButton, StyledNav, InputWithIcon } from './styles';
+import { SearchWrapper, OutlineNavButton, StyledNav, InputWithIcon } from './styles';
 
 import logo from '../../images/logo.svg';
 import profile from '../../images/user.svg';
@@ -10,6 +10,7 @@ import search from '../../images/search.svg';
 import { UserContext } from '../../context/user';
 import { DialogContext } from '../../context/dialog';
 import Link from 'next/link';
+import { MainButton } from '../../styles';
 
 export const Navigation: FC = () => {
   const [user] = useContext(UserContext)!;
@@ -38,8 +39,8 @@ export const Navigation: FC = () => {
         <div className='buttons'>
           {!user && (
             <>
-              <OutlineNavButton onClick={onLogIn}>Log In</OutlineNavButton>
-              <PaintedNavButton onClick={onSignUp}>Sign Up</PaintedNavButton>
+              <OutlineNavButton width='40%' onClick={onLogIn}>Log In</OutlineNavButton>
+              <MainButton width='40%' onClick={onSignUp}>Sign Up</MainButton>
             </>
           )}
 

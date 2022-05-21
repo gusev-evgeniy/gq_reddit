@@ -52,12 +52,34 @@ export const ButtonIcon = styled.button`
   background-color: inherit;
   color: #0079d3;
   border-radius: 4px;
-  
+
   :hover {
     background-color: #f6f7f8;
   }
 
   :active {
-    background-color:  #878A8C;
+    background-color: #878a8c;
+  }
+`;
+
+export const MainButton = styled.button<{ width?: string, height?: string }>`
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 17px;
+  text-align: center;
+  border-radius: 25px;
+  height:${({height}) => height || '32px'};
+  margin-right: 5px;
+  min-width: ${({width}) => width || '90px'};
+  color: #fff;
+  background-color: #0079d3;
+
+  :hover {
+    background-color: rgba(0, 121, 211, 0.9);
+  }
+
+  :disabled {
+    background-color: #848484;
+    color: #C1C1C1;
   }
 `;

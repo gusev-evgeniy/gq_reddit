@@ -1,14 +1,16 @@
 import Link from 'next/link';
 import React, { FC } from 'react';
-import { Ava } from '../../../styles';
-import { PaintedNavButton } from '../../navigations.tsx/styles';
-import { StyledHeader } from '../styled';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+import { Ava, MainButton } from '../../../styles';
+import { StyledPostHeader } from '../styled';
 
 type Props = {
   createdAt?: string;
   author?: {
     UID: string;
-    name: string;
+    login: string;
   };
   group?: {
     UID: string;
@@ -16,9 +18,13 @@ type Props = {
   };
 };
 
-export const Header: FC<Props> = ({ createdAt, author, group }) => {
+dayjs.extend(relativeTime);
+
+export const PostHeader: FC<Props> = ({ createdAt, author, group }) => {
+  const relativeDate = dayjs().to(dayjs(createdAt));
+
   return (
-    <StyledHeader>
+    <StyledPostHeader>
       <div className='info'>
         {/* {group && (
         <>
@@ -38,13 +44,13 @@ export const Header: FC<Props> = ({ createdAt, author, group }) => {
           Posted by
           {` `}
           <Link href={'/'}>
-            <a>u/autorName</a>
+            <a>u/{author?.login}</a>
           </Link>
           {` `}
-          <span>15 hours ago</span>
+          <span>{relativeDate}</span>
         </p>
       </div>
-      <PaintedNavButton>Join</PaintedNavButton>
-    </StyledHeader>
+      <MainButton height='24px' width='54px'>Join</MainButton>
+    </StyledPostHeader>
   );
 };

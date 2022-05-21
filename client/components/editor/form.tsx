@@ -6,9 +6,9 @@ import { OutputBlockData } from '@editorjs/editorjs';
 import { EditorProps } from '../../types/editor';
 
 import { EditorForm, FormWrapper, TitleTextArea } from './styles';
-import { PaintedNavButton } from '../navigations.tsx/styles';
 import { useCreatePostMutation } from '../../generated/graphql';
 import { SubmitButton } from '../dialogs/auth/submitButton';
+import { useRouter } from 'next/router';
 
 const Editor = dynamic<EditorProps>(() => import('./editor').then(m => m.Editor), {
   ssr: false,
@@ -19,8 +19,15 @@ const MAX_TITLE_LENGTH = 300;
 export const Form = () => {
   const [title, setTitle] = useState('');
   const [blocks, setBlocks] = useState<OutputBlockData[]>([]);
+
+  const router = useRouter();
+
   const [setCreate, { loading, data, error }] = useCreatePostMutation();
-  console.log('[blocks', blocks);
+  console.log('data', data);
+
+  if (data?.createPost) {
+    // router.push('')
+  }
 
   const onKeyChange = ({ target }: any) => {
     setTitle(target.value);
@@ -33,7 +40,7 @@ export const Form = () => {
   };
 
   const disabled = title.length === 0;
-  console.log('data', data);
+  
   return (
     <FormWrapper>
       <TitleTextArea>
