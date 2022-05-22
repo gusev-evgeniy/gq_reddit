@@ -140,10 +140,9 @@ export const FormInput = styled.div<{ isError: boolean }>`
 
 export const FormButton = styled.div`
   cursor: pointer;
-  margin-top: 20px;
   position: relative;
-  height: 40px;
-  width: 120px;
+  height: 100%;
+  width: 100%;
 
   button {
     font-size: 14px;
@@ -206,4 +205,10 @@ export const FormButton = styled.div`
       stroke-dashoffset: -124;
     }
   }
+`;
+
+export const AuthButtonWrapper = styled.div`
+  margin-top: 20px;
+  height: 40px;
+  width: 120px;
 `;

@@ -83,3 +83,29 @@ export const MainButton = styled.button<{ width?: string, height?: string }>`
     color: #C1C1C1;
   }
 `;
+
+export const FooterButton = styled.button`
+  display: flex;
+  background-color: inherit;
+  color: #878a8c;
+  font-size: 12px;
+  border-radius: 2px;
+  margin-right: 4px;
+  font-weight: 700;
+
+  span {
+    margin-left: 3px;
+  }
+
+  :hover {
+    background-color: #f6f7f8;
+  }
+
+  :disabled {
+    cursor: default;
+
+    :hover {
+      background-color: inherit;
+    }
+  }
+`;

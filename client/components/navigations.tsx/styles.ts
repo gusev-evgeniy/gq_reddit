@@ -50,14 +50,6 @@ export const StyledNav = styled.nav`
   }
 `;
 
-const Button = styled.button`
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 17px;
-  text-align: center;
-  border-radius: 25px;
-`;
-
 export const OutlineNavButton = styled(MainButton)`
   color: #0079d3;
   border: 1px solid #0079d3;
@@ -79,7 +71,6 @@ export const SearchWrapper = styled.div`
     left: 12px;
     transform: translateY(-50%);
     }
-  }
 `;
 
 export const InputWithIcon = styled(MainInput)`

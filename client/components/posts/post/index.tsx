@@ -8,14 +8,13 @@ import { PostFooter } from './postFooter';
 
 import vote from '../../../images/vote.svg';
 
-import { StyledPostItem, TextContent, VoteDown, VoteUp } from '../styled';
-import { CommentForm } from './commentForm';
+import { TextContent, VoteDown, VoteUp } from '../styled';
 
 type Props = GetPostQuery['post'] & { isLarge?: boolean };
 
 export const Post: FC<Props> = ({ title, block, createdAt, isLarge, author }) => {
   return (
-    <StyledPostItem isLarge={isLarge}>
+    <>
       <div className='rating'>
         <VoteUp>
           <Image width='30px' height='30px' src={vote} alt='search_icon' />
@@ -38,8 +37,7 @@ export const Post: FC<Props> = ({ title, block, createdAt, isLarge, author }) =>
           </TextContent>
         </div>
         <PostFooter isLarge={isLarge}/>
-      {!!isLarge && <CommentForm/>}
       </div>
-    </StyledPostItem>
+    </>
   );
 };

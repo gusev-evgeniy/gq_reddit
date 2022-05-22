@@ -13,7 +13,7 @@ type Props = {
 const Layout: FC<Props> = ({ children }) => {
   const [user, setUser] = useContext(UserContext)!;
   const [dialog] = useContext(DialogContext);
-
+  console.log('dialog', dialog);
   const { data, loading } = useMeQuery();
 
   useIsomorphicLayoutEffect(() => {
@@ -23,9 +23,7 @@ const Layout: FC<Props> = ({ children }) => {
   }, [data, setUser]);
 
   useEffect(() => {
-    if (dialog) {
-      document.body.style.overflow = 'hidden';
-    }
+    document.body.style.overflow = dialog ? 'hidden' : 'auto';
   }, [dialog]);
 
   if (loading) {

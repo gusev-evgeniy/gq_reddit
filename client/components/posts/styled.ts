@@ -1,19 +1,42 @@
 import styled from 'styled-components';
+import { FooterButton } from '../../styles';
 
-export const StyledPostItem = styled.div<{ isLarge?: boolean }>`
+export const StyledPostSource = styled.div`
   display: flex;
   margin-top: 10px;
   background-color: #fff;
   overflow: hidden;
   border-radius: 4px;
-  border: ${({isLarge}) => isLarge ? 'none' : `1px solid #ccc`};
-
-  .rating {
-    background-color: ${({isLarge}) => isLarge ? 'inherit' : `rgb(248, 249, 250)`};
-  }
 
   .body_wrapper {
-    padding: 10px;
+    padding: 12px 12px 2px 12px;
+  }
+`;
+
+export const StyledPostItem = styled(StyledPostSource)`
+  display: flex;
+  margin-top: 10px;
+  background-color: #fff;
+  overflow: hidden;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+
+  .rating {
+    background-color: rgb(248, 249, 250);
+  }
+`;
+
+export const LargePostWrapper = styled(StyledPostSource)`
+  flex-direction: column;
+  margin-bottom: 20px;
+
+  .post_wrapper {
+    display: flex;
+  }
+
+  .loading {
+    width: 100%;
+    height: 60vh;
   }
 `;
 
@@ -32,11 +55,13 @@ export const VoteDown = styled(VoteButton)`
   transform: rotate(90deg);
 `;
 
-export const TextContent = styled.div<{isLarge?: boolean}>`
+export const TextContent = styled.div<{ isLarge?: boolean }>`
   width: 100%;
-  max-height: ${({isLarge}) => isLarge ? 'fit-content' :  '250px'};
+  max-height: ${({ isLarge }) => (isLarge ? 'fit-content' : '250px')};
   overflow: hidden;
-  -webkit-mask-image: ${({isLarge}) => isLarge ? 'none' :  'linear-gradient(180deg, #000 60%, transparent)'};
+
+  -webkit-mask-image: ${({ isLarge }) =>
+    isLarge ? 'none' : 'linear-gradient(180deg, #000 60%, transparent)'};
 
   p {
     padding: 0.5em 0 0.25em;
@@ -49,6 +74,7 @@ export const StyledPostHeader = styled.div`
   justify-content: space-between;
   font-size: 12px;
   align-items: center;
+  margin-bottom: 5px;
 
   .info {
     display: flex;
@@ -84,40 +110,9 @@ export const StyledPostFooter = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
+  margin-top: 2px;
 `;
 
-export const PostFooterButton = styled.button`
-  display: flex;
-  background-color: inherit;
-  color:  #878A8C;
-  font-style: 12px;
-  font-weight: 700;
+export const PostFooterButton = styled(FooterButton)`
   padding: 8px;
-  border-radius: 2px;
-  margin-right: 4px;
-
-  span {
-    margin-left: 3px;
-  }
-
-  :hover {
-    background-color: #f6f7f8;
-  }
-
-  :disabled {
-    cursor: default;
-
-    :hover {
-      background-color: inherit;
-    }
-  }
-`;
-
-export const StyledCommentForm = styled.div`
-  margin: 40px auto 20px auto;
-  min-height: 160px;
-  border: 1px solid #EDEFF1;
-  border-radius: 4px;
-  min-width: 800px;
-  padding: 10px;
 `;

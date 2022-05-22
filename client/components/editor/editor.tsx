@@ -3,7 +3,7 @@ import EditorJS from '@editorjs/editorjs';
 
 import { EditorProps } from '../../types/editor';
 
-export const Editor: FC<EditorProps> = ({ onChange }) => {
+export const Editor: FC<EditorProps> = ({ onChange, placeholder }) => {
   const [loaded, setLoaded] = useState(true);
   
   useLayoutEffect(() => {
@@ -11,12 +11,11 @@ export const Editor: FC<EditorProps> = ({ onChange }) => {
       const editor = new EditorJS({
         holder: 'editor',
         minHeight: 10,
-        placeholder: 'Text (optional)',
+        placeholder,
         async onChange() {
           const { blocks } = await editor.save();
           onChange(blocks);
         },
-  
       });
 
     }

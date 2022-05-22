@@ -55,7 +55,7 @@ export const Form = () => {
         />
       </TitleTextArea>
       <EditorForm>
-        <Editor onChange={(arr: OutputBlockData[]) => setBlocks(arr)} />
+        <Editor onChange={(arr: OutputBlockData[]) => setBlocks(arr)} placeholder='Text (optional)'/>
       </EditorForm>
       <div className='button_wrapper'>
         <SubmitButton disabled={disabled} loading={loading} onClick={onSubmit}/>

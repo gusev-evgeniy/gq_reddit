@@ -10,7 +10,7 @@ import { UserContext } from '../../../context/user';
 
 import { DialogProps } from '../type';
 
-import { AlertMessage, FormInput } from '../styles';
+import { AlertMessage, AuthButtonWrapper, FormInput } from '../styles';
 
 
 const nameValidateMessage = 'Username must be between 3 and 20 characters';
@@ -70,7 +70,9 @@ export const Login: FC<DialogProps> = ({ onClose }) => {
             <label htmlFor='password'>PASSWORD</label>
           </FormInput>
 
-          <SubmitButton disabled={disabled} loading={loading}/>
+          <AuthButtonWrapper>
+            <SubmitButton disabled={disabled} loading={loading}/>
+          </AuthButtonWrapper>
 
           {!!error && <AlertMessage>
             Wrong login or password

@@ -5,7 +5,7 @@ import * as yup from 'yup';
 
 import { AuthWrapper } from './authWrapper';
 
-import { AlertMessage, FormInput, SuccessMessage } from '../styles';
+import { AlertMessage, AuthButtonWrapper, FormInput, SuccessMessage } from '../styles';
 import { DialogProps } from '../type';
 import { SubmitButton } from './submitButton';
 import { RegistrMutationVariables, useRegistrMutation } from '../../../generated/graphql';
@@ -38,10 +38,9 @@ export const SignUp: FC<DialogProps> = ({ onClose }) => {
     resolver: yupResolver(schema),
   });
 
-  
   const onSubmit = async (formData: RegistrMutationVariables) => {
     try {
-      await registr({variables: {... formData}});
+      await registr({ variables: { ...formData } });
       setError(undefined);
       setSuccess(true);
     } catch (err) {
@@ -58,9 +57,7 @@ export const SignUp: FC<DialogProps> = ({ onClose }) => {
         onClose();
       }, 3000);
     }
-
   }, [success, onClose, data, setUser]);
-  
 
   const disabled = Object.keys(dirtyFields).length < Object.keys(schema.fields).length;
 
@@ -87,7 +84,9 @@ export const SignUp: FC<DialogProps> = ({ onClose }) => {
             <p>{errors.password?.message}</p>
           </FormInput>
 
-          <SubmitButton disabled={disabled} loading={loading}/>
+          <AuthButtonWrapper>
+            <SubmitButton disabled={disabled} loading={loading} />
+          </AuthButtonWrapper>
 
           {!!error && <AlertMessage>{error}</AlertMessage>}
           {success && (
