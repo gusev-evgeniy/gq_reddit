@@ -10,6 +10,7 @@ export const StyledPostSource = styled.div`
 
   .body_wrapper {
     padding: 12px 12px 2px 12px;
+    width: 100%;
   }
 `;
 

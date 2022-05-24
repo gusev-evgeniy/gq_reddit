@@ -9,6 +9,7 @@ import { useGetPostQuery } from '../../generated/graphql';
 import { AuthOffer } from '../../components/comment/authOffer';
 import { CommentsSeparator } from '../../components/comment/styles';
 import { UserContext } from '../../context/user';
+import { Grid } from '../../styles';
 
 const PostPage = () => {
   const router = useRouter();
@@ -24,23 +25,29 @@ const PostPage = () => {
   if (loading) {
     return (
       <div className='container'>
-        <LargePostWrapper><div className='loading'>loading...</div></LargePostWrapper>
+        <LargePostWrapper>
+          <div className='loading'>loading...</div>
+        </LargePostWrapper>
       </div>
     );
   }
 
   return (
     <div className='container'>
-      {!!post && (
-        <LargePostWrapper>
-          <div className='post_wrapper'>
-            <Post {...post} isLarge={true} />
-          </div>
-          {user ? <CommentForm /> : <AuthOffer />}
-          <CommentsSeparator />
-          <Comments />
-        </LargePostWrapper>
-      )}
+      <Grid>
+        <>
+          {!!post && (
+            <LargePostWrapper>
+              <div className='post_wrapper'>
+                <Post {...post} isLarge={true} />
+              </div>
+              {user ? <CommentForm /> : <AuthOffer />}
+              <CommentsSeparator />
+              <Comments />
+            </LargePostWrapper>
+          )}
+        </>
+      </Grid>
     </div>
   );
 };

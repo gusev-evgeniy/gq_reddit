@@ -118,6 +118,7 @@ export const FormWrapper = styled(StyledItem)`
 
   .button_wrapper {
     width: 100px;
+    height: 36px;
     position: absolute;
     right: 30px;
     bottom: 10px;

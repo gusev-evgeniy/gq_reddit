@@ -1,19 +1,13 @@
-import { Entity, Column, Index, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, Index, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { GraphQLJSON } from 'graphql-type-json';
 
 import { Base } from '.';
-import { Field, ObjectType } from 'type-graphql';
+import { Field, ObjectType, Resolver } from 'type-graphql';
 import User from './User';
-
-export type Block = {
-  data: {
-    text: string;
-  };
-  id: string;
-  type: string;
-}
+import Comment from './Comment';
 
 @ObjectType()
+@Resolver(() => Post)
 @Entity('post')
 class Post extends Base {
 
@@ -27,10 +21,15 @@ class Post extends Base {
   @Index()
   block: object;
 
-  @Field()
+  @Field(() => User)
   @JoinColumn({ name: 'userUID' })
   @ManyToOne(() => User, user => user.posts)
   author: User;
+
+  @Field(() => [Comment])
+  @JoinColumn()
+  @OneToMany(() => Comment, comment => comment.post)
+  comments: Comment[];
 }
 
 export default Post;

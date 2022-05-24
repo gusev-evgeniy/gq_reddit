@@ -2,8 +2,6 @@ import {
   Arg,
   Ctx,
   Field,
-  InputType,
-  InterfaceType,
   Mutation,
   ObjectType,
   Query,
@@ -14,24 +12,7 @@ import {
 import PostEntity from '../entities/Post';
 import AuthMiddleware from '../middleware/auth';
 import { MyContext } from '../type';
-
-@InputType()
-class Data {
-  @Field()
-  text: string;
-}
-
-@InputType()
-abstract class Block {
-  @Field()
-  id?: string;
-
-  @Field(() => Data)
-  data: Data;
-
-  @Field()
-  type: string;
-}
+import { Block } from './types';
 
 @ObjectType()
 class OffersResponse {

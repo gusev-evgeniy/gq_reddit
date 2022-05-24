@@ -26,7 +26,7 @@ export const Form = () => {
   console.log('data', data);
 
   if (data?.createPost) {
-    // router.push('')
+    router.push(`/post/${data?.createPost.UID}`);
   }
 
   const onKeyChange = ({ target }: any) => {

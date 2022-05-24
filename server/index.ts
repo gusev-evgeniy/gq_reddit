@@ -1,4 +1,4 @@
-import { AppDataSource } from './data-source';
+// import { AppDataSource } from './data-source';
 import { createConnection } from 'typeorm';
 require('dotenv/config');
 
@@ -9,9 +9,11 @@ import cookieParser from 'cookie-parser';
 
 import PostEntity from './entities/Post';
 import UserEntity from './entities/User';
+import CommentEntity from './entities/Comment';
 
 import Auth from './resolvers/auth';
 import Post from './resolvers/post';
+import Comment from './resolvers/comment';
 
 const app = express();
 
@@ -32,14 +34,14 @@ const start = async () => {
         database: 'reddit',
         synchronize: true,
         logging: false,
-        entities: [UserEntity, PostEntity],
+        entities: [UserEntity, PostEntity, CommentEntity],
         migrations: [],
         subscribers: [],
     });
 
     const apolloServer = new ApolloServer({
       schema: await buildSchema({
-        resolvers: [Auth, Post],
+        resolvers: [Auth, Post, Comment],
         validate: false
       }),
       context: ({ req, res }) => ({
@@ -51,8 +53,8 @@ const start = async () => {
 
     apolloServer.applyMiddleware({ 
       app, 
-      cors: { credentials: true, origin: 'http://localhost:3000' }
-      // cors: { credentials: true, origin: 'https://studio.apollographql.com' }
+      // cors: { credentials: true, origin: 'http://localhost:3000' }
+      cors: { credentials: true, origin: 'https://studio.apollographql.com' }
    });
 
     app.listen(PORT, () => console.log(`App started on port ${PORT}`));

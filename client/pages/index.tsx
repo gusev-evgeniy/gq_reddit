@@ -3,7 +3,7 @@ import { Posts } from '../components/posts';
 import { Sort } from '../components/sort';
 import { Tranding } from '../components/tranding';
 
-import { StyledTopicName } from '../styles';
+import { Grid, StyledTopicName } from '../styles';
 import { UserContext } from '../context/user';
 import { LinkForm } from '../components/editor/linkForm';
 
@@ -17,13 +17,13 @@ export default function Home() {
       <div className='container'>
         {!user && <Tranding />}
 
-        <div className='main_page'>
+        <Grid>
           <div>
             {!user ? <StyledTopicName>Popular posts</StyledTopicName> : <LinkForm />}
             <Sort />
             <Posts />
           </div>
-        </div>
+        </Grid>
       </div>
     </>
   );

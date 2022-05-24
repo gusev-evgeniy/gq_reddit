@@ -2,10 +2,12 @@ import { Entity, Column, BeforeInsert, Index, OneToMany, JoinColumn } from 'type
 import bcrypt from 'bcrypt';
 
 import { Base } from '.';
-import { Field, ObjectType } from 'type-graphql';
+import { Field, ObjectType, Resolver } from 'type-graphql';
 import Post from './Post';
+import Comment from './Comment';
 
 @ObjectType()
+@Resolver(() => User)
 @Entity('user')
 class User extends Base {
   @Column()
@@ -21,9 +23,15 @@ class User extends Base {
   @Column()
   password: string;
 
+  @Field(() => [Post])
   @JoinColumn({ name: 'postUID' })
   @OneToMany(() => Post, post => post.author)
   posts: Post[];
+
+  @Field(() => [Comment])
+  @JoinColumn()
+  @OneToMany(() => Comment, comment => comment.author)
+  comments: Comment[];
 
   @BeforeInsert()
   async hashPassword() {
