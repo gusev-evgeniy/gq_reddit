@@ -21,18 +21,47 @@ export type Scalars = {
 
 export type Block = {
   data: Data;
-  id: Scalars['String'];
+  id?: Scalars['String'];
   type: Scalars['String'];
+};
+
+export type Comment = {
+  __typename?: 'Comment';
+  UID: Scalars['String'];
+  author: User;
+  block: Scalars['JSON'];
+  createdAt: Scalars['DateTime'];
+  post: Post;
+  updatedAt: Scalars['DateTime'];
+};
+
+export type CommentsResponse = {
+  __typename?: 'CommentsResponse';
+  items: Array<Comment>;
+  totalCount: Scalars['Float'];
 };
 
 export type Data = {
   text: Scalars['String'];
 };
 
+export type GetPostResponse = {
+  __typename?: 'GetPostResponse';
+  items: Array<Post>;
+  totalCount: Scalars['Float'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  createComment: Scalars['String'];
   createPost: Post;
   registr: User;
+};
+
+
+export type MutationCreateCommentArgs = {
+  block: Array<Block>;
+  post: PostInput;
 };
 
 
@@ -48,28 +77,34 @@ export type MutationRegistrArgs = {
   password: Scalars['String'];
 };
 
-export type OffersResponse = {
-  __typename?: 'OffersResponse';
-  items: Array<Post>;
-  totalCount: Scalars['Float'];
-};
-
 export type Post = {
   __typename?: 'Post';
   UID: Scalars['String'];
   author: User;
   block: Scalars['JSON'];
+  comments: Array<Comment>;
   createdAt: Scalars['DateTime'];
   title: Scalars['String'];
   updatedAt: Scalars['DateTime'];
 };
 
+export type PostInput = {
+  UID: Scalars['String'];
+};
+
 export type Query = {
   __typename?: 'Query';
+  getComments: CommentsResponse;
   login?: Maybe<User>;
   me: User;
   post?: Maybe<Post>;
-  posts: OffersResponse;
+  posts: GetPostResponse;
+};
+
+
+export type QueryGetCommentsArgs = {
+  author?: InputMaybe<UserInput>;
+  post?: InputMaybe<PostInput>;
 };
 
 
@@ -86,11 +121,25 @@ export type QueryPostArgs = {
 export type User = {
   __typename?: 'User';
   UID: Scalars['String'];
+  comments: Array<Comment>;
   createdAt: Scalars['DateTime'];
   email: Scalars['String'];
   login: Scalars['String'];
+  posts: Array<Post>;
   updatedAt: Scalars['DateTime'];
 };
+
+export type UserInput = {
+  UID: Scalars['String'];
+};
+
+export type CreateCommentMutationVariables = Exact<{
+  post: PostInput;
+  block: Array<Block> | Block;
+}>;
+
+
+export type CreateCommentMutation = { __typename?: 'Mutation', createComment: string };
 
 export type CreatePostMutationVariables = Exact<{
   block: Array<Block> | Block;
@@ -108,6 +157,14 @@ export type RegistrMutationVariables = Exact<{
 
 
 export type RegistrMutation = { __typename?: 'Mutation', registr: { __typename?: 'User', createdAt: any, email: string, login: string, UID: string, updatedAt: any } };
+
+export type GetCommentsQueryVariables = Exact<{
+  author?: InputMaybe<UserInput>;
+  post?: InputMaybe<PostInput>;
+}>;
+
+
+export type GetCommentsQuery = { __typename?: 'Query', getComments: { __typename?: 'CommentsResponse', totalCount: number, items: Array<{ __typename?: 'Comment', UID: string, block: any, createdAt: any, author: { __typename?: 'User', login: string, UID: string } }> } };
 
 export type LoginQueryVariables = Exact<{
   password: Scalars['String'];
@@ -132,9 +189,41 @@ export type GetPostQuery = { __typename?: 'Query', post?: { __typename?: 'Post',
 export type GetPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetPostsQuery = { __typename?: 'Query', posts: { __typename?: 'OffersResponse', totalCount: number, items: Array<{ __typename?: 'Post', UID: string, title: string, block: any, createdAt: any, author: { __typename?: 'User', UID: string, login: string } }> } };
+export type GetPostsQuery = { __typename?: 'Query', posts: { __typename?: 'GetPostResponse', totalCount: number, items: Array<{ __typename?: 'Post', UID: string, title: string, block: any, createdAt: any, author: { __typename?: 'User', UID: string, login: string } }> } };
 
 
+export const CreateCommentDocument = gql`
+    mutation CreateComment($post: PostInput!, $block: [Block!]!) {
+  createComment(post: $post, block: $block)
+}
+    `;
+export type CreateCommentMutationFn = Apollo.MutationFunction<CreateCommentMutation, CreateCommentMutationVariables>;
+
+/**
+ * __useCreateCommentMutation__
+ *
+ * To run a mutation, you first call `useCreateCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCommentMutation, { data, loading, error }] = useCreateCommentMutation({
+ *   variables: {
+ *      post: // value for 'post'
+ *      block: // value for 'block'
+ *   },
+ * });
+ */
+export function useCreateCommentMutation(baseOptions?: Apollo.MutationHookOptions<CreateCommentMutation, CreateCommentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions};
+        return Apollo.useMutation<CreateCommentMutation, CreateCommentMutationVariables>(CreateCommentDocument, options);
+      }
+export type CreateCommentMutationHookResult = ReturnType<typeof useCreateCommentMutation>;
+export type CreateCommentMutationResult = Apollo.MutationResult<CreateCommentMutation>;
+export type CreateCommentMutationOptions = Apollo.BaseMutationOptions<CreateCommentMutation, CreateCommentMutationVariables>;
 export const CreatePostDocument = gql`
     mutation CreatePost($block: [Block!]!, $title: String!) {
   createPost(block: $block, title: $title) {
@@ -163,7 +252,7 @@ export type CreatePostMutationFn = Apollo.MutationFunction<CreatePostMutation, C
  * });
  */
 export function useCreatePostMutation(baseOptions?: Apollo.MutationHookOptions<CreatePostMutation, CreatePostMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
+        const options = {...defaultOptions, ...baseOptions};
         return Apollo.useMutation<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument, options);
       }
 export type CreatePostMutationHookResult = ReturnType<typeof useCreatePostMutation>;
@@ -202,12 +291,57 @@ export type RegistrMutationFn = Apollo.MutationFunction<RegistrMutation, Registr
  * });
  */
 export function useRegistrMutation(baseOptions?: Apollo.MutationHookOptions<RegistrMutation, RegistrMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
+        const options = {...defaultOptions, ...baseOptions};
         return Apollo.useMutation<RegistrMutation, RegistrMutationVariables>(RegistrDocument, options);
       }
 export type RegistrMutationHookResult = ReturnType<typeof useRegistrMutation>;
 export type RegistrMutationResult = Apollo.MutationResult<RegistrMutation>;
 export type RegistrMutationOptions = Apollo.BaseMutationOptions<RegistrMutation, RegistrMutationVariables>;
+export const GetCommentsDocument = gql`
+    query GetComments($author: UserInput, $post: PostInput) {
+  getComments(author: $author, post: $post) {
+    totalCount
+    items {
+      author {
+        login
+        UID
+      }
+      UID
+      block
+      createdAt
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCommentsQuery__
+ *
+ * To run a query within a React component, call `useGetCommentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCommentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCommentsQuery({
+ *   variables: {
+ *      author: // value for 'author'
+ *      post: // value for 'post'
+ *   },
+ * });
+ */
+export function useGetCommentsQuery(baseOptions?: Apollo.QueryHookOptions<GetCommentsQuery, GetCommentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions};
+        return Apollo.useQuery<GetCommentsQuery, GetCommentsQueryVariables>(GetCommentsDocument, options);
+      }
+export function useGetCommentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCommentsQuery, GetCommentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions};
+          return Apollo.useLazyQuery<GetCommentsQuery, GetCommentsQueryVariables>(GetCommentsDocument, options);
+        }
+export type GetCommentsQueryHookResult = ReturnType<typeof useGetCommentsQuery>;
+export type GetCommentsLazyQueryHookResult = ReturnType<typeof useGetCommentsLazyQuery>;
+export type GetCommentsQueryResult = Apollo.QueryResult<GetCommentsQuery, GetCommentsQueryVariables>;
 export const LoginDocument = gql`
     query Login($password: String!, $login: String!) {
   login(password: $password, login: $login) {
@@ -238,11 +372,11 @@ export const LoginDocument = gql`
  * });
  */
 export function useLoginQuery(baseOptions: Apollo.QueryHookOptions<LoginQuery, LoginQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
+        const options = {...defaultOptions, ...baseOptions};
         return Apollo.useQuery<LoginQuery, LoginQueryVariables>(LoginDocument, options);
       }
 export function useLoginLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LoginQuery, LoginQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+          const options = {...defaultOptions, ...baseOptions};
           return Apollo.useLazyQuery<LoginQuery, LoginQueryVariables>(LoginDocument, options);
         }
 export type LoginQueryHookResult = ReturnType<typeof useLoginQuery>;
@@ -276,11 +410,11 @@ export const MeDocument = gql`
  * });
  */
 export function useMeQuery(baseOptions?: Apollo.QueryHookOptions<MeQuery, MeQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
+        const options = {...defaultOptions, ...baseOptions};
         return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, options);
       }
 export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+          const options = {...defaultOptions, ...baseOptions};
           return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, options);
         }
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
@@ -318,11 +452,11 @@ export const GetPostDocument = gql`
  * });
  */
 export function useGetPostQuery(baseOptions: Apollo.QueryHookOptions<GetPostQuery, GetPostQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
+        const options = {...defaultOptions, ...baseOptions};
         return Apollo.useQuery<GetPostQuery, GetPostQueryVariables>(GetPostDocument, options);
       }
 export function useGetPostLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPostQuery, GetPostQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+          const options = {...defaultOptions, ...baseOptions};
           return Apollo.useLazyQuery<GetPostQuery, GetPostQueryVariables>(GetPostDocument, options);
         }
 export type GetPostQueryHookResult = ReturnType<typeof useGetPostQuery>;
@@ -362,11 +496,11 @@ export const GetPostsDocument = gql`
  * });
  */
 export function useGetPostsQuery(baseOptions?: Apollo.QueryHookOptions<GetPostsQuery, GetPostsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
+        const options = {...defaultOptions, ...baseOptions};
         return Apollo.useQuery<GetPostsQuery, GetPostsQueryVariables>(GetPostsDocument, options);
       }
 export function useGetPostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPostsQuery, GetPostsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+          const options = {...defaultOptions, ...baseOptions};
           return Apollo.useLazyQuery<GetPostsQuery, GetPostsQueryVariables>(GetPostsDocument, options);
         }
 export type GetPostsQueryHookResult = ReturnType<typeof useGetPostsQuery>;

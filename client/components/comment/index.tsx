@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import React from 'react';
+import React, { FC } from 'react';
 
 import thumb_up from '../../images/thumb_up.svg';
 import thumb_down from '../../images/thumb_down.svg';
@@ -7,9 +7,13 @@ import comment from '../../images/comment.svg';
 
 import { Ava } from '../../styles';
 import { CommentFooterButton, StyledCommentItem } from './styles';
-import { PostFooterButton } from '../posts/styled';
+import { GetCommentsQuery } from '../../generated/graphql';
+import { getRelativeDate } from '../../utils/date';
+import { Content } from '../content';
 
-export const Comment = () => {
+export const Comment: FC<GetCommentsQuery['getComments']['items'][0]> = ({ author, createdAt, block }) => {
+  const relativeDate = getRelativeDate(createdAt);
+
   return (
     <StyledCommentItem>
       <div className='ava_section'>
@@ -19,14 +23,11 @@ export const Comment = () => {
       </div>
       <div className='data_section'>
         <div className='header'>
-          <p className='name'>Name</p>
+          <p className='name'>{author.login}</p>
           <span className='dot'> &#8226;</span>
-          <p className='created_at'>2 hr. ago</p>
+          <p className='created_at'>{relativeDate}</p>
         </div>
-        <div className='body_section'>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis error dolorum obcaecati
-          ducimus reiciendis, iure quibusdam eius totam nostrum voluptatem!
-        </div>
+        <Content isLarge={true} content={block}/>
         <div className='footer'>
           <div className='rating'>
             <CommentFooterButton>

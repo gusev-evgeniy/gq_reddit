@@ -1,0 +1,11 @@
+query GetComments($author: UserInput, $post: PostInput) {
+  getComments(author: $author, post: $post) {
+    totalCount,
+    items {
+      author {
+        login, UID
+      },
+      UID, block, createdAt
+    }
+  }
+}

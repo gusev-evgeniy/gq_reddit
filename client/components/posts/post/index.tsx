@@ -5,10 +5,10 @@ import { GetPostQuery } from '../../../generated/graphql';
 import { PostHeader } from './postHeader';
 import { PostFooter } from './postFooter';
 
-
 import vote from '../../../images/vote.svg';
 
-import { TextContent, VoteDown, VoteUp } from '../styled';
+import { VoteDown, VoteUp } from '../styled';
+import { Content } from '../../content';
 
 type Props = GetPostQuery['post'] & { isLarge?: boolean };
 
@@ -25,18 +25,12 @@ export const Post: FC<Props> = ({ title, block, createdAt, isLarge, author }) =>
         </VoteDown>
       </div>
       <div className='body_wrapper'>
-        <PostHeader author={author} createdAt={createdAt}/>
+        <PostHeader author={author} createdAt={createdAt} />
         <div className='body'>
           <h2 className='title'>{title}</h2>
-          <TextContent isLarge={isLarge}>
-            {block.map(({ data }, index: number) => {
-              const htmlContent = { __html: data.text };
-
-              return <p key={index} dangerouslySetInnerHTML={htmlContent} />;
-            })}
-          </TextContent>
+          <Content isLarge={isLarge} content={block}/>
         </div>
-        <PostFooter isLarge={isLarge}/>
+        <PostFooter isLarge={isLarge} />
       </div>
     </>
   );

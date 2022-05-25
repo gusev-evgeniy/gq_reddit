@@ -1,0 +1,3 @@
+mutation CreateComment($post: PostInput!, $block: [Block!]!) {
+  createComment(post: $post, block: $block)
+}

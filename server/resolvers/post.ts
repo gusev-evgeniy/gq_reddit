@@ -15,18 +15,12 @@ import { MyContext } from '../type';
 import { Block } from './types';
 
 @ObjectType()
-class OffersResponse {
+class GetPostResponse {
   @Field(type => [PostEntity])
   items: PostEntity[];
 
   @Field(type => Number)
   totalCount: number;
-}
-
-@ObjectType()
-class GetPostResponse {
-  @Field(type => PostEntity)
-  items: PostEntity;
 }
 
 @Resolver()
@@ -35,7 +29,7 @@ export default class Post {
   @Mutation(() => PostEntity)
   async createPost(
     @Arg('title', { nullable: false }) title: string,
-    @Arg('block', () => [Block], { nullable: true }) block: Block[],
+    @Arg('block', () => [Block], { nullable: true }) block: [Block],
     @Ctx() { res }: MyContext
   ) {
     if (!title) {
@@ -48,7 +42,7 @@ export default class Post {
         author: res.locals.user,
         block,
       };
-      console.log('obj', obj);
+
       const post = PostEntity.create(obj);
       await post.save();
 
@@ -58,15 +52,14 @@ export default class Post {
     }
   }
 
-  @Query(() => OffersResponse)
+  @Query(() => GetPostResponse)
   async posts() {
     try {
       const [items, totalCount] = await PostEntity.findAndCount({
         order: { createdAt: 'DESC' },
         relations: ['author']
       });
-      console.log('items', items)
-      console.log('totalCount', totalCount)
+
       return { items, totalCount };
     } catch (error) {
       console.log('error', error);

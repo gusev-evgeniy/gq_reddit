@@ -13,7 +13,7 @@ export const StyledCommentForm = styled(StyledCommentSection)`
   min-height: 160px;
   border-radius: 4px;
   width: 80%;
-  padding: 10px 10px 40px 0;
+  padding: 10px 10px 40px 10px;
 
   .button_wrapper {
     position: absolute;

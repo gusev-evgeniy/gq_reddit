@@ -1,15 +1,15 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { Comment } from '.';
+import { CommentsType } from '../../types/comment';
 
-export const Comments = () => {
+type Props = {
+  comments: CommentsType;
+};
+
+export const Comments: FC<Props> = ({ comments = [] }) => {
   return (
     <>
-      <Comment/>
-      <Comment/>
-      <Comment/>
-      <Comment/>
-      <Comment/>
-      <Comment/>
+      {comments.map(item => <Comment key={item.UID} {...item}/>)}
     </>
   );
 };

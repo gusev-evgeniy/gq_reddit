@@ -1,14 +1,13 @@
 import Link from 'next/link';
 import React, { FC } from 'react';
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
 
 import { Ava, MainButton } from '../../../styles';
 import { StyledPostHeader } from '../styled';
+import { getRelativeDate } from '../../../utils/date';
 
 type Props = {
-  createdAt?: string;
-  author?: {
+  createdAt: string;
+  author: {
     UID: string;
     login: string;
   };
@@ -18,10 +17,9 @@ type Props = {
   };
 };
 
-dayjs.extend(relativeTime);
 
 export const PostHeader: FC<Props> = ({ createdAt, author, group }) => {
-  const relativeDate = dayjs().to(dayjs(createdAt));
+  const relativeDate = getRelativeDate(createdAt);
 
   return (
     <StyledPostHeader>

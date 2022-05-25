@@ -1,4 +1,4 @@
-import { Arg, Ctx, Field, Mutation, ObjectType, Query, Resolver, UseMiddleware } from 'type-graphql';
+import { Arg, Ctx, Field, InputType, Mutation, ObjectType, Query, Resolver, UseMiddleware } from 'type-graphql';
 import CommentEntity from '../entities/Comment';
 import Post from '../entities/Post';
 import User from '../entities/User';
@@ -7,7 +7,7 @@ import { MyContext } from '../type';
 import { Block } from './types';
 
 @ObjectType()
-class OffersResponse {
+class CommentsResponse {
   @Field(type => [CommentEntity])
   items: CommentEntity[];
 
@@ -15,13 +15,26 @@ class OffersResponse {
   totalCount: number;
 }
 
+@InputType()
+class PostInput extends Post {
+  @Field()
+  UID: string;
+};
+
+@InputType()
+class UserInput extends User {
+  @Field()
+  UID: string;
+};
+
 @Resolver()
 export default class Comment {
+
   @UseMiddleware(Auth)
   @Mutation(() => String)
   async createComment(
-    @Arg('block', () => [Block], { nullable: false }) block: Block[],
-    @Arg('post', () => Post, { nullable: false }) post: Post,
+    @Arg('block', () => [Block], { nullable: false }) block: [Block],
+    @Arg('post', { nullable: false }) post: PostInput,
     @Ctx() { res }: MyContext
   ) {
     try {
@@ -35,10 +48,10 @@ export default class Comment {
     }
   }
 
-  @Query(() => [OffersResponse])
+  @Query(() => CommentsResponse)
   async getComments(
-    @Arg('post', () => Post, { nullable: true }) post: Post,
-    @Arg('author', () => User, { nullable: true }) author: User,
+    @Arg('post', () => PostInput, { nullable: true }) post: PostInput,
+    @Arg('author', () => UserInput, { nullable: true }) author: UserInput,
   ) {
     try {
       const where: any = {};
