@@ -2,7 +2,7 @@ import { Field, ObjectType } from 'type-graphql';
 import { PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, BaseEntity } from 'typeorm';
 
 @ObjectType()
-export abstract class Base extends BaseEntity {
+export default abstract class Base extends BaseEntity {
   @Field({ nullable: false })
   @PrimaryGeneratedColumn('uuid')
   UID: string;

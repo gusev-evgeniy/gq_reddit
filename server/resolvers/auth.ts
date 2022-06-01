@@ -30,17 +30,18 @@ export default class Auth {
   ) {
     try {
       const user = await User.findOneByOrFail({ login });
-      console.log('user', user)
+
       const isCorrectPassword = bcrypt.compareSync(password, user.password);
-      console.log('isCorrectPassword', isCorrectPassword)
+
       if (!isCorrectPassword) throw { password: "Wrong password" };
       const token = createJWT(user);
+
       ctx.res.set('Set-Cookie', cookie.serialize('token', token, {
         httpOnly: true,
         path: '/',
         maxAge: 60 * 60 * 24 * 7 // 1 week
       }))
-      console.log('user', user)
+
       return user;
     } catch (error) {
       return error;

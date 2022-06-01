@@ -1,4 +1,6 @@
-// import { AppDataSource } from './data-source';
+// import AppDataSource from './data-source';
+import 'reflect-metadata';
+
 import { createConnection } from 'typeorm';
 require('dotenv/config');
 
@@ -10,10 +12,12 @@ import cookieParser from 'cookie-parser';
 import PostEntity from './entities/Post';
 import UserEntity from './entities/User';
 import CommentEntity from './entities/Comment';
+import VoteEntity from './entities/Vote';
 
 import Auth from './resolvers/auth';
 import Post from './resolvers/post';
 import Comment from './resolvers/comment';
+import Vote from './entities/Vote';
 
 const app = express();
 
@@ -21,6 +25,10 @@ app.use(express.json());
 app.use(cookieParser());
 
 const PORT = 5000;
+
+//TODO 
+// 1. Add transaction in createComment;
+// 2. Connect database through AppDataSource.initialize();
 
 const start = async () => {
   try {
@@ -34,14 +42,14 @@ const start = async () => {
         database: 'reddit',
         synchronize: true,
         logging: false,
-        entities: [UserEntity, PostEntity, CommentEntity],
+        entities: [UserEntity, PostEntity, CommentEntity, VoteEntity],
         migrations: [],
         subscribers: [],
     });
 
     const apolloServer = new ApolloServer({
       schema: await buildSchema({
-        resolvers: [Auth, Post, Comment],
+        resolvers: [Auth, Post, Comment, Vote],
         validate: false
       }),
       context: ({ req, res }) => ({

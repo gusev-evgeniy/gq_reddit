@@ -1,10 +1,11 @@
 import { Entity, Column, BeforeInsert, Index, OneToMany, JoinColumn } from 'typeorm';
 import bcrypt from 'bcrypt';
 
-import { Base } from '.';
+import Base from '.';
 import { Field, ObjectType, Resolver } from 'type-graphql';
 import Post from './Post';
 import Comment from './Comment';
+import Vote from './Vote';
 
 @ObjectType()
 @Resolver(() => User)
@@ -32,6 +33,10 @@ class User extends Base {
   @JoinColumn()
   @OneToMany(() => Comment, comment => comment.author)
   comments: Comment[];
+
+  @JoinColumn()
+  @OneToMany(() => Vote, vote => vote.user)
+  votes: Vote[];
 
   @BeforeInsert()
   async hashPassword() {

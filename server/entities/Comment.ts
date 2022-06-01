@@ -1,7 +1,7 @@
 import { Entity, Column, Index, ManyToOne, JoinColumn } from 'typeorm';
 import { GraphQLJSON } from 'graphql-type-json';
 
-import { Base } from '.';
+import Base from '.';
 import { Field, ObjectType } from 'type-graphql';
 import User from './User';
 import Post from './Post';
