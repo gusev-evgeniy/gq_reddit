@@ -6,6 +6,8 @@ query GetPosts {
       title
       block
       createdAt
+      votesCount
+      myVote
       author {
         UID
         login

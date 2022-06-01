@@ -10,5 +10,7 @@ export const StyledContent = styled.div<{ isLarge?: boolean }>`
 
   p {
     padding: 0.5em 0 0.25em;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 `;

@@ -22,8 +22,13 @@ body {
 
 .container {
   width: 90%;
-  max-width: 1024px;
+  max-width: 1248px;
   margin: 0 auto;
+
+  .sub {
+    width: 310px;
+    height: 100%;
+  }
 }
 
 .trands_wrapper {

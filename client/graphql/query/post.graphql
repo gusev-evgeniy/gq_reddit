@@ -4,6 +4,8 @@ query GetPost($uid: String!) {
     title
     createdAt
     block
+    votesCount
+    myVote
     author {
       UID
       login

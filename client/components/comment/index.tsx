@@ -28,6 +28,7 @@ export const Comment: FC<GetCommentsQuery['getComments']['items'][0]> = ({ autho
           <p className='created_at'>{relativeDate}</p>
         </div>
         <Content isLarge={true} content={block}/>
+        
         <div className='footer'>
           <div className='rating'>
             <CommentFooterButton>

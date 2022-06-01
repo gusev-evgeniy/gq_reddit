@@ -21,7 +21,7 @@ export type Scalars = {
 
 export type Block = {
   data: Data;
-  id?: Scalars['String'];
+  id: Scalars['String'];
   type: Scalars['String'];
 };
 
@@ -56,6 +56,7 @@ export type Mutation = {
   createComment: Scalars['String'];
   createPost: Post;
   registr: User;
+  vote: Scalars['String'];
 };
 
 
@@ -77,15 +78,24 @@ export type MutationRegistrArgs = {
   password: Scalars['String'];
 };
 
+
+export type MutationVoteArgs = {
+  postUID: VotePostInput;
+  value: Scalars['Float'];
+};
+
 export type Post = {
   __typename?: 'Post';
   UID: Scalars['String'];
   author: User;
   block: Scalars['JSON'];
   comments: Array<Comment>;
+  commentsCount: Scalars['Float'];
   createdAt: Scalars['DateTime'];
+  myVote?: Maybe<Scalars['Float']>;
   title: Scalars['String'];
   updatedAt: Scalars['DateTime'];
+  votesCount: Scalars['Float'];
 };
 
 export type PostInput = {
@@ -133,6 +143,10 @@ export type UserInput = {
   UID: Scalars['String'];
 };
 
+export type VotePostInput = {
+  UID: Scalars['String'];
+};
+
 export type CreateCommentMutationVariables = Exact<{
   post: PostInput;
   block: Array<Block> | Block;
@@ -157,6 +171,14 @@ export type RegistrMutationVariables = Exact<{
 
 
 export type RegistrMutation = { __typename?: 'Mutation', registr: { __typename?: 'User', createdAt: any, email: string, login: string, UID: string, updatedAt: any } };
+
+export type VoteMutationVariables = Exact<{
+  postUid: VotePostInput;
+  value: Scalars['Float'];
+}>;
+
+
+export type VoteMutation = { __typename?: 'Mutation', vote: string };
 
 export type GetCommentsQueryVariables = Exact<{
   author?: InputMaybe<UserInput>;
@@ -184,12 +206,12 @@ export type GetPostQueryVariables = Exact<{
 }>;
 
 
-export type GetPostQuery = { __typename?: 'Query', post?: { __typename?: 'Post', UID: string, title: string, createdAt: any, block: any, author: { __typename?: 'User', UID: string, login: string } } | null };
+export type GetPostQuery = { __typename?: 'Query', post?: { __typename?: 'Post', UID: string, title: string, createdAt: any, block: any, votesCount: number, myVote?: number | null, author: { __typename?: 'User', UID: string, login: string } } | null };
 
 export type GetPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetPostsQuery = { __typename?: 'Query', posts: { __typename?: 'GetPostResponse', totalCount: number, items: Array<{ __typename?: 'Post', UID: string, title: string, block: any, createdAt: any, author: { __typename?: 'User', UID: string, login: string } }> } };
+export type GetPostsQuery = { __typename?: 'Query', posts: { __typename?: 'GetPostResponse', totalCount: number, items: Array<{ __typename?: 'Post', UID: string, title: string, block: any, createdAt: any, votesCount: number, myVote?: number | null, author: { __typename?: 'User', UID: string, login: string } }> } };
 
 
 export const CreateCommentDocument = gql`
@@ -218,7 +240,7 @@ export type CreateCommentMutationFn = Apollo.MutationFunction<CreateCommentMutat
  * });
  */
 export function useCreateCommentMutation(baseOptions?: Apollo.MutationHookOptions<CreateCommentMutation, CreateCommentMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions};
+        const options = {...defaultOptions, ...baseOptions}
         return Apollo.useMutation<CreateCommentMutation, CreateCommentMutationVariables>(CreateCommentDocument, options);
       }
 export type CreateCommentMutationHookResult = ReturnType<typeof useCreateCommentMutation>;
@@ -252,7 +274,7 @@ export type CreatePostMutationFn = Apollo.MutationFunction<CreatePostMutation, C
  * });
  */
 export function useCreatePostMutation(baseOptions?: Apollo.MutationHookOptions<CreatePostMutation, CreatePostMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions};
+        const options = {...defaultOptions, ...baseOptions}
         return Apollo.useMutation<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument, options);
       }
 export type CreatePostMutationHookResult = ReturnType<typeof useCreatePostMutation>;
@@ -291,12 +313,44 @@ export type RegistrMutationFn = Apollo.MutationFunction<RegistrMutation, Registr
  * });
  */
 export function useRegistrMutation(baseOptions?: Apollo.MutationHookOptions<RegistrMutation, RegistrMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions};
+        const options = {...defaultOptions, ...baseOptions}
         return Apollo.useMutation<RegistrMutation, RegistrMutationVariables>(RegistrDocument, options);
       }
 export type RegistrMutationHookResult = ReturnType<typeof useRegistrMutation>;
 export type RegistrMutationResult = Apollo.MutationResult<RegistrMutation>;
 export type RegistrMutationOptions = Apollo.BaseMutationOptions<RegistrMutation, RegistrMutationVariables>;
+export const VoteDocument = gql`
+    mutation Vote($postUid: VotePostInput!, $value: Float!) {
+  vote(postUID: $postUid, value: $value)
+}
+    `;
+export type VoteMutationFn = Apollo.MutationFunction<VoteMutation, VoteMutationVariables>;
+
+/**
+ * __useVoteMutation__
+ *
+ * To run a mutation, you first call `useVoteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useVoteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [voteMutation, { data, loading, error }] = useVoteMutation({
+ *   variables: {
+ *      postUid: // value for 'postUid'
+ *      value: // value for 'value'
+ *   },
+ * });
+ */
+export function useVoteMutation(baseOptions?: Apollo.MutationHookOptions<VoteMutation, VoteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<VoteMutation, VoteMutationVariables>(VoteDocument, options);
+      }
+export type VoteMutationHookResult = ReturnType<typeof useVoteMutation>;
+export type VoteMutationResult = Apollo.MutationResult<VoteMutation>;
+export type VoteMutationOptions = Apollo.BaseMutationOptions<VoteMutation, VoteMutationVariables>;
 export const GetCommentsDocument = gql`
     query GetComments($author: UserInput, $post: PostInput) {
   getComments(author: $author, post: $post) {
@@ -332,11 +386,11 @@ export const GetCommentsDocument = gql`
  * });
  */
 export function useGetCommentsQuery(baseOptions?: Apollo.QueryHookOptions<GetCommentsQuery, GetCommentsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions};
+        const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetCommentsQuery, GetCommentsQueryVariables>(GetCommentsDocument, options);
       }
 export function useGetCommentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCommentsQuery, GetCommentsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions};
+          const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetCommentsQuery, GetCommentsQueryVariables>(GetCommentsDocument, options);
         }
 export type GetCommentsQueryHookResult = ReturnType<typeof useGetCommentsQuery>;
@@ -372,11 +426,11 @@ export const LoginDocument = gql`
  * });
  */
 export function useLoginQuery(baseOptions: Apollo.QueryHookOptions<LoginQuery, LoginQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions};
+        const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<LoginQuery, LoginQueryVariables>(LoginDocument, options);
       }
 export function useLoginLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LoginQuery, LoginQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions};
+          const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<LoginQuery, LoginQueryVariables>(LoginDocument, options);
         }
 export type LoginQueryHookResult = ReturnType<typeof useLoginQuery>;
@@ -410,11 +464,11 @@ export const MeDocument = gql`
  * });
  */
 export function useMeQuery(baseOptions?: Apollo.QueryHookOptions<MeQuery, MeQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions};
+        const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, options);
       }
 export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions};
+          const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, options);
         }
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
@@ -427,6 +481,8 @@ export const GetPostDocument = gql`
     title
     createdAt
     block
+    votesCount
+    myVote
     author {
       UID
       login
@@ -452,11 +508,11 @@ export const GetPostDocument = gql`
  * });
  */
 export function useGetPostQuery(baseOptions: Apollo.QueryHookOptions<GetPostQuery, GetPostQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions};
+        const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetPostQuery, GetPostQueryVariables>(GetPostDocument, options);
       }
 export function useGetPostLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPostQuery, GetPostQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions};
+          const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetPostQuery, GetPostQueryVariables>(GetPostDocument, options);
         }
 export type GetPostQueryHookResult = ReturnType<typeof useGetPostQuery>;
@@ -471,6 +527,8 @@ export const GetPostsDocument = gql`
       title
       block
       createdAt
+      votesCount
+      myVote
       author {
         UID
         login
@@ -496,11 +554,11 @@ export const GetPostsDocument = gql`
  * });
  */
 export function useGetPostsQuery(baseOptions?: Apollo.QueryHookOptions<GetPostsQuery, GetPostsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions};
+        const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetPostsQuery, GetPostsQueryVariables>(GetPostsDocument, options);
       }
 export function useGetPostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPostsQuery, GetPostsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions};
+          const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetPostsQuery, GetPostsQueryVariables>(GetPostsDocument, options);
         }
 export type GetPostsQueryHookResult = ReturnType<typeof useGetPostsQuery>;

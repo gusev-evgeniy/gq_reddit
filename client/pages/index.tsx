@@ -23,6 +23,7 @@ export default function Home() {
             <Sort />
             <Posts />
           </div>
+          <div className='sub'></div>
         </Grid>
       </div>
     </>

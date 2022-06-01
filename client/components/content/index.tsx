@@ -10,11 +10,11 @@ type Props = {
 export const Content: FC<Props> = ({ content = [], isLarge }) => {
   return (
     <StyledContent isLarge={isLarge}>
-    {content.map(({ data }, index: number) => {
-      const htmlContent = { __html: data.text };
+      {content.map(({ data }, index: number) => {
+        const htmlContent = { __html: data.text };
 
-      return <p key={index} dangerouslySetInnerHTML={htmlContent} />;
-    })}
-  </StyledContent>
+        return <p key={index} dangerouslySetInnerHTML={htmlContent} />;
+      })}
+    </StyledContent>
   );
 };

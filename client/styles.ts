@@ -112,6 +112,8 @@ export const FooterButton = styled.button`
 
 export const Grid = styled.div`
   display: grid;
-  grid-template-columns: 3fr 1fr;
+  width: inherit;
+  grid-template-columns: minmax(0, 3fr) 310px;
   margin-top: 16px;
+  gap: 24px;
 `;
