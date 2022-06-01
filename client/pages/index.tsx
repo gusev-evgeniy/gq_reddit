@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Posts } from '../components/posts';
 import { Sort } from '../components/sort';
 import { Tranding } from '../components/tranding';
@@ -10,22 +10,20 @@ import { LinkForm } from '../components/editor/linkForm';
 //TODO login data return undefined;
 
 export default function Home() {
-  const [user,] = useContext(UserContext)!;
+  const [user] = useContext(UserContext)!;
 
   return (
     <>
-      <div className='container'>
-        {!user && <Tranding />}
+      {!user && <Tranding />}
 
-        <Grid>
-          <div>
-            {!user ? <StyledTopicName>Popular posts</StyledTopicName> : <LinkForm />}
-            <Sort />
-            <Posts />
-          </div>
-          <div className='sub'></div>
-        </Grid>
-      </div>
+      <Grid>
+        <div>
+          {!user ? <StyledTopicName>Popular posts</StyledTopicName> : <LinkForm />}
+          <Sort />
+          <Posts />
+        </div>
+        <div className='sub'></div>
+      </Grid>
     </>
   );
 }

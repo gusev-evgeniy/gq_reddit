@@ -128,6 +128,11 @@ export type QueryPostArgs = {
   UID: Scalars['String'];
 };
 
+
+export type QueryPostsArgs = {
+  skip: Scalars['Float'];
+};
+
 export type User = {
   __typename?: 'User';
   UID: Scalars['String'];
@@ -208,7 +213,9 @@ export type GetPostQueryVariables = Exact<{
 
 export type GetPostQuery = { __typename?: 'Query', post?: { __typename?: 'Post', UID: string, title: string, createdAt: any, block: any, votesCount: number, myVote?: number | null, author: { __typename?: 'User', UID: string, login: string } } | null };
 
-export type GetPostsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetPostsQueryVariables = Exact<{
+  skip: Scalars['Float'];
+}>;
 
 
 export type GetPostsQuery = { __typename?: 'Query', posts: { __typename?: 'GetPostResponse', totalCount: number, items: Array<{ __typename?: 'Post', UID: string, title: string, block: any, createdAt: any, votesCount: number, myVote?: number | null, author: { __typename?: 'User', UID: string, login: string } }> } };
@@ -519,8 +526,8 @@ export type GetPostQueryHookResult = ReturnType<typeof useGetPostQuery>;
 export type GetPostLazyQueryHookResult = ReturnType<typeof useGetPostLazyQuery>;
 export type GetPostQueryResult = Apollo.QueryResult<GetPostQuery, GetPostQueryVariables>;
 export const GetPostsDocument = gql`
-    query GetPosts {
-  posts {
+    query GetPosts($skip: Float!) {
+  posts(skip: $skip) {
     totalCount
     items {
       UID
@@ -550,10 +557,11 @@ export const GetPostsDocument = gql`
  * @example
  * const { data, loading, error } = useGetPostsQuery({
  *   variables: {
+ *      skip: // value for 'skip'
  *   },
  * });
  */
-export function useGetPostsQuery(baseOptions?: Apollo.QueryHookOptions<GetPostsQuery, GetPostsQueryVariables>) {
+export function useGetPostsQuery(baseOptions: Apollo.QueryHookOptions<GetPostsQuery, GetPostsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetPostsQuery, GetPostsQueryVariables>(GetPostsDocument, options);
       }

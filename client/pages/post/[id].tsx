@@ -14,7 +14,8 @@ import { CommentsType } from '../../types/comment';
 
 const PostPage = () => {
   const [comments, setComments] = useState<CommentsType>([]);
-
+  const [ offset, setOffset ] = useState(0);
+  console.log('offset', offset);
   const router = useRouter();
   const { id } = router.query;
 
@@ -34,38 +35,37 @@ const PostPage = () => {
     if (items) {
       setComments(prev => [...prev, ...items]);
     }
-  
   }, [response]);
 
   const { post } = data || {};
 
   if (loading) {
     return (
-      <div className='container'>
+      <Grid>
         <LargePostWrapper>
           <div className='loading'>loading...</div>
         </LargePostWrapper>
-      </div>
+      </Grid>
     );
   }
 
   return (
-    <div className='container'>
-      <Grid>
-        <>
-          {!!post && (
-            <LargePostWrapper>
-              <div className='post_wrapper'>
-                <Post {...post} isLarge={true} />
-              </div>
-              {user ? <CommentForm postId={id as string} /> : <AuthOffer />}
-              <CommentsSeparator />
-              <Comments comments={comments}/>
-            </LargePostWrapper>
-          )}
-        </>
-      </Grid>
-    </div>
+    <Grid>
+      <>
+        {!!post && (
+          <LargePostWrapper>
+            <div className='post_wrapper'>
+              <Post {...post} isLarge={true} />
+            </div>
+
+            {user ? <CommentForm postId={id as string} /> : <AuthOffer />}
+
+            <CommentsSeparator />
+            <Comments comments={comments} />
+          </LargePostWrapper>
+        )}
+      </>
+    </Grid>
   );
 };
 

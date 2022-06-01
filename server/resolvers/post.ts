@@ -9,13 +9,13 @@ import {
   Resolver,
   UseMiddleware,
 } from 'type-graphql';
-import { In } from 'typeorm';
 
 import PostEntity from '../entities/Post';
 import VoteEntity from '../entities/Vote';
 import AuthMiddleware from '../middleware/auth';
 import { MyContext } from '../type';
 import { getDataFromJWT } from '../utils/auth';
+import { extendsPostsByMyVote } from '../utils/post';
 import { Block } from './types';
 
 @ObjectType()
@@ -109,36 +109,22 @@ export default class Post {
   }
 
   @Query(() => GetPostResponse)
-  async posts(@Ctx() { req }: MyContext) {
+  async posts(
+    @Arg('skip') skip: number,
+    @Ctx() { req }: MyContext
+  ) {
     try {
       let [items, totalCount] = await PostEntity.findAndCount({
         order: { createdAt: 'DESC' },
         relations: ['author'],
+        skip: skip || 0,
+        take: 10
       });
 
       const { UID } = getDataFromJWT(req) || {};
 
       if (UID) {
-        const postUIDs = items.map(({ UID }) => UID);
-        console.log('postUIDs', postUIDs);
-
-        const votes = await VoteEntity.find({
-          where: { postId: In(postUIDs), userId: UID },
-        });
-
-        const objVotes = votes.reduce<{ [key: string]: number }>((acc, { postId, value }) => {
-          acc[postId] = value;
-
-          return acc;
-        }, {});
-
-        // items = items.map(item => objVotes[item.UID] ? {...item, myVote: objVotes[item.UID]} : item)
-        items = items.map(item => {
-          if (objVotes[item.UID]) {
-            item.myVote = objVotes[item.UID];
-          }
-          return item;
-        });
+        items = await extendsPostsByMyVote(items, UID);
       }
 
       return { items, totalCount };

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 import Image from 'next/image';
 
 import { GetPostQuery, useVoteMutation } from '../../../generated/graphql';
@@ -15,7 +15,7 @@ import { PostRatingWrapper, VoteButton } from '../styled';
 
 type Props = GetPostQuery['post'] & { isLarge?: boolean };
 
-export const Post: FC<Props> = ({ title, block, createdAt, isLarge, author, UID, votesCount, myVote }) => {
+export const Post: FC<Props> = React.memo(({ title, block, createdAt, isLarge, author, UID, votesCount, myVote }) => {
   const [vote] = useVoteMutation();
   console.log('myVote', myVote);
 
@@ -63,4 +63,6 @@ export const Post: FC<Props> = ({ title, block, createdAt, isLarge, author, UID,
       </div>
     </>
   );
-};
+});
+
+Post.displayName = 'Post';
