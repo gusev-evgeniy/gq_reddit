@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import React, { useContext, useEffect, useState } from 'react';
+import React, {  useEffect, useState } from 'react';
 
 import { Post } from '../../components/posts/post';
 import { CommentForm } from '../../components/comment/commentForm';
@@ -8,18 +8,18 @@ import { LargePostWrapper } from '../../components/posts/styled';
 import { useGetPostQuery, useGetCommentsQuery } from '../../generated/graphql';
 import { AuthOffer } from '../../components/comment/authOffer';
 import { CommentsSeparator } from '../../components/comment/styles';
-import { UserContext } from '../../context/user';
-import { Grid } from '../../styles';
 import { CommentsType } from '../../types/comment';
+import { useAppSelector } from '../../store/hooks';
+import { selectMe } from '../../store/slices/me';
+import { Grid } from '../../styles';
 
 const PostPage = () => {
   const [comments, setComments] = useState<CommentsType>([]);
-  const [ offset, setOffset ] = useState(0);
-  console.log('offset', offset);
+
+  const user = useAppSelector(selectMe);
+
   const router = useRouter();
   const { id } = router.query;
-
-  const [user] = useContext(UserContext)!;
 
   const { loading, data, error } = useGetPostQuery({
     variables: { uid: id as string },
@@ -58,7 +58,7 @@ const PostPage = () => {
               <Post {...post} isLarge={true} />
             </div>
 
-            {user ? <CommentForm postId={id as string} /> : <AuthOffer />}
+            {user.data ? <CommentForm postId={id as string} /> : <AuthOffer />}
 
             <CommentsSeparator />
             <Comments comments={comments} />

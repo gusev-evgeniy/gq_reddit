@@ -1,26 +1,32 @@
-import React, { FC, useContext, useEffect } from 'react';
+import React, { FC, useEffect } from 'react';
+
+import { selectDialog } from '../store/slices/dialog';
+import { setMe } from '../store/slices/me';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+
+import { useMeQuery } from '../generated/graphql';
+
+import useIsomorphicLayoutEffect from '../hook/useIsomorphicLayoutEffect';
 import { Dialogs } from '../components/dialogs';
 import { Navigation } from '../components/navigations.tsx';
-import { DialogContext } from '../context/dialog';
-import { UserContext } from '../context/user';
-import { useMeQuery } from '../generated/graphql';
-import useIsomorphicLayoutEffect from '../hook/useIsomorphicLayoutEffect';
+
 
 type Props = {
   children: React.ReactChild;
 };
 
 const Layout: FC<Props> = ({ children }) => {
-  const [user, setUser] = useContext(UserContext)!;
-  const [dialog] = useContext(DialogContext);
-  console.log('dialog', dialog);
+  const dispatch = useAppDispatch();
+
+  const dialog = useAppSelector(selectDialog);
+
   const { data, loading } = useMeQuery();
 
   useIsomorphicLayoutEffect(() => {
-    if (data && setUser) {
-      setUser(data.me);
+    if (data) {
+      dispatch(setMe(data.me));
     }
-  }, [data, setUser]);
+  }, [data]);
 
   useEffect(() => {
     document.body.style.overflow = dialog ? 'hidden' : 'auto';
@@ -29,7 +35,6 @@ const Layout: FC<Props> = ({ children }) => {
   if (loading) {
     return <div>Loading...</div>;
   }
-
   return (
     <>
       <Navigation />

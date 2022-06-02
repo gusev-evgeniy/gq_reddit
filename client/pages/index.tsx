@@ -1,24 +1,30 @@
-import { useContext, useEffect, useState } from 'react';
 import { Posts } from '../components/posts';
 import { Sort } from '../components/sort';
 import { Tranding } from '../components/tranding';
 
 import { Grid, StyledTopicName } from '../styles';
-import { UserContext } from '../context/user';
 import { LinkForm } from '../components/editor/linkForm';
+import { useAppSelector } from '../store/hooks';
+import { selectMe } from '../store/slices/me';
 
-//TODO login data return undefined;
+//TODO fix
+//login data return undefined
+//ssr
+//correct loading posts
+//update votesCount and myVote
+//update create comment
+//navigation sticky
 
 export default function Home() {
-  const [user] = useContext(UserContext)!;
+  const { data } = useAppSelector(selectMe);
 
   return (
     <>
-      {!user && <Tranding />}
+      {!data && <Tranding />}
 
       <Grid>
         <div>
-          {!user ? <StyledTopicName>Popular posts</StyledTopicName> : <LinkForm />}
+          {!data ? <StyledTopicName>Popular posts</StyledTopicName> : <LinkForm />}
           <Sort />
           <Posts />
         </div>

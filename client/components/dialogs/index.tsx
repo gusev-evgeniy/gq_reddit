@@ -1,21 +1,27 @@
-import React, { FC, useContext } from 'react';
-import { CloseButton, DialogWrapper } from './styles';
-
-import close from '../../images/close.svg';
+import React, { FC, memo } from 'react';
 import Image from 'next/image';
+
 import { SignUp } from './auth/signUp';
 import { Login } from './auth/login';
-import { DialogContext } from '../../context/dialog';
 
-export const Dialogs: FC = () => {
-  const [dialog, setDialog] = useContext(DialogContext)!;
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { selectDialog, setDialog } from '../../store/slices/dialog';
+
+import close from '../../images/close.svg';
+
+import { CloseButton, DialogWrapper } from './styles';
+
+export const Dialogs: FC = memo(() => {
+  const dispatch = useAppDispatch();
+
+  const dialog = useAppSelector(selectDialog);
 
   if (!dialog) {
     return null;
   }
 
   const onClose = () => {
-    !!setDialog && setDialog(undefined);
+    dispatch(setDialog(null));
   };
 
   const components = {
@@ -33,4 +39,6 @@ export const Dialogs: FC = () => {
       </div>
     </DialogWrapper>
   );
-};
+});
+
+Dialogs.displayName = 'Dialogs';

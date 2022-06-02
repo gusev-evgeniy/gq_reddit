@@ -1,4 +1,4 @@
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -6,11 +6,12 @@ import * as yup from 'yup';
 import { AuthWrapper } from './authWrapper';
 import { SubmitButton } from './submitButton';
 import { LoginQueryVariables, useLoginLazyQuery } from '../../../generated/graphql';
-import { UserContext } from '../../../context/user';
 
 import { DialogProps } from '../type';
 
 import { AlertMessage, AuthButtonWrapper, FormInput } from '../styles';
+import { useAppDispatch } from '../../../store/hooks';
+import { setMe } from '../../../store/slices/me';
 
 
 const nameValidateMessage = 'Username must be between 3 and 20 characters';
@@ -23,9 +24,10 @@ const schema = yup
   .required();
 
 export const Login: FC<DialogProps> = ({ onClose }) => {
+  const dispatch = useAppDispatch();
+
   const [error, setError] = useState<string | undefined>();
-  const [, setUser] = useContext(UserContext)!;
-  console.log('error', error);
+
   const {
     register,
     handleSubmit,
@@ -34,14 +36,12 @@ export const Login: FC<DialogProps> = ({ onClose }) => {
     resolver: yupResolver(schema),
   });
   const [login, { loading, data }] = useLoginLazyQuery();
-  console.log('data222', data);
   const onSubmit = async (formData: LoginQueryVariables) => {
     try {
       await login({ variables: { ...formData } });
-      console.log('2222222222', data);
 
-      if (setUser && data?.login) {
-        setUser && setUser(data?.login);
+      if (data?.login) {
+        dispatch(setMe(data.login));
       }
 
       onClose();

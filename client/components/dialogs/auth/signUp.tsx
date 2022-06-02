@@ -1,15 +1,17 @@
-import React, { useState, FC, useEffect, useContext } from 'react';
+import React, { useState, FC, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
 import { AuthWrapper } from './authWrapper';
 
-import { AlertMessage, AuthButtonWrapper, FormInput, SuccessMessage } from '../styles';
 import { DialogProps } from '../type';
 import { SubmitButton } from './submitButton';
 import { RegistrMutationVariables, useRegistrMutation } from '../../../generated/graphql';
-import { UserContext } from '../../../context/user';
+import { useAppDispatch } from '../../../store/hooks';
+import { setMe } from '../../../store/slices/me';
+
+import { AlertMessage, AuthButtonWrapper, FormInput, SuccessMessage } from '../styles';
 
 const nameValidateMessage = 'Username must be between 3 and 20 characters';
 const passwordValidateMessage = 'Password must be at least 6 characters long';
@@ -23,10 +25,10 @@ const schema = yup
   .required();
 
 export const SignUp: FC<DialogProps> = ({ onClose }) => {
+  const dispatch = useAppDispatch();
+
   const [error, setError] = useState<string | undefined>();
   const [success, setSuccess] = useState(false);
-
-  const [, setUser] = useContext(UserContext)!;
 
   const [registr, { loading, data }] = useRegistrMutation();
 
@@ -53,11 +55,14 @@ export const SignUp: FC<DialogProps> = ({ onClose }) => {
   useEffect(() => {
     if (success) {
       setTimeout(() => {
-        setUser && setUser(data?.registr);
+        if (data?.registr) {
+          dispatch(setMe(data.registr));
+        }
+
         onClose();
       }, 3000);
     }
-  }, [success, onClose, data, setUser]);
+  }, [success, onClose, data, dispatch]);
 
   const disabled = Object.keys(dirtyFields).length < Object.keys(schema.fields).length;
 
