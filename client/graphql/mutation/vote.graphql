@@ -1,3 +1,5 @@
 mutation Vote($postUid: VotePostInput!, $value: Float!) {
-   vote(postUID: $postUid, value: $value)
+   vote(postUID: $postUid, value: $value) {
+      myVote, UID, votesCount
+   }
 }

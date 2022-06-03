@@ -3,12 +3,16 @@ import { createWrapper } from 'next-redux-wrapper';
 import { dialogReducer } from './slices/dialog';
 
 import { meReducer } from './slices/me';
+import { openPostReducer } from './slices/openPost';
+import { postsReducer } from './slices/posts';
 
 export function makeStore() {
   return configureStore({
     reducer: {
       me: meReducer,
-      dialog: dialogReducer
+      dialog: dialogReducer,
+      posts: postsReducer,
+      openPost: openPostReducer
     },
   });
 }

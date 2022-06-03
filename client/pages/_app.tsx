@@ -7,6 +7,7 @@ import { Providers } from '../context';
 import Layout from '../layout';
 import { wrapper } from '../store/store';
 import { Dialogs } from '../components/dialogs';
+import { Menu } from '../components/contextMenu';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

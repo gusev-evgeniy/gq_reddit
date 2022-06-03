@@ -1,45 +1,58 @@
 import { useRouter } from 'next/router';
-import React, {  useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 import { Post } from '../../components/posts/post';
 import { CommentForm } from '../../components/comment/commentForm';
 import { Comments } from '../../components/comment/comments';
 import { LargePostWrapper } from '../../components/posts/styled';
-import { useGetPostQuery, useGetCommentsQuery } from '../../generated/graphql';
+import {
+  useGetPostLazyQuery,
+  useGetCommentsLazyQuery,
+} from '../../generated/graphql';
 import { AuthOffer } from '../../components/comment/authOffer';
 import { CommentsSeparator } from '../../components/comment/styles';
-import { CommentsType } from '../../types/comment';
-import { useAppSelector } from '../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { selectMe } from '../../store/slices/me';
 import { Grid } from '../../styles';
+import { selectOpenPost, setComments, setOpenPost } from '../../store/slices/openPost';
 
 const PostPage = () => {
-  const [comments, setComments] = useState<CommentsType>([]);
+  const dispatch = useAppDispatch();
 
   const user = useAppSelector(selectMe);
+  const { post, loaded, comments } = useAppSelector(selectOpenPost);
 
   const router = useRouter();
   const { id } = router.query;
 
-  const { loading, data, error } = useGetPostQuery({
-    variables: { uid: id as string },
-  });
+  const [getPost, { loading, data, error }] = useGetPostLazyQuery();
 
-  const { data: response } = useGetCommentsQuery({
-    variables: { post: { UID: id as string } },
-  });
+  const [getComments, { data: response }] = useGetCommentsLazyQuery();
+
+  useEffect(() => {
+    if (!loaded) {
+      console.log('2222');
+      getPost({ variables: { uid: id as string } });
+      getComments({ variables: { post: { UID: id as string } } });
+    }
+  }, [loaded]);
+
+  useEffect(() => {
+
+    if (data?.post) {
+      dispatch(setOpenPost(data?.post));
+    }
+  }, [data]);
 
   useEffect(() => {
     const items = response?.getComments.items;
 
     if (items) {
-      setComments(prev => [...prev, ...items]);
+      dispatch(setComments(items));
     }
   }, [response]);
 
-  const { post } = data || {};
-
-  if (loading) {
+  if (loading || !loaded) {
     return (
       <Grid>
         <LargePostWrapper>
@@ -48,7 +61,7 @@ const PostPage = () => {
       </Grid>
     );
   }
-
+  console.log('post', post);
   return (
     <Grid>
       <>

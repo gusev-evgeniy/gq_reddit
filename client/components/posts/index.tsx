@@ -1,33 +1,40 @@
 import { useRouter } from 'next/router';
-import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { GetPostsQuery, useGetPostsLazyQuery } from '../../generated/graphql';
+import React, { useEffect, useState } from 'react';
+import { useGetPostsLazyQuery } from '../../generated/graphql';
 import { Post } from './post';
 import { StyledPostItem } from './styled';
 import { useDebouncedCallback } from 'use-debounce';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { selectPosts, setPosts } from '../../store/slices/posts';
 
 export const Posts = () => {
-  const [position, setPosition] = useState(0);
-  const [posts, setPosts] = useState<GetPostsQuery['posts']['items']>([]);
-  const [skip, setSkip] = useState(0);
+  const dispatch = useAppDispatch();
 
+  const [position, setPosition] = useState(0);
+
+  const { items, loaded, skip } = useAppSelector(selectPosts);
   const router = useRouter();
 
-  const [getPosts, { loading, data, error }] = useGetPostsLazyQuery();
-
-  useLayoutEffect(() => {
-    getPosts({ variables: { skip } });
-  }, []);
+  const [getPosts, { loading, data, called, refetch }] = useGetPostsLazyQuery();
 
   useEffect(() => {
-    if (data?.posts) {
-      setPosts(prev => [...prev, ...data.posts.items]);
-      setSkip(prev => prev + data.posts.items.length);
+    if (!loaded) {
+      if (called) {
+        refetch({ skip });
+      } else {
+        getPosts({ variables: { skip } });
+      }
     }
-  }, [data]);
+  }, [loaded]);
+
+  useEffect(() => {
+    if (data?.posts ) {
+      dispatch(setPosts(data.posts.items));
+    }
+  }, [data, dispatch]);
 
   useEffect(() => {
     window.addEventListener('scroll', listenToScroll);
-
     return () => {
       window.removeEventListener('scroll', listenToScroll);
     };
@@ -47,13 +54,13 @@ export const Posts = () => {
     setPosition(scrolled);
   }, 500);
 
-  if (loading) {
+  if (loading || !loaded) {
     return <div>Loading...</div>;
   }
 
   return (
     <div>
-      {posts.map(post => (
+      {items.map(post => (
         <StyledPostItem
           key={post.UID}
           style={{ cursor: 'pointer' }}

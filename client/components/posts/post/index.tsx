@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC, memo, useEffect } from 'react';
 import Image from 'next/image';
 
 import { GetPostQuery, useVoteMutation } from '../../../generated/graphql';
@@ -12,21 +12,32 @@ import thumb_down_fill from '../../../images/thumb_down_fill.svg';
 
 import { Content } from '../../content';
 import { PostRatingWrapper, VoteButton } from '../styled';
+import { useAppDispatch } from '../../../store/hooks';
+import { updatePost } from '../../../store/slices/posts';
 
 type Props = GetPostQuery['post'] & { isLarge?: boolean };
 
-export const Post: FC<Props> = React.memo(({ title, block, createdAt, isLarge, author, UID, votesCount, myVote }) => {
-  const [vote] = useVoteMutation();
-  console.log('myVote', myVote);
+export const Post: FC<Props> = memo(({ title, block, createdAt, isLarge, author, UID, votesCount, myVote }) => {
+  const dispatch = useAppDispatch();
+
+  const [vote, { data }] = useVoteMutation();
+  console.log('data', data);
+
+  useEffect(() => {
+    if (data?.vote) {
+      dispatch(updatePost(data.vote));
+    }
+  }, [data]);
+  
 
   const onVote = (value: 1 | -1) => vote({ variables: { postUid: { UID }, value } });
 
-  const onDislike = (e: any) => {
+  const onDislike = (e: React.MouseEvent) => {
     e.stopPropagation();
     onVote(-1);
   };
 
-  const onLike = (e: any) => {
+  const onLike = (e: React.MouseEvent) => {
     e.stopPropagation();
     onVote(1);
   };

@@ -8,7 +8,7 @@ export const StyledNav = styled.nav`
   border-bottom: 1px solid #edefe1;
   padding: 0 20px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
 
   .logo-wrapper {
@@ -62,6 +62,7 @@ export const OutlineNavButton = styled(MainButton)`
 
 export const SearchWrapper = styled.div`
   width: 60%;
+  max-width: 600px;
   margin: 0px 20px 0 40px;
   position: relative;
 
