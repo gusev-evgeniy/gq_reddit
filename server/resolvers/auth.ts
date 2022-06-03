@@ -88,4 +88,17 @@ export default class Auth {
       return error;
     }
   }
+  @UseMiddleware(AuthMiddleware)
+  @Mutation(() => String)
+  async logout(
+    @Ctx() ctx: MyContext
+  ) {
+    ctx.res.set('Set-Cookie', cookie.serialize('token', '', {
+      httpOnly: true,
+      path: '/',
+      maxAge: 0 // 1 week
+    }))
+
+    return 'Success';
+  }
 }

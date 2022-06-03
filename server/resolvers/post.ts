@@ -63,7 +63,7 @@ export default class Post {
   }
 
   @UseMiddleware(AuthMiddleware)
-  @Mutation(() => String)
+  @Mutation(() => PostEntity)
   async vote(
     @Arg('value', { nullable: false }) value: number,
     @Arg('postUID', { nullable: false }) postUID: VotePostInput,
@@ -74,7 +74,7 @@ export default class Post {
 
       let userVote = await VoteEntity.findOneBy({ userId: res.locals.user.UID, postId: postUID.UID });
       let post = await PostEntity.findOneBy({ UID: postUID.UID });
-      console.log('userVote', userVote);
+      let myVote = correctValue;
 
       if (userVote) {
         if (userVote.value !== correctValue) {
@@ -85,10 +85,11 @@ export default class Post {
         } else {
           await userVote.remove()
 
+          myVote = null;
           post.votesCount -= correctValue;
         }
 
-      } else if (!userVote) {
+      } else {
         const newVote = VoteEntity.create({
           postId: postUID.UID,
           userId: res.locals.user.UID,
@@ -102,7 +103,9 @@ export default class Post {
       }
       await post.save();
 
-      return 'Success';
+      post.myVote = myVote;
+
+      return post;
     } catch (error) {
       console.log('error', error);
     }
