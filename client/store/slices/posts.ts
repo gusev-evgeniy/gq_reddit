@@ -5,6 +5,7 @@ import { GetPostsQuery, VoteMutation } from '../../generated/graphql';
 
 export interface PostState {
   items: GetPostsQuery['posts']['items'];
+  totalCount: number;
   loaded: boolean;
   skip: number;
 }
@@ -13,14 +14,17 @@ const initialState: PostState = {
   items: [],
   loaded: false,
   skip: 0,
+  totalCount: 0
 };
 
 export const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    setPosts: (state, action: PayloadAction<GetPostsQuery['posts']['items']>) => {
-      state.items.push(...action.payload);
+    setPosts: (state, action: PayloadAction<GetPostsQuery['posts']>) => {
+      state.items.push(...action.payload.items);
+      state.skip += action.payload.items.length;
+      state.totalCount = action.payload.totalCount;
       state.loaded = true;
     },
     setPostsDefaultState: () => {

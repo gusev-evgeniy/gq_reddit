@@ -1,13 +1,22 @@
 import { useRouter } from 'next/router';
 import React from 'react';
+import { Grid } from '../../styles';
+import { Sort } from '../../components/sort';
+import { Profile } from '../../components/profile';
 
-const Profile = () => {
+const User = () => {
   const router = useRouter();
   const { login } = router.query;
 
   return (
-    <div>{login}</div>
+    <Grid>
+    <div>
+      <Sort />
+        <div>User don&apos;t have posts yeat </div>
+    </div>
+    <Profile />
+    </Grid>
   );
 };
 
-export default Profile;
+export default User;

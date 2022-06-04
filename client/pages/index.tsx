@@ -1,6 +1,5 @@
 import { Posts } from '../components/posts';
 import { Sort } from '../components/sort';
-import { Tranding } from '../components/tranding';
 
 import { Grid, StyledTopicName } from '../styles';
 import { LinkForm } from '../components/editor/linkForm';
@@ -10,7 +9,6 @@ import { selectMe } from '../store/slices/me';
 //TODO fix
 //login data return undefined
 //ssr
-//correct loading posts
 //update votesCount and myVote
 //update create comment
 //navigation sticky
@@ -20,7 +18,7 @@ export default function Home() {
 
   return (
     <>
-      {!data && <Tranding />}
+      {/* {!data && <Tranding />} */}
 
       <Grid>
         <div>

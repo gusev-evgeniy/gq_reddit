@@ -1,4 +1,5 @@
 import { Field, InputType } from "type-graphql";
+import { Stream } from "stream";
 
 @InputType()
 class Data {
@@ -16,4 +17,11 @@ export abstract class Block {
 
   @Field()
   type: string;
+}
+
+export interface Upload {
+  filename: string;
+  mimetype: string;
+  encoding: string;
+  createReadStream: () => Stream;
 }

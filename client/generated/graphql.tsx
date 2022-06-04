@@ -17,6 +17,8 @@ export type Scalars = {
   DateTime: any;
   /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: any;
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: any;
 };
 
 export type Block = {
@@ -53,11 +55,17 @@ export type GetPostResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addProfilePicture: Scalars['Boolean'];
   createComment: Scalars['String'];
   createPost: Post;
   logout: Scalars['String'];
   registr: User;
   vote: Post;
+};
+
+
+export type MutationAddProfilePictureArgs = {
+  picture: Scalars['Upload'];
 };
 
 
@@ -153,6 +161,13 @@ export type VotePostInput = {
   UID: Scalars['String'];
 };
 
+export type AddProfilePictureMutationVariables = Exact<{
+  picture: Scalars['Upload'];
+}>;
+
+
+export type AddProfilePictureMutation = { __typename?: 'Mutation', addProfilePicture: boolean };
+
 export type CreateCommentMutationVariables = Exact<{
   post: PostInput;
   block: Array<Block> | Block;
@@ -227,6 +242,37 @@ export type GetPostsQueryVariables = Exact<{
 export type GetPostsQuery = { __typename?: 'Query', posts: { __typename?: 'GetPostResponse', totalCount: number, items: Array<{ __typename?: 'Post', UID: string, title: string, block: any, createdAt: any, votesCount: number, myVote?: number | null, author: { __typename?: 'User', UID: string, login: string } }> } };
 
 
+export const AddProfilePictureDocument = gql`
+    mutation addProfilePicture($picture: Upload!) {
+  addProfilePicture(picture: $picture)
+}
+    `;
+export type AddProfilePictureMutationFn = Apollo.MutationFunction<AddProfilePictureMutation, AddProfilePictureMutationVariables>;
+
+/**
+ * __useAddProfilePictureMutation__
+ *
+ * To run a mutation, you first call `useAddProfilePictureMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddProfilePictureMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addProfilePictureMutation, { data, loading, error }] = useAddProfilePictureMutation({
+ *   variables: {
+ *      picture: // value for 'picture'
+ *   },
+ * });
+ */
+export function useAddProfilePictureMutation(baseOptions?: Apollo.MutationHookOptions<AddProfilePictureMutation, AddProfilePictureMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddProfilePictureMutation, AddProfilePictureMutationVariables>(AddProfilePictureDocument, options);
+      }
+export type AddProfilePictureMutationHookResult = ReturnType<typeof useAddProfilePictureMutation>;
+export type AddProfilePictureMutationResult = Apollo.MutationResult<AddProfilePictureMutation>;
+export type AddProfilePictureMutationOptions = Apollo.BaseMutationOptions<AddProfilePictureMutation, AddProfilePictureMutationVariables>;
 export const CreateCommentDocument = gql`
     mutation CreateComment($post: PostInput!, $block: [Block!]!) {
   createComment(post: $post, block: $block)
