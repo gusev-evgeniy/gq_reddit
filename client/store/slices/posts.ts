@@ -8,13 +8,17 @@ export interface PostState {
   totalCount: number;
   loaded: boolean;
   skip: number;
+  sort: 'new' | 'best';
+  filter: string;
 }
 
 const initialState: PostState = {
   items: [],
   loaded: false,
   skip: 0,
-  totalCount: 0
+  totalCount: 0,
+  sort: 'new',
+  filter: ''
 };
 
 export const postsSlice = createSlice({
@@ -35,10 +39,18 @@ export const postsSlice = createSlice({
         item.UID === action.payload.UID ? { ...item, ...action.payload } : item
       );
     },
+    changeSort: (state, action: PayloadAction<PostState['sort']>) => {
+      state.sort = action.payload;
+      state.loaded = false;
+    },
+    changeFilter: (state, action: PayloadAction<string>) => {
+      state.filter = action.payload;
+      state.loaded = false;
+    },
   },
 });
 
-export const { setPosts, setPostsDefaultState, updatePost } = postsSlice.actions;
+export const { setPosts, setPostsDefaultState, updatePost, changeSort } = postsSlice.actions;
 
 export const selectPosts = (state: AppState) => state.posts;
 

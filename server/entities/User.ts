@@ -24,6 +24,10 @@ class User extends Base {
   @Column()
   password: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  photo?: string;
+
   @Field(() => [Post])
   @JoinColumn({ name: 'postUID' })
   @OneToMany(() => Post, post => post.author)

@@ -3,6 +3,7 @@ import React from 'react';
 import { Grid } from '../../styles';
 import { Sort } from '../../components/sort';
 import { Profile } from '../../components/profile';
+import { PostsEmpty } from '../../components/posts/postsEmpty';
 
 const User = () => {
   const router = useRouter();
@@ -10,11 +11,11 @@ const User = () => {
 
   return (
     <Grid>
-    <div>
-      <Sort />
-        <div>User don&apos;t have posts yeat </div>
-    </div>
-    <Profile />
+      <div>
+        <Sort />
+        <PostsEmpty />
+      </div>
+      <Profile />
     </Grid>
   );
 };

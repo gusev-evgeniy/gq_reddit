@@ -11,6 +11,7 @@ export const createJWT = (user: UserEntity) => {
 }
 
 export const getDataFromJWT = (req: Request): UserEntity | void => {
+  console.log('req', req)
   const token = req.cookies.token;
     
   if (!token) {

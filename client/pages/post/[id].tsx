@@ -38,7 +38,6 @@ const PostPage = () => {
   }, [loaded]);
 
   useEffect(() => {
-
     if (data?.post) {
       dispatch(setOpenPost(data?.post));
     }

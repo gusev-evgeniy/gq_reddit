@@ -9,6 +9,7 @@ import {
   Resolver,
   UseMiddleware,
 } from 'type-graphql';
+import { FindManyOptions, Like } from 'typeorm';
 
 import PostEntity from '../entities/Post';
 import VoteEntity from '../entities/Vote';
@@ -114,15 +115,34 @@ export default class Post {
   @Query(() => GetPostResponse)
   async posts(
     @Arg('skip') skip: number,
+    @Arg('filter', { nullable: true }) filter: string,
+    @Arg('author', { nullable: true }) author: string,
+    @Arg('sort', { nullable: true }) sort: 'new' | 'best',
     @Ctx() { req }: MyContext
   ) {
     try {
-      let [items, totalCount] = await PostEntity.findAndCount({
-        order: { createdAt: 'DESC' },
+      let obj: FindManyOptions<PostEntity> = {
         relations: ['author'],
         skip: skip || 0,
-        take: 10
-      });
+        take: 10,
+      };
+
+      if (filter) {
+        obj.where = [
+          { block: Like(`%${filter}%`) },
+          // { title: Like(`%${filter}%`) },
+        ]
+      }
+
+      if (!sort || sort === 'new') {
+        obj.order = { createdAt: 'DESC' }
+      }
+
+      if ( sort === 'best') {
+        obj.order = { votesCount: 'DESC' }
+      }
+
+      let [items, totalCount] = await PostEntity.findAndCount(obj);
 
       const { UID } = getDataFromJWT(req) || {};
 

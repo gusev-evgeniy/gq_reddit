@@ -108,12 +108,13 @@ export default class Auth {
     return 'Success';
   }
 
-  @UseMiddleware(AuthMiddleware)
+  // @UseMiddleware(AuthMiddleware)
   @Mutation(() => Boolean)
   async addProfilePicture(
     @Arg('picture', () => GraphQLUpload)
     { createReadStream, filename }: Upload
   ): Promise<boolean> {
+    console.log('filename', filename)
     return new Promise(async (resolve, reject) =>
       createReadStream()
         .pipe(createWriteStream(__dirname + `/../images/${filename}`))

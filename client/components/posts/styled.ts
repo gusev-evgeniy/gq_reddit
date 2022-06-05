@@ -10,7 +10,7 @@ export const StyledPostSource = styled.div`
 
   .body_wrapper {
     padding: 12px 12px 2px 12px;
-    width: calc(100% - 40px) 
+    width: calc(100% - 40px);
   }
 `;
 
@@ -23,10 +23,10 @@ export const StyledPostItem = styled(StyledPostSource)`
   border: 1px solid #ccc;
 `;
 
-export const PostRatingWrapper = styled.div<{isGray: boolean}>`
+export const PostRatingWrapper = styled.div<{ isGray: boolean }>`
   padding: 7px;
   width: 40px;
-  background-color: ${({isGray}) => isGray ? `rgb(248, 249, 250)` : 'inherit'};
+  background-color: ${({ isGray }) => (isGray ? `rgb(248, 249, 250)` : 'inherit')};
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -118,4 +118,38 @@ export const StyledPostFooter = styled.div`
 
 export const PostFooterButton = styled(FooterButton)`
   padding: 8px;
+`;
+
+export const StyledEmptyPost = styled.div`
+  position: relative;
+  margin-top: 20px;
+`;
+
+export const StyledEmptyText = styled.p`
+  position: absolute;
+  z-index: 2;
+  top: 29%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 22px;
+  color: #1c1c1c;
+`;
+
+export const StyledEmptyPostItem = styled.div`
+  width: 100%;
+  height: 90px;
+  border: 1px solid #d5d8dc;
+  padding: 0 0 0 40px;
+  margin: 0 0 -1px 0;
+  background-color: #e6eaee;
+
+  .buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: fit-content;
+    height: 100%;
+  }
 `;

@@ -3,6 +3,7 @@ import { StyledItem } from '../../styles';
 
 export const ProfileWrapper = styled(StyledItem)`
   position: relative;
+  height: 300px;
 
   .background_image {
     width: 100%;
@@ -54,13 +55,13 @@ export const ProfileWrapper = styled(StyledItem)`
   }
 `;
 
-export const UserImage = styled(StyledItem)<{backgroundImage: string | null}>`
+export const UserImage = styled(StyledItem)<{ backgroundImage: string }>`
   height: 80px;
   width: 80px;
   background-color: #ccc;
   position: relative;
   background-size: cover;
-  background-image: ${({backgroundImage}) => `url(${backgroundImage})` || ''};
+  background-image: ${({ backgroundImage }) => `url(${backgroundImage})` || ''};
 
   .upload {
     position: absolute;
@@ -68,7 +69,7 @@ export const UserImage = styled(StyledItem)<{backgroundImage: string | null}>`
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: rgba(255,255,255,0.3);
+    background-color: rgba(255, 255, 255, 0.3);
     cursor: pointer;
     justify-content: center;
     align-items: center;

@@ -5,6 +5,7 @@
       login
       UID
       updatedAt
+      photo
     }
   }
   

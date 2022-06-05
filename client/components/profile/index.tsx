@@ -1,43 +1,52 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
+import Axios from 'axios';
+import Image from 'next/image';
+
 import { MainButton } from '../../styles';
 import { ProfileWrapper, UserImage } from './styles';
 
 import add_photo from '../../images/add_photo.svg';
-import Image from 'next/image';
+import { useAppSelector } from '../../store/hooks';
+import { selectMe } from '../../store/slices/me';
 
 export const Profile = () => {
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const inputFileRef = useRef<HTMLInputElement>(null);
-  console.log('avatarUrl', avatarUrl);
-  const handleChangeImage = async () => {
-    console.log('inputFileRef', inputFileRef?.current?.files);
+
+  const { data } = useAppSelector(selectMe);
+
+  const uploadImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const [file] = inputFileRef.current?.files || [];
+
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      console.log('imageUrl', imageUrl);
-      setAvatarUrl(imageUrl);
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('type', 'photo');
+
+      try {
+        await Axios.post<any>(`http://localhost:5000/upload`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+          withCredentials: true,
+        });
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
-
-  useEffect(() => {
-    if (inputFileRef.current) {
-      inputFileRef.current.addEventListener('change', handleChangeImage);
-    }
-  }, []);
 
   return (
     <ProfileWrapper>
       <div className='images'>
         <div className='background_image'></div>
         <div className='user_image_wrapper'>
-          <UserImage backgroundImage={avatarUrl}>
+          <UserImage backgroundImage={data?.photo ? data.photo : ''}>
             <label className='upload' htmlFor='inputTag'>
               <Image width='30px' height='30px' src={add_photo} alt='add_photo' />
-              <input id='inputTag' type='file' ref={inputFileRef} hidden />
+              <input id='inputTag' type='file' onChange={uploadImage} ref={inputFileRef} hidden />
             </label>
           </UserImage>
         </div>
       </div>
+      
       <div className='data'>
         <p className='name'>u/Nick</p>
         <div className='info'>

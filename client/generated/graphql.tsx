@@ -149,6 +149,7 @@ export type User = {
   createdAt: Scalars['DateTime'];
   email: Scalars['String'];
   login: Scalars['String'];
+  photo?: Maybe<Scalars['String']>;
   posts: Array<Post>;
   updatedAt: Scalars['DateTime'];
 };
@@ -225,7 +226,7 @@ export type LoginQuery = { __typename?: 'Query', login?: { __typename?: 'User', 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', createdAt: any, email: string, login: string, UID: string, updatedAt: any } };
+export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', createdAt: any, email: string, login: string, UID: string, updatedAt: any, photo?: string | null } };
 
 export type GetPostQueryVariables = Exact<{
   uid: Scalars['String'];
@@ -537,6 +538,7 @@ export const MeDocument = gql`
     login
     UID
     updatedAt
+    photo
   }
 }
     `;
