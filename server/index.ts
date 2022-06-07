@@ -128,8 +128,8 @@ const start = async () => {
 
     apolloServer.applyMiddleware({
       app,
-      // cors: { credentials: true, origin: 'http://localhost:3000' },
-      cors: { credentials: true, origin: 'https://studio.apollographql.com' }
+      cors: { credentials: true, origin: 'http://localhost:3000' },
+      // cors: { credentials: true, origin: 'https://studio.apollographql.com' }
     });
 
     app.listen(PORT, () => console.log(`App started on port ${PORT}`));
