@@ -1,5 +1,6 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import { createWrapper } from 'next-redux-wrapper';
+import { CommentsReducer } from './slices/comments';
 import { dialogReducer } from './slices/dialog';
 
 import { meReducer } from './slices/me';
@@ -12,7 +13,8 @@ export function makeStore() {
       me: meReducer,
       dialog: dialogReducer,
       posts: postsReducer,
-      openPost: openPostReducer
+      openPost: openPostReducer,
+      comments: CommentsReducer
     },
   });
 }

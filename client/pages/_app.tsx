@@ -3,11 +3,11 @@ import Head from 'next/head';
 
 import '../global.scss';
 
-import { Providers } from '../context';
 import Layout from '../layout';
 import { wrapper } from '../store/store';
 import { Dialogs } from '../components/dialogs';
-import { Menu } from '../components/contextMenu';
+import { client } from '../api';
+import { ApolloProvider } from '@apollo/client';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -15,14 +15,14 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Head>
         <title>Reddit</title>
       </Head>
-      <Providers>
+      <ApolloProvider client={client}>
         <Layout>
           <>
             <Component {...pageProps} />
             <Dialogs />
           </>
         </Layout>
-      </Providers>
+      </ApolloProvider>
     </>
   );
 }

@@ -5,35 +5,28 @@ import { Post } from '../../components/posts/post';
 import { CommentForm } from '../../components/comment/commentForm';
 import { Comments } from '../../components/comment/comments';
 import { LargePostWrapper } from '../../components/posts/styled';
-import {
-  useGetPostLazyQuery,
-  useGetCommentsLazyQuery,
-} from '../../generated/graphql';
+import { useGetPostLazyQuery } from '../../generated/graphql';
 import { AuthOffer } from '../../components/comment/authOffer';
 import { CommentsSeparator } from '../../components/comment/styles';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { selectMe } from '../../store/slices/me';
 import { Grid } from '../../styles';
-import { selectOpenPost, setComments, setOpenPost } from '../../store/slices/openPost';
+import { selectOpenPost, setOpenPost } from '../../store/slices/openPost';
 
 const PostPage = () => {
   const dispatch = useAppDispatch();
 
   const user = useAppSelector(selectMe);
-  const { post, loaded, comments } = useAppSelector(selectOpenPost);
+  const { post, loaded } = useAppSelector(selectOpenPost);
 
   const router = useRouter();
   const { id } = router.query;
 
   const [getPost, { loading, data, error }] = useGetPostLazyQuery();
 
-  const [getComments, { data: response }] = useGetCommentsLazyQuery();
-
   useEffect(() => {
     if (!loaded) {
-      console.log('2222');
       getPost({ variables: { uid: id as string } });
-      getComments({ variables: { post: { UID: id as string } } });
     }
   }, [loaded]);
 
@@ -42,14 +35,6 @@ const PostPage = () => {
       dispatch(setOpenPost(data?.post));
     }
   }, [data]);
-
-  useEffect(() => {
-    const items = response?.getComments.items;
-
-    if (items) {
-      dispatch(setComments(items));
-    }
-  }, [response]);
 
   if (loading || !loaded) {
     return (
@@ -60,7 +45,7 @@ const PostPage = () => {
       </Grid>
     );
   }
-  console.log('post', post);
+
   return (
     <Grid>
       <>
@@ -73,7 +58,7 @@ const PostPage = () => {
             {user.data ? <CommentForm postId={id as string} /> : <AuthOffer />}
 
             <CommentsSeparator />
-            <Comments comments={comments} />
+            <Comments postId={id as string}/>
           </LargePostWrapper>
         )}
       </>

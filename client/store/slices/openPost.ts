@@ -1,18 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { AppState } from '../store';
-import { GetCommentsQuery, GetPostQuery } from '../../generated/graphql';
+import { GetPostQuery } from '../../generated/graphql';
 
 export interface OpenPostState {
   post: GetPostQuery['post'] | null;
   loaded: boolean;
-  comments: GetCommentsQuery['getComments']['items']
 }
 
 const initialState: OpenPostState = {
   post: null,
   loaded: false,
-  comments: []
 };
 
 export const openPostsSlice = createSlice({
@@ -23,13 +21,13 @@ export const openPostsSlice = createSlice({
       state.post = action.payload;
       state.loaded = true;
     },
-    setComments: (state, action: PayloadAction<GetCommentsQuery['getComments']['items']>) => {
-      state.comments.push(...action.payload);
+    openPostDefault: () => {
+      return initialState;
     }
   },
 });
 
-export const { setOpenPost, setComments } = openPostsSlice.actions;
+export const { setOpenPost, openPostDefault } = openPostsSlice.actions;
 
 export const selectOpenPost = (state: AppState) => state.openPost;
 

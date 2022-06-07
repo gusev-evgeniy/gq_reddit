@@ -48,7 +48,7 @@ export const PostHeader: FC<Props> = ({ createdAt, author, group }) => {
           <span>{relativeDate}</span>
         </p>
       </div>
-      <MainButton height='24px' width='54px'>Join</MainButton>
+      {/* <MainButton height='24px' width='54px'>Join</MainButton> */}
     </StyledPostHeader>
   );
 };

@@ -9,6 +9,8 @@ import { EditorForm, FormWrapper, TitleTextArea } from './styles';
 import { useCreatePostMutation } from '../../generated/graphql';
 import { SubmitButton } from '../dialogs/auth/submitButton';
 import { useRouter } from 'next/router';
+import { useAppDispatch } from '../../store/hooks';
+import { openPostDefault } from '../../store/slices/openPost';
 
 const Editor = dynamic<EditorProps>(() => import('./editor').then(m => m.Editor), {
   ssr: false,
@@ -20,12 +22,15 @@ export const Form = () => {
   const [title, setTitle] = useState('');
   const [blocks, setBlocks] = useState<OutputBlockData[]>([]);
 
+  const dispatch = useAppDispatch();
+
   const router = useRouter();
 
   const [setCreate, { loading, data, error }] = useCreatePostMutation();
   console.log('data', data);
 
   if (data?.createPost) {
+    dispatch(openPostDefault());
     router.push(`/post/${data?.createPost.UID}`);
   }
 
