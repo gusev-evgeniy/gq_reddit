@@ -11,7 +11,8 @@ import { CommentsSeparator } from '../../components/comment/styles';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { selectMe } from '../../store/slices/me';
 import { Grid } from '../../styles';
-import { selectOpenPost, setOpenPost } from '../../store/slices/openPost';
+import { openPostDefault, selectOpenPost, setOpenPost } from '../../store/slices/openPost';
+import { commentsDefault } from '../../store/slices/comments';
 
 const PostPage = () => {
   const dispatch = useAppDispatch();
@@ -22,8 +23,9 @@ const PostPage = () => {
   const router = useRouter();
   const { id } = router.query;
 
-  const [getPost, { loading, data, error }] = useGetPostLazyQuery();
-
+  const [getPost, { loading, data }] = useGetPostLazyQuery();
+  console.log('data', data);
+  console.log('id', id);
   useEffect(() => {
     if (!loaded) {
       getPost({ variables: { uid: id as string } });
@@ -35,6 +37,13 @@ const PostPage = () => {
       dispatch(setOpenPost(data?.post));
     }
   }, [data]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(openPostDefault());
+      dispatch(commentsDefault());
+    };
+  }, []);
 
   if (loading || !loaded) {
     return (

@@ -6,6 +6,7 @@ query GetPost($uid: String!) {
     block
     votesCount
     myVote
+    commentsCount
     author {
       UID
       login

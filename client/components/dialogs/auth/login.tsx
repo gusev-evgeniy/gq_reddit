@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -26,7 +26,7 @@ const schema = yup
 export const Login: FC<DialogProps> = ({ onClose }) => {
   const dispatch = useAppDispatch();
 
-  const [error, setError] = useState<string | undefined>();
+  const [error, setError] = useState(false);
 
   const {
     register,
@@ -35,21 +35,22 @@ export const Login: FC<DialogProps> = ({ onClose }) => {
   } = useForm<LoginQueryVariables>({
     resolver: yupResolver(schema),
   });
-  const [login, { loading, data }] = useLoginLazyQuery();
-  const onSubmit = async (formData: LoginQueryVariables) => {
-    try {
-      await login({ variables: { ...formData } });
+  const [login, { loading, data, error: loginError }] = useLoginLazyQuery();
 
-      if (data?.login) {
-        dispatch(setMe(data.login));
-      }
-
-      onClose();
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      }
+  useEffect(() => {
+    if (loginError) {
+      setError(true);
     }
+
+    if (!!data?.login && data?.login !== null ) {
+      dispatch(setMe(data.login));
+      onClose();
+    }
+  
+  }, [data, loginError]);
+  
+  const onSubmit = (formData: LoginQueryVariables) => {
+    login({ variables: { ...formData } });
   };
 
   const disabled = Object.keys(dirtyFields).length < Object.keys(schema.fields).length;

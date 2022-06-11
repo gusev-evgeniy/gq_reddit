@@ -126,7 +126,7 @@ export default class Post {
         skip: skip || 0,
         take: 10,
       };
-
+      console.log('obj', obj)
       if (filter) {
         obj.where = [
           { block: Like(`%${filter}%`) },

@@ -114,6 +114,7 @@ export type PostInput = {
 export type Query = {
   __typename?: 'Query';
   getComments: CommentsResponse;
+  getUser: User;
   login?: Maybe<User>;
   me: User;
   post?: Maybe<Post>;
@@ -124,6 +125,11 @@ export type Query = {
 export type QueryGetCommentsArgs = {
   author?: InputMaybe<UserInput>;
   post?: InputMaybe<PostInput>;
+};
+
+
+export type QueryGetUserArgs = {
+  login: Scalars['String'];
 };
 
 
@@ -139,7 +145,10 @@ export type QueryPostArgs = {
 
 
 export type QueryPostsArgs = {
+  author?: InputMaybe<Scalars['String']>;
+  filter?: InputMaybe<Scalars['String']>;
   skip: Scalars['Float'];
+  sort?: InputMaybe<Scalars['String']>;
 };
 
 export type User = {
@@ -215,6 +224,13 @@ export type GetCommentsQueryVariables = Exact<{
 
 export type GetCommentsQuery = { __typename?: 'Query', getComments: { __typename?: 'CommentsResponse', totalCount: number, items: Array<{ __typename?: 'Comment', UID: string, block: any, createdAt: any, author: { __typename?: 'User', login: string, UID: string } }> } };
 
+export type GetUserQueryVariables = Exact<{
+  login: Scalars['String'];
+}>;
+
+
+export type GetUserQuery = { __typename?: 'Query', getUser: { __typename?: 'User', email: string, login: string, photo?: string | null, UID: string, updatedAt: any, createdAt: any } };
+
 export type LoginQueryVariables = Exact<{
   password: Scalars['String'];
   login: Scalars['String'];
@@ -233,14 +249,14 @@ export type GetPostQueryVariables = Exact<{
 }>;
 
 
-export type GetPostQuery = { __typename?: 'Query', post?: { __typename?: 'Post', UID: string, title: string, createdAt: any, block: any, votesCount: number, myVote?: number | null, author: { __typename?: 'User', UID: string, login: string } } | null };
+export type GetPostQuery = { __typename?: 'Query', post?: { __typename?: 'Post', UID: string, title: string, createdAt: any, block: any, votesCount: number, myVote?: number | null, commentsCount: number, author: { __typename?: 'User', UID: string, login: string } } | null };
 
 export type GetPostsQueryVariables = Exact<{
   skip: Scalars['Float'];
 }>;
 
 
-export type GetPostsQuery = { __typename?: 'Query', posts: { __typename?: 'GetPostResponse', totalCount: number, items: Array<{ __typename?: 'Post', UID: string, title: string, block: any, createdAt: any, votesCount: number, myVote?: number | null, author: { __typename?: 'User', UID: string, login: string } }> } };
+export type GetPostsQuery = { __typename?: 'Query', posts: { __typename?: 'GetPostResponse', totalCount: number, items: Array<{ __typename?: 'Post', UID: string, title: string, block: any, createdAt: any, votesCount: number, myVote?: number | null, commentsCount: number, author: { __typename?: 'User', UID: string, login: string } }> } };
 
 
 export const AddProfilePictureDocument = gql`
@@ -490,6 +506,46 @@ export function useGetCommentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetCommentsQueryHookResult = ReturnType<typeof useGetCommentsQuery>;
 export type GetCommentsLazyQueryHookResult = ReturnType<typeof useGetCommentsLazyQuery>;
 export type GetCommentsQueryResult = Apollo.QueryResult<GetCommentsQuery, GetCommentsQueryVariables>;
+export const GetUserDocument = gql`
+    query GetUser($login: String!) {
+  getUser(login: $login) {
+    email
+    login
+    photo
+    UID
+    updatedAt
+    createdAt
+  }
+}
+    `;
+
+/**
+ * __useGetUserQuery__
+ *
+ * To run a query within a React component, call `useGetUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserQuery({
+ *   variables: {
+ *      login: // value for 'login'
+ *   },
+ * });
+ */
+export function useGetUserQuery(baseOptions: Apollo.QueryHookOptions<GetUserQuery, GetUserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, options);
+      }
+export function useGetUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserQuery, GetUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, options);
+        }
+export type GetUserQueryHookResult = ReturnType<typeof useGetUserQuery>;
+export type GetUserLazyQueryHookResult = ReturnType<typeof useGetUserLazyQuery>;
+export type GetUserQueryResult = Apollo.QueryResult<GetUserQuery, GetUserQueryVariables>;
 export const LoginDocument = gql`
     query Login($password: String!, $login: String!) {
   login(password: $password, login: $login) {
@@ -578,6 +634,7 @@ export const GetPostDocument = gql`
     block
     votesCount
     myVote
+    commentsCount
     author {
       UID
       login
@@ -624,6 +681,7 @@ export const GetPostsDocument = gql`
       createdAt
       votesCount
       myVote
+      commentsCount
       author {
         UID
         login

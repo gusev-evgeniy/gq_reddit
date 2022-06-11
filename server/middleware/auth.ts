@@ -5,7 +5,6 @@ import { MyContext } from '../type';
 
 const Auth: MiddlewareFn = async ({ context }, next) => {
   const { req, res } = context as MyContext;
-
   try {
     const token = req.cookies.token;
     if (!token) throw { message: 'Unauthenticated' };

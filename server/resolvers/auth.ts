@@ -52,6 +52,16 @@ export default class Auth {
   }
 
   @Query(() => User)
+  async getUser(@Arg('login') login: string) {
+    try {
+      return await User.findOneByOrFail({ login });
+    } catch (error) {
+      console.log(error);
+      throw new Error('error');
+    }
+  }
+
+  @Query(() => User)
   @UseMiddleware(AuthMiddleware)
   async me(@Ctx() { res }: MyContext) {
     return res.locals.user;
@@ -114,7 +124,7 @@ export default class Auth {
     @Arg('picture', () => GraphQLUpload)
     { createReadStream, filename }: Upload
   ): Promise<boolean> {
-    console.log('filename', filename)
+    console.log('filename', filename);
     return new Promise(async (resolve, reject) =>
       createReadStream()
         .pipe(createWriteStream(__dirname + `/../images/${filename}`))

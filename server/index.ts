@@ -34,6 +34,8 @@ import { getDataFromJWT } from './utils/auth';
 // 3. use apollo for load images
 // 4. write quryBuilder(or raw query) for getPosts
 
+const PORT = 5000;
+
 const start = async () => {
   try {
     // await AppDataSource.initialize();
@@ -66,19 +68,20 @@ const start = async () => {
 
     const app = express();
 
-    // app.use(cors({
-    //   credentials: true,
-    //   origin: 'http://localhost:3000'
-    // }))
+    app.use(cors({
+      credentials: true,
+      origin: 'http://localhost:3000'
+    }))
 
     app.use(express.json());
     app.use(cookieParser());
+    app.use(express.static(__dirname + '/public'));
 
     const upload = multer({
       storage: multer.diskStorage({
-        destination: 'public/images',
+        destination: 'images/',
         filename: (_, file, callback) => {
-          callback(null, nanoid(6) + path.extname(file.originalname)); // e.g. jh34gh2v4y + .png
+          callback(null, Date.now() + '-' + file.originalname); 
         },
       }),
       fileFilter: (_, file: any, callback: FileFilterCallback) => {
@@ -95,7 +98,7 @@ const start = async () => {
       console.log('UID', UID);
       try {
         const type = req.body.type;
-        console.log(req.file);
+        console.log('1111', req.file);
 
         if (type !== 'photo' && type !== 'banner') {
           fs.unlinkSync(req.file.path);
@@ -114,7 +117,7 @@ const start = async () => {
         await user.save();
 
         if (oldImageUrn !== '') {
-          fs.unlinkSync(`public\\upload\\${oldImageUrn}`);
+          // fs.unlinkSync(`..\\public\\images\\${oldImageUrn}`);
         }
 
         return res.json(user);
@@ -123,8 +126,7 @@ const start = async () => {
         return res.status(500).json({ error: 'Something went wrong' });
       }
     });
-
-    const PORT = 5000;
+    app.use('/images', express.static(path.join(__dirname, '/images')))
 
     apolloServer.applyMiddleware({
       app,

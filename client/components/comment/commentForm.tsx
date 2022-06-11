@@ -5,6 +5,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { Data, useCreateCommentMutation } from '../../generated/graphql';
 import { useAppDispatch } from '../../store/hooks';
 import { commentsDefault } from '../../store/slices/comments';
+import { openPostDefault } from '../../store/slices/openPost';
 
 import { EditorProps } from '../../types/editor';
 import { SubmitButton } from '../dialogs/auth/submitButton';
@@ -29,14 +30,12 @@ export const CommentForm: FC<Props> = ({ postId }) => {
     createComment({
       variables: { block, post: { UID: postId } }
     });
-    setBlock([]);
   };
-
-  console.log('data', data);
-
+  
   useEffect(() => {
     if (data?.createComment) {
-      dispatch(commentsDefault());
+      setBlock([]);
+      dispatch(openPostDefault());
     }
 
   }, [data]);

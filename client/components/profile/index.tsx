@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { FC, useRef } from 'react';
 import Axios from 'axios';
 import Image from 'next/image';
 
@@ -8,11 +8,12 @@ import { ProfileWrapper, UserImage } from './styles';
 import add_photo from '../../images/add_photo.svg';
 import { useAppSelector } from '../../store/hooks';
 import { selectMe } from '../../store/slices/me';
+import { GetUserQuery } from '../../generated/graphql';
 
-export const Profile = () => {
+export const Profile: FC<GetUserQuery['getUser']> = ({ UID, photo, email, login, updatedAt, createdAt }) => {
   const inputFileRef = useRef<HTMLInputElement>(null);
 
-  const { data } = useAppSelector(selectMe);
+  const { data: me } = useAppSelector(selectMe);
 
   const uploadImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const [file] = inputFileRef.current?.files || [];
@@ -38,7 +39,7 @@ export const Profile = () => {
       <div className='images'>
         <div className='background_image'></div>
         <div className='user_image_wrapper'>
-          <UserImage backgroundImage={data?.photo ? data.photo : ''}>
+          <UserImage backgroundImage={photo ? photo : ''}>
             <label className='upload' htmlFor='inputTag'>
               <Image width='30px' height='30px' src={add_photo} alt='add_photo' />
               <input id='inputTag' type='file' onChange={uploadImage} ref={inputFileRef} hidden />
