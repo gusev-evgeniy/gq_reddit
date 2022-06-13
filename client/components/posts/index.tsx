@@ -6,28 +6,27 @@ import { useGetPostsLazyQuery } from '../../generated/graphql';
 import { Post } from './post';
 import { StyledPostItem } from './styled';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { selectPosts, setPosts } from '../../store/slices/posts';
+import { changeSort, PostState, selectPosts, setPosts } from '../../store/slices/posts';
+import { Sort } from '../sort';
 
 export const Posts = () => {
   const dispatch = useAppDispatch();
 
-  const { items, loaded, skip, totalCount } = useAppSelector(selectPosts);
+  const { items, loaded, totalCount, sort, filter } = useAppSelector(selectPosts);
   const router = useRouter();
 
-  const [getPosts, { loading, data, called, refetch }] = useGetPostsLazyQuery();
+  const [getPosts, { loading }] = useGetPostsLazyQuery({
+    onCompleted(data) {
+      dispatch(setPosts(data.posts));
+    },
+    fetchPolicy: 'no-cache',
+  });
 
   useEffect(() => {
     if (!loaded) {
-      if (called) refetch({ skip });
-      else getPosts({ variables: { skip } });
+      getPosts({ variables: { skip: 0, sort, filter } });
     }
   }, [loaded]);
-
-  useEffect(() => {
-    if (data?.posts) {
-      dispatch(setPosts(data.posts));
-    }
-  }, [data, dispatch]);
 
   useEffect(() => {
     window.addEventListener('scroll', listenToScroll);
@@ -36,31 +35,39 @@ export const Posts = () => {
     };
   }, []);
 
+  const onChangeSort = (sort: PostState['sort']) => {
+    dispatch(changeSort(sort));
+  };
+
   const listenToScroll = useDebouncedCallback(() => {
     const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
     const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
 
     const scrolled = Math.ceil((winScroll / height) * 100);
     if (scrolled >= 90 && items.length < totalCount) {
-        refetch({ skip });
-      }
+      getPosts({ variables: { skip: items.length, sort, filter } });
+    }
   }, 300);
-
-  if (loading || !loaded) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div>
-      {items.map(post => (
-        <StyledPostItem
-          key={post.UID}
-          style={{ cursor: 'pointer' }}
-          onClick={() => router.push(`post/${post.UID}`)}
-        >
-          <Post {...post} />
-        </StyledPostItem>
-      ))}
+      <Sort sortedBy={sort} onChange={onChangeSort} />
+
+      {loading || !loaded ? (
+        <div>Loading...</div>
+      ) : (
+        <>
+          {items.map(post => (
+            <StyledPostItem
+              key={post.UID}
+              style={{ cursor: 'pointer' }}
+              onClick={() => router.push(`post/${post.UID}`)}
+            >
+              <Post {...post} />
+            </StyledPostItem>
+          ))}
+        </>
+      )}
     </div>
   );
 };

@@ -11,17 +11,18 @@ export const StyledSort = styled.div`
   }
 `;
 
-export const StyledSortButton = styled(ButtonIcon)`
+export const StyledSortButton = styled(ButtonIcon)<{ selected: boolean }>`
   margin-right: 8px;
   padding: 6px 8px;
   border-radius: 20px;
+  background-color: ${({ selected }) => selected ? '#f6f7f8' : 'inherit'};
 
   :hover {
     background-color: #f6f7f8;
   }
 
   :active {
-    background-color:  #878A8C;
+    background-color: #878A8C;
   }
 `;
 

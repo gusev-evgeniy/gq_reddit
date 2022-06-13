@@ -1,5 +1,5 @@
-query GetPosts($skip: Float!) {
-  posts(skip: $skip) {
+query GetPosts($skip: Float!, $sort: String, $filter: String) {
+  posts(skip: $skip, sort: $sort, filter: $filter) {
     totalCount
     items {
       UID

@@ -253,6 +253,8 @@ export type GetPostQuery = { __typename?: 'Query', post?: { __typename?: 'Post',
 
 export type GetPostsQueryVariables = Exact<{
   skip: Scalars['Float'];
+  sort?: InputMaybe<Scalars['String']>;
+  filter?: InputMaybe<Scalars['String']>;
 }>;
 
 
@@ -671,8 +673,8 @@ export type GetPostQueryHookResult = ReturnType<typeof useGetPostQuery>;
 export type GetPostLazyQueryHookResult = ReturnType<typeof useGetPostLazyQuery>;
 export type GetPostQueryResult = Apollo.QueryResult<GetPostQuery, GetPostQueryVariables>;
 export const GetPostsDocument = gql`
-    query GetPosts($skip: Float!) {
-  posts(skip: $skip) {
+    query GetPosts($skip: Float!, $sort: String, $filter: String) {
+  posts(skip: $skip, sort: $sort, filter: $filter) {
     totalCount
     items {
       UID
@@ -704,6 +706,8 @@ export const GetPostsDocument = gql`
  * const { data, loading, error } = useGetPostsQuery({
  *   variables: {
  *      skip: // value for 'skip'
+ *      sort: // value for 'sort'
+ *      filter: // value for 'filter'
  *   },
  * });
  */

@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { FC, useEffect, useRef, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -17,25 +17,20 @@ import { SearchWrapper, OutlineNavButton, StyledNav, InputWithIcon } from './sty
 import { Menu } from '../contextMenu';
 import { useRouter } from 'next/router';
 import { useLogoutMutation } from '../../generated/graphql';
-
+import { applyFilter, changeFilter, setPostsDefaultState } from '../../store/slices/posts';
 
 export const Navigation: FC = () => {
   const dispatch = useAppDispatch();
   
-  const [ logOut,  ] = useLogoutMutation();
-
-  const [coord, setCoord] = useState<{ left: number, top: number } | null>(null); 
+  const [coord, setCoord] = useState<{ left: number; top: number } | null>(null);
   
   const buttonRef = useRef<HTMLDivElement | null>(null);
   
   const { push } = useRouter();
+  
   const { data } = useAppSelector(selectMe);
 
-  // useEffect(() => {
-  //   if (logOutData?.login) {
-      
-  //   }
-  // }, [logOutData])
+  const [logOut] = useLogoutMutation();
 
   const onSignUp = () => dispatch(setDialog('sign up'));
   const onLogIn = () => dispatch(setDialog('login'));
@@ -63,37 +58,59 @@ export const Navigation: FC = () => {
     setCoord({ left: left! + 15, top: bottom! + 10 });
   };
 
-  const items = data ? [
-    {
-      title: 'Profile',
-      action: () => onProfile()
-    },
-    {
-      title: 'Log Out',
-      action: () => onLogOut()
+  const items = data
+    ? [
+        {
+          title: 'Profile',
+          action: () => onProfile(),
+        },
+        {
+          title: 'Log Out',
+          action: () => onLogOut(),
+        },
+      ]
+    : [
+        {
+          title: 'Sign Up or Log In',
+          action: () => onLoginMenu(),
+        },
+      ];
+
+  const onChangeFilter = ({ target,  }: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(changeFilter(target.value));
+  };
+
+  const onApplyFilter = ({ key }: React.KeyboardEvent<HTMLInputElement>) => {
+    if (key === 'Enter') {
+      dispatch(applyFilter());
     }
-  ] : [
-    {
-      title: 'Sign Up or Log In',
-      action: () => onLoginMenu()
-    }
-  ];
+  };
+
+  const onClickLogo = () => {
+    dispatch(setPostsDefaultState());
+  };
 
   return (
     <StyledNav>
       <Link href='/'>
         <a>
-          <div className='logo-wrapper'>
+          <div className='logo-wrapper' onClick={onClickLogo}>
             <Image width='35px' height='35px' src={logo} alt='logo' className='logo' />
             <span className='title'>reddit</span>
           </div>
         </a>
       </Link>
+
       <SearchWrapper>
         <div className='search_icon'>
           <Image width='18px' height='18px' src={search} alt='search_icon' />
         </div>
-        <InputWithIcon type='text' placeholder='Search Reddit' />
+        <InputWithIcon
+          type='text'
+          placeholder='Search Reddit'
+          onChange={onChangeFilter}
+          onKeyDown={onApplyFilter}
+        />
       </SearchWrapper>
 
       <div className='buttons'>
@@ -116,7 +133,7 @@ export const Navigation: FC = () => {
         </div>
       </div>
 
-      {coord && <Menu { ...coord } items={items}/>}
+      {coord && <Menu {...coord} items={items} />}
     </StyledNav>
   );
 };

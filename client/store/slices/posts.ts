@@ -7,7 +7,6 @@ export interface PostState {
   items: GetPostsQuery['posts']['items'];
   totalCount: number;
   loaded: boolean;
-  skip: number;
   sort: 'new' | 'best';
   filter: string;
 }
@@ -15,7 +14,6 @@ export interface PostState {
 const initialState: PostState = {
   items: [],
   loaded: false,
-  skip: 0,
   totalCount: 0,
   sort: 'new',
   filter: ''
@@ -27,12 +25,8 @@ export const postsSlice = createSlice({
   reducers: {
     setPosts: (state, action: PayloadAction<GetPostsQuery['posts']>) => {
       state.items.push(...action.payload.items);
-      state.skip += action.payload.items.length;
       state.totalCount = action.payload.totalCount;
       state.loaded = true;
-    },
-    setPostsDefaultState: () => {
-      return initialState;
     },
     updatePost: (state, action: PayloadAction<VoteMutation['vote']>) => {
       state.items = state.items.map(item =>
@@ -40,17 +34,22 @@ export const postsSlice = createSlice({
       );
     },
     changeSort: (state, action: PayloadAction<PostState['sort']>) => {
-      state.sort = action.payload;
-      state.loaded = false;
+      return {...initialState, sort: action.payload};
     },
     changeFilter: (state, action: PayloadAction<string>) => {
-      state.filter = action.payload;
+      return {...state, filter: action.payload};
+    },
+    applyFilter: (state) => {
+      state.items = [];
       state.loaded = false;
+    },
+    setPostsDefaultState: () => {
+      return initialState;
     },
   },
 });
 
-export const { setPosts, setPostsDefaultState, updatePost, changeSort } = postsSlice.actions;
+export const { setPosts, setPostsDefaultState, updatePost, changeSort, changeFilter, applyFilter } = postsSlice.actions;
 
 export const selectPosts = (state: AppState) => state.posts;
 

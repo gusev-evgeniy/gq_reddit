@@ -1,15 +1,26 @@
-import React from 'react';import { StyledPaddingItem } from '../../styles';
+import React, { FC } from 'react';
+import { PostState } from '../../store/slices/posts';
+import { StyledPaddingItem } from '../../styles';
 import { StyledSort, StyledSortButton } from './styles';
 
-export const Sort = () => {
+type Props = {
+  sortedBy: PostState['sort'];
+  onChange: (sort: PostState['sort']) => void;
+};
+
+export const Sort: FC<Props> = ({ sortedBy, onChange }) => {
   return (
     <StyledPaddingItem>
       <StyledSort>
         <div className='buttons'>
-          <StyledSortButton>New</StyledSortButton>
-          <StyledSortButton>Hot</StyledSortButton>
+          <StyledSortButton onClick={() => onChange('new')} selected={sortedBy === 'new'}>
+            New
+          </StyledSortButton>
+          <StyledSortButton onClick={() => onChange('best')} selected={sortedBy === 'best'}>
+            Hot
+          </StyledSortButton>
         </div>
-        <StyledSortButton>Order</StyledSortButton>
+        {/* <StyledSortButton>Order</StyledSortButton> */}
       </StyledSort>
     </StyledPaddingItem>
   );

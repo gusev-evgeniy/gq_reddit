@@ -68,10 +68,10 @@ const start = async () => {
 
     const app = express();
 
-    app.use(cors({
-      credentials: true,
-      origin: 'http://localhost:3000'
-    }))
+    // app.use(cors({
+    //   credentials: true,
+    //   origin: 'http://localhost:3000'
+    // }))
 
     app.use(express.json());
     app.use(cookieParser());
@@ -98,7 +98,6 @@ const start = async () => {
       console.log('UID', UID);
       try {
         const type = req.body.type;
-        console.log('1111', req.file);
 
         if (type !== 'photo' && type !== 'banner') {
           fs.unlinkSync(req.file.path);

@@ -9,15 +9,16 @@ import {
   Resolver,
   UseMiddleware,
 } from 'type-graphql';
-import { FindManyOptions, Like } from 'typeorm';
 
 import PostEntity from '../entities/Post';
 import VoteEntity from '../entities/Vote';
+
 import AuthMiddleware from '../middleware/auth';
 import { MyContext } from '../type';
 import { getDataFromJWT } from '../utils/auth';
 import { extendsPostsByMyVote } from '../utils/post';
-import { Block } from './types';
+import { getPostsAndCount } from '../utils/query/posts';
+import { Block } from './graphTypes';
 
 @ObjectType()
 class GetPostResponse {
@@ -84,12 +85,11 @@ export default class Post {
 
           post.votesCount += correctValue * 2;
         } else {
-          await userVote.remove()
+          await userVote.remove();
 
           myVote = null;
           post.votesCount -= correctValue;
         }
-
       } else {
         const newVote = VoteEntity.create({
           postId: postUID.UID,
@@ -121,35 +121,17 @@ export default class Post {
     @Ctx() { req }: MyContext
   ) {
     try {
-      let obj: FindManyOptions<PostEntity> = {
-        relations: ['author'],
-        skip: skip || 0,
-        take: 10,
-      };
-      console.log('obj', obj)
-      if (filter) {
-        obj.where = [
-          { block: Like(`%${filter}%`) },
-          // { title: Like(`%${filter}%`) },
-        ]
-      }
-
-      if (!sort || sort === 'new') {
-        obj.order = { createdAt: 'DESC' }
-      }
-
-      if ( sort === 'best') {
-        obj.order = { votesCount: 'DESC' }
-      }
-
-      let [items, totalCount] = await PostEntity.findAndCount(obj);
+      console.log('sort', sort)
+      let [items, totalCount] = await getPostsAndCount({ filter, author, sort, skip });
 
       const { UID } = getDataFromJWT(req) || {};
 
       if (UID) {
         items = await extendsPostsByMyVote(items, UID);
       }
-
+      console.log('22222', items)
+      console.log('totalCount', totalCount)
+      
       return { items, totalCount };
     } catch (error) {
       console.log('error', error);

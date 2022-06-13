@@ -15,8 +15,7 @@ import Post from '../entities/Post';
 import User from '../entities/User';
 import Auth from '../middleware/auth';
 import { MyContext } from '../type';
-import { Block } from './types';
-import AppDataSource from '../data-source';
+import { Block } from './graphTypes';
 @ObjectType()
 class CommentsResponse {
   @Field(type => [CommentEntity])

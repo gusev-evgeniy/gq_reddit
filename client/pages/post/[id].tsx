@@ -24,8 +24,7 @@ const PostPage = () => {
   const { id } = router.query;
 
   const [getPost, { loading, data }] = useGetPostLazyQuery();
-  console.log('data', data);
-  console.log('id', id);
+
   useEffect(() => {
     if (!loaded) {
       getPost({ variables: { uid: id as string } });
