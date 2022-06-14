@@ -31,4 +31,4 @@ export const { setComments, commentsDefault } = commentsSlice.actions;
 
 export const selectComments = (state: AppState) => state.comments;
 
-export const CommentsReducer = commentsSlice.reducer;
+export const commentsReducer = commentsSlice.reducer;

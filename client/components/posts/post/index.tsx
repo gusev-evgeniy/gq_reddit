@@ -17,7 +17,7 @@ import { updatePost } from '../../../store/slices/posts';
 
 type Props = GetPostQuery['post'] & { isLarge?: boolean };
 
-export const Post: FC<Props> = memo(({ title, block, createdAt, isLarge, author, UID, votesCount, myVote }) => {
+export const Post: FC<Props> = memo(({ title, block, createdAt, isLarge, author, UID, votesCount, myVote, commentsCount }) => {
   const dispatch = useAppDispatch();
 
   const [vote, { data }] = useVoteMutation();
@@ -70,7 +70,7 @@ export const Post: FC<Props> = memo(({ title, block, createdAt, isLarge, author,
           <h2 className='title'>{title}</h2>
           <Content isLarge={isLarge} content={block} />
         </div>
-        <PostFooter isLarge={isLarge} />
+        <PostFooter isLarge={isLarge} commentsCount={commentsCount}/>
       </div>
     </>
   );

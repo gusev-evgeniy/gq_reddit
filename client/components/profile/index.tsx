@@ -9,10 +9,13 @@ import add_photo from '../../images/add_photo.svg';
 import { useAppSelector } from '../../store/hooks';
 import { selectMe } from '../../store/slices/me';
 import { GetUserQuery } from '../../generated/graphql';
+import { useRouter } from 'next/router';
 
 export const Profile: FC<GetUserQuery['getUser']> = ({ UID, photo, email, login, updatedAt, createdAt }) => {
   const inputFileRef = useRef<HTMLInputElement>(null);
 
+  const router = useRouter();
+  
   const { data: me } = useAppSelector(selectMe);
 
   const uploadImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,6 +35,10 @@ export const Profile: FC<GetUserQuery['getUser']> = ({ UID, photo, email, login,
         console.log(err);
       }
     }
+  };
+
+  const onNewPost = () => {
+    router.push('/submit');
   };
 
   return (
@@ -60,7 +67,7 @@ export const Profile: FC<GetUserQuery['getUser']> = ({ UID, photo, email, login,
             <p>March 11, 2021</p>
           </div>
         </div>
-        <MainButton width='100%'>New Post</MainButton>
+        <MainButton width='100%' onClick={onNewPost}>New Post</MainButton>
       </div>
     </ProfileWrapper>
   );

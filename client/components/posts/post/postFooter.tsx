@@ -7,14 +7,15 @@ import bookmark from '../../../images/bookmark.svg';
 
 type Props = {
   isLarge?: boolean;
+  commentsCount: number;
 };
 
-export const PostFooter: FC<Props> = ({ isLarge }) => {
+export const PostFooter: FC<Props> = ({ isLarge, commentsCount }) => {
   return (
     <StyledPostFooter>
       <PostFooterButton disabled={isLarge}>
         <Image width='18px' height='18px' src={comment} alt='search_icon' />
-        <span>147</span>
+        <span>{commentsCount}</span>
         <span>Comments</span>
       </PostFooterButton>
       <PostFooterButton>
