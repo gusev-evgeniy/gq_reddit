@@ -3,7 +3,7 @@ import React, { FC, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { selectMe } from '../../store/slices/me';
+import { selectMe, setMe } from '../../store/slices/me';
 import { setDialog } from '../../store/slices/dialog';
 
 import logo from '../../images/logo.svg';
@@ -28,19 +28,23 @@ export const Navigation: FC = () => {
   
   const { push } = useRouter();
   
-  const { data } = useAppSelector(selectMe);
+  const { data: myData } = useAppSelector(selectMe);
 
   const [logOut] = useLogoutMutation();
 
   const onSignUp = () => dispatch(setDialog('sign up'));
   const onLogIn = () => dispatch(setDialog('login'));
+
   const onProfile = () => {
-    push(`/user/${data?.login}`);
+    push(`/user/${myData?.login}`);
     setCoord(null);
   };
 
   const onLogOut = () => {
     logOut();
+    dispatch(setPostsDefaultState());
+    dispatch(setMe(null));
+    push('/');
     setCoord(null);
   };
 
@@ -58,7 +62,7 @@ export const Navigation: FC = () => {
     setCoord({ left: left! + 15, top: bottom! + 10 });
   };
 
-  const items = data
+  const items = myData
     ? [
         {
           title: 'Profile',
@@ -114,7 +118,7 @@ export const Navigation: FC = () => {
       </SearchWrapper>
 
       <div className='buttons'>
-        {!data && (
+        {!myData && (
           <>
             <OutlineNavButton width='40%' onClick={onLogIn}>
               Log In

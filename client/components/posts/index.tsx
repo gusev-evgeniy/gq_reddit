@@ -1,12 +1,12 @@
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
 import { useGetPostsLazyQuery } from '../../generated/graphql';
 import { Post } from './post';
 import { StyledPostItem } from './styled';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { changeSort, PostState, selectPosts, setPosts } from '../../store/slices/posts';
+import { changeSort, postLoaded, PostState, selectPosts, setPosts, setPostsDefaultState } from '../../store/slices/posts';
 import { Sort } from '../sort';
 
 export const Posts = () => {
@@ -15,23 +15,30 @@ export const Posts = () => {
   const { items, loaded, totalCount, sort, filter } = useAppSelector(selectPosts);
   const router = useRouter();
 
-  const [getPosts, { loading }] = useGetPostsLazyQuery({
+  const [getPosts, { loading, refetch }] = useGetPostsLazyQuery({
     onCompleted(data) {
       dispatch(setPosts(data.posts));
     },
     fetchPolicy: 'no-cache',
   });
-
+  
   useEffect(() => {
     if (!loaded) {
       getPosts({ variables: { skip: 0, sort, filter } });
+      dispatch(postLoaded());
     }
+
+    // return () => {
+    //   dispatch(setPostsDefaultState());
+    // };
   }, [loaded]);
 
   useEffect(() => {
     window.addEventListener('scroll', listenToScroll);
     return () => {
       window.removeEventListener('scroll', listenToScroll);
+      
+      dispatch(setPostsDefaultState());
     };
   }, []);
 
@@ -45,7 +52,7 @@ export const Posts = () => {
 
     const scrolled = Math.ceil((winScroll / height) * 100);
     if (scrolled >= 90 && items.length < totalCount) {
-      getPosts({ variables: { skip: items.length, sort, filter } });
+      refetch({ skip: items.length });
     }
   }, 300);
 

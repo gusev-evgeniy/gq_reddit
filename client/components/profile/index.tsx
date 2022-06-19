@@ -11,14 +11,21 @@ import { selectMe } from '../../store/slices/me';
 import { GetUserQuery } from '../../generated/graphql';
 import { useRouter } from 'next/router';
 
-export const Profile: FC<GetUserQuery['getUser']> = ({ UID, photo, email, login, updatedAt, createdAt }) => {
+import dayjs from 'dayjs';
+
+export const Profile: FC<GetUserQuery['getUser']> = ({ UID, photo, login, createdAt }) => {
   const inputFileRef = useRef<HTMLInputElement>(null);
 
   const router = useRouter();
-  
-  const { data: me } = useAppSelector(selectMe);
 
-  const uploadImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const { data: me } = useAppSelector(selectMe);
+  const { UID: myUID } = me || {};
+
+  const isMe = UID === myUID;
+
+  const date = dayjs(createdAt).format('MMMM D, YYYY');
+
+  const uploadImage = async () => {
     const [file] = inputFileRef.current?.files || [];
 
     if (file) {
@@ -38,7 +45,9 @@ export const Profile: FC<GetUserQuery['getUser']> = ({ UID, photo, email, login,
   };
 
   const onNewPost = () => {
-    router.push('/submit');
+    router.push({
+      pathname: '/submit',
+    });
   };
 
   return (
@@ -47,16 +56,18 @@ export const Profile: FC<GetUserQuery['getUser']> = ({ UID, photo, email, login,
         <div className='background_image'></div>
         <div className='user_image_wrapper'>
           <UserImage backgroundImage={photo ? photo : ''}>
-            <label className='upload' htmlFor='inputTag'>
-              <Image width='30px' height='30px' src={add_photo} alt='add_photo' />
-              <input id='inputTag' type='file' onChange={uploadImage} ref={inputFileRef} hidden />
-            </label>
+            {isMe && (
+              <label className='upload' htmlFor='inputTag'>
+                <Image width='30px' height='30px' src={add_photo} alt='add_photo' />
+                <input id='inputTag' type='file' onChange={uploadImage} ref={inputFileRef} hidden />
+              </label>
+            )}
           </UserImage>
         </div>
       </div>
-      
+
       <div className='data'>
-        <p className='name'>u/Nick</p>
+        <p className='name'>u/{login}</p>
         <div className='info'>
           <div className='info_item'>
             <h6>Karma</h6>
@@ -64,10 +75,19 @@ export const Profile: FC<GetUserQuery['getUser']> = ({ UID, photo, email, login,
           </div>
           <div className='info_day'>
             <h6>Cake day</h6>
-            <p>March 11, 2021</p>
+            <p>{date}</p>
           </div>
         </div>
-        <MainButton width='100%' onClick={onNewPost}>New Post</MainButton>
+
+        {isMe ? (
+          <MainButton width='100%' onClick={onNewPost}>
+            New Post
+          </MainButton>
+        ) : (
+          <MainButton width='100%' onClick={() => console.log('chat')}>
+            Chat
+          </MainButton>
+        )}
       </div>
     </ProfileWrapper>
   );

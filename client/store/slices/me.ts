@@ -12,7 +12,7 @@ export const meSlice = createSlice({
   name: 'me',
   initialState,
   reducers: {
-    setMe: (state, action: PayloadAction<MeQuery['me']>) => {
+    setMe: (state, action: PayloadAction<MeQuery['me'] | null>) => {
       state.data = action.payload;
     },
   },

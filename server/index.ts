@@ -68,18 +68,17 @@ const start = async () => {
 
     const app = express();
 
-    // app.use(cors({
-    //   credentials: true,
-    //   origin: 'http://localhost:3000'
-    // }))
+    app.use(cors({
+      credentials: true,
+      origin: 'http://localhost:3000'
+    }))
 
     app.use(express.json());
     app.use(cookieParser());
-    app.use(express.static(__dirname + '/public'));
 
     const upload = multer({
       storage: multer.diskStorage({
-        destination: 'images/',
+        destination: 'upload/',
         filename: (_, file, callback) => {
           callback(null, Date.now() + '-' + file.originalname); 
         },
@@ -95,7 +94,7 @@ const start = async () => {
 
     app.post('/upload', upload.single('file'), async (req, res) => {
       const { UID } = getDataFromJWT(req) as UserEntity;
-      console.log('UID', UID);
+
       try {
         const type = req.body.type;
 
@@ -105,7 +104,7 @@ const start = async () => {
         }
 
         const user = await UserEntity.findOneBy({ UID });
-        console.log('user', user);
+
         let oldImageUrn: string = '';
 
         if (type === 'photo') {
@@ -125,13 +124,14 @@ const start = async () => {
         return res.status(500).json({ error: 'Something went wrong' });
       }
     });
-    app.use('/images', express.static(path.join(__dirname, '/images')))
 
     apolloServer.applyMiddleware({
       app,
       cors: { credentials: true, origin: 'http://localhost:3000' },
       // cors: { credentials: true, origin: 'https://studio.apollographql.com' }
     });
+
+    app.use(express.static('upload'));
 
     app.listen(PORT, () => console.log(`App started on port ${PORT}`));
   } catch (error) {

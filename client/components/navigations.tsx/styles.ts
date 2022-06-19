@@ -23,8 +23,6 @@ export const StyledNav = styled.nav`
       margin-left: 10px;
       font-weight: 600;
       font-size: 22px;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
   }
 

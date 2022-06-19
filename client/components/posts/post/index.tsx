@@ -21,7 +21,6 @@ export const Post: FC<Props> = memo(({ title, block, createdAt, isLarge, author,
   const dispatch = useAppDispatch();
 
   const [vote, { data }] = useVoteMutation();
-  console.log('data', data);
 
   useEffect(() => {
     if (data?.vote) {

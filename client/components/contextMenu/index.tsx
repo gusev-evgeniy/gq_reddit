@@ -12,7 +12,6 @@ type Props = {
 };
 
 export const Menu: FC<Props> = ({ left, top, items }) => {
-  console.log('left, top', left, top);
   return (
     <StyledMenu left={left} top={top}>
       <ul>

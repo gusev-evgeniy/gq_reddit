@@ -124,7 +124,7 @@ export default class Auth {
     @Arg('picture', () => GraphQLUpload)
     { createReadStream, filename }: Upload
   ): Promise<boolean> {
-    console.log('filename', filename);
+
     return new Promise(async (resolve, reject) =>
       createReadStream()
         .pipe(createWriteStream(__dirname + `/../images/${filename}`))

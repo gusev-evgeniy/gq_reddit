@@ -12,6 +12,7 @@ import { DialogProps } from '../type';
 import { AlertMessage, AuthButtonWrapper, FormInput } from '../styles';
 import { useAppDispatch } from '../../../store/hooks';
 import { setMe } from '../../../store/slices/me';
+import { setPostsDefaultState } from '../../../store/slices/posts';
 
 
 const nameValidateMessage = 'Username must be between 3 and 20 characters';
@@ -35,18 +36,17 @@ export const Login: FC<DialogProps> = ({ onClose }) => {
   } = useForm<LoginQueryVariables>({
     resolver: yupResolver(schema),
   });
-  const [login, { loading, data, error: loginError }] = useLoginLazyQuery();
+  
+  const [login, { loading, data, error: loginError }] = useLoginLazyQuery({
+    onCompleted(data) {
+      if (data.login) dispatch(setMe(data.login));
+      dispatch(setPostsDefaultState());
+      onClose();
+    },
+  });
 
   useEffect(() => {
-    if (loginError) {
-      setError(true);
-    }
-
-    if (!!data?.login && data?.login !== null ) {
-      dispatch(setMe(data.login));
-      onClose();
-    }
-  
+    if (loginError) setError(true);
   }, [data, loginError]);
   
   const onSubmit = (formData: LoginQueryVariables) => {

@@ -82,8 +82,9 @@ export const TitleTextArea = styled.div`
 
   textarea {
     resize: none;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 16px;
+    font-weight: 500;
     color: #1c1c1c;
     width: 100%;
     border: 1px solid #edeff1;

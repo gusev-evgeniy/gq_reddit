@@ -65,7 +65,7 @@ export default class Post {
   }
 
   @UseMiddleware(AuthMiddleware)
-  @Mutation(() => PostEntity)
+  @Mutation(() => PostEntity, { nullable: true })
   async vote(
     @Arg('value', { nullable: false }) value: number,
     @Arg('postUID', { nullable: false }) postUID: VotePostInput,
@@ -74,6 +74,7 @@ export default class Post {
     try {
       const correctValue = value > 0 ? 1 : -1;
 
+      console.log('res.locals.user.UID', res.locals.user.UID)
       let userVote = await VoteEntity.findOneBy({ userId: res.locals.user.UID, postId: postUID.UID });
       let post = await PostEntity.findOneBy({ UID: postUID.UID });
       let myVote = correctValue;
@@ -121,7 +122,6 @@ export default class Post {
     @Ctx() { req }: MyContext
   ) {
     try {
-      console.log('sort', sort)
       let [items, totalCount] = await getPostsAndCount({ filter, author, sort, skip });
 
       const { UID } = getDataFromJWT(req) || {};
@@ -129,8 +129,6 @@ export default class Post {
       if (UID) {
         items = await extendsPostsByMyVote(items, UID);
       }
-      console.log('22222', items)
-      console.log('totalCount', totalCount)
       
       return { items, totalCount };
     } catch (error) {

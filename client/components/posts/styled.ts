@@ -11,6 +11,10 @@ export const StyledPostSource = styled.div`
   .body_wrapper {
     padding: 12px 12px 2px 12px;
     width: calc(100% - 40px);
+
+    .title {
+      overflow: auto;
+    }
   }
 `;
 

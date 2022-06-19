@@ -26,6 +26,8 @@ export const postsSlice = createSlice({
     setPosts: (state, action: PayloadAction<GetPostsQuery['posts']>) => {
       state.items.push(...action.payload.items);
       state.totalCount = action.payload.totalCount;
+    },
+    postLoaded: (state) => {
       state.loaded = true;
     },
     updatePost: (state, action: PayloadAction<VoteMutation['vote']>) => {
@@ -49,7 +51,7 @@ export const postsSlice = createSlice({
   },
 });
 
-export const { setPosts, setPostsDefaultState, updatePost, changeSort, changeFilter, applyFilter } = postsSlice.actions;
+export const { setPosts, setPostsDefaultState, updatePost, changeSort, changeFilter, applyFilter, postLoaded } = postsSlice.actions;
 
 export const selectPosts = (state: AppState) => state.posts;
 

@@ -6,7 +6,7 @@ import { OutputBlockData } from '@editorjs/editorjs';
 import { EditorProps } from '../../types/editor';
 
 import { EditorForm, FormWrapper, TitleTextArea } from './styles';
-import { useCreatePostMutation } from '../../generated/graphql';
+import { Block, useCreatePostMutation } from '../../generated/graphql';
 import { SubmitButton } from '../dialogs/auth/submitButton';
 import { useRouter } from 'next/router';
 import { useAppDispatch } from '../../store/hooks';
@@ -27,20 +27,19 @@ export const Form = () => {
   const router = useRouter();
 
   const [setCreate, { loading, data, error }] = useCreatePostMutation();
-  console.log('data', data);
 
   if (data?.createPost) {
     dispatch(openPostDefault());
     router.push(`/post/${data?.createPost.UID}`);
   }
 
-  const onKeyChange = ({ target }: any) => {
-    setTitle(target.value);
+  const onKeyChange = ({ target }: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    setTitle((target as HTMLTextAreaElement).value);
   };
 
   const onSubmit = () => {
     setCreate({
-      variables: { title, block: blocks }
+      variables: { title, block: blocks as Block[] }
     });
   };
 

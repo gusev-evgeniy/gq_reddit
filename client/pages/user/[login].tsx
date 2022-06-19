@@ -8,9 +8,7 @@ import { Profile } from '../../components/profile';
 import { PostsEmpty } from '../../components/posts/postsEmpty';
 import {
   useGetPostsLazyQuery,
-  useGetPostsQuery,
   useGetUserLazyQuery,
-  useGetUserQuery,
 } from '../../generated/graphql';
 import {
   selectProfile,
@@ -44,15 +42,17 @@ const User = () => {
   });
 
   useEffect(() => {
-    getUser({ variables: { login: login as string } });
-    getPosts({ variables: { skip: 0, author: login as string } });
-  }, [loaded]);
+    if (!loaded) {
+      getUser({ variables: { login: login as string } });
+      getPosts({ variables: { skip: 0, author: login as string } });
+    }
+  }, [loaded, login]);
 
   useEffect(() => {
     return () => {
       dispatch(setProfileDefaultState());
     };
-  }, []);
+  }, [login]);
 
   if (loading || !loaded) {
     return (
@@ -73,7 +73,7 @@ const User = () => {
               <StyledPostItem
                 key={post.UID}
                 style={{ cursor: 'pointer' }}
-                onClick={() => router.push(`post/${post.UID}`, undefined, { shallow: true })}
+                onClick={() => router.replace(`/post/${post.UID}`)}
               >
                 <Post {...post} />
               </StyledPostItem>
