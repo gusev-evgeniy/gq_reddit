@@ -1,7 +1,6 @@
-import Link from 'next/link';
 import React, { FC } from 'react';
 
-import { Ava, MainButton } from '../../../styles';
+import { Ava } from '../../../styles';
 import { StyledPostHeader } from '../styled';
 import { getRelativeDate } from '../../../utils/date';
 import { useRouter } from 'next/router';
@@ -11,6 +10,7 @@ type Props = {
   author: {
     UID: string;
     login: string;
+    photo?: string | null;
   };
   group?: {
     UID: string;
@@ -30,14 +30,13 @@ export const PostHeader: FC<Props> = ({ createdAt, author, group }) => {
     });
   };
 
-
   return (
     <StyledPostHeader>
       <div className='info'>
         <div className='ava_wrapper'>
-          <Ava />
+          <Ava backgroundImage={ author.photo ? author.photo : undefined}/>
         </div>
-        <p className='group'>r/wallStreet</p>
+        {/* <p className='group'>r/wallStreet</p> */}
         <span className='dot'> &#8226;</span>
         <p className='author'>
           Posted by

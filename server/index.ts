@@ -8,8 +8,6 @@ import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 import cookieParser from 'cookie-parser';
-import fs from 'fs';
-import sharp from 'sharp';
 import cors from 'cors';
 import PostEntity from './entities/Post';
 import UserEntity from './entities/User';
@@ -20,19 +18,6 @@ import Auth from './resolvers/auth';
 import Post from './resolvers/post';
 import Comment from './resolvers/comment';
 import Vote from './entities/Vote';
-import { uploader } from './utils/uploader';
-import multer, { FileFilterCallback } from 'multer';
-import path from 'path';
-import { nanoid } from 'nanoid';
-
-import AuthMiddleware from './middleware/auth';
-import { getDataFromJWT } from './utils/auth';
-
-//TODO
-// 1. Add transaction in createComment;
-// 2. Connect database through AppDataSource.initialize();
-// 3. use apollo for load images
-// 4. write quryBuilder(or raw query) for getPosts
 
 const PORT = 5000;
 
@@ -75,55 +60,6 @@ const start = async () => {
 
     app.use(express.json());
     app.use(cookieParser());
-
-    const upload = multer({
-      storage: multer.diskStorage({
-        destination: 'upload/',
-        filename: (_, file, callback) => {
-          callback(null, Date.now() + '-' + file.originalname); 
-        },
-      }),
-      fileFilter: (_, file: any, callback: FileFilterCallback) => {
-        if (file.mimetype == 'image/jpeg' || file.mimetype == 'image/png') {
-          callback(null, true);
-        } else {
-          callback(new Error('Not an image'));
-        }
-      },
-    });
-
-    app.post('/upload', upload.single('file'), async (req, res) => {
-      const { UID } = getDataFromJWT(req) as UserEntity;
-
-      try {
-        const type = req.body.type;
-
-        if (type !== 'photo' && type !== 'banner') {
-          fs.unlinkSync(req.file.path);
-          return res.status(400).json({ error: 'Invalid type' });
-        }
-
-        const user = await UserEntity.findOneBy({ UID });
-
-        let oldImageUrn: string = '';
-
-        if (type === 'photo') {
-          oldImageUrn = user.photo ?? '';
-          user.photo = req.file.filename;
-        }
-
-        await user.save();
-
-        if (oldImageUrn !== '') {
-          // fs.unlinkSync(`..\\public\\images\\${oldImageUrn}`);
-        }
-
-        return res.json(user);
-      } catch (err) {
-        console.log(err);
-        return res.status(500).json({ error: 'Something went wrong' });
-      }
-    });
 
     apolloServer.applyMiddleware({
       app,

@@ -1,5 +1,4 @@
 import React, { FC, useRef } from 'react';
-import Axios from 'axios';
 import Image from 'next/image';
 
 import { MainButton } from '../../styles';
@@ -8,39 +7,46 @@ import { ProfileWrapper, UserImage } from './styles';
 import add_photo from '../../images/add_photo.svg';
 import { useAppSelector } from '../../store/hooks';
 import { selectMe } from '../../store/slices/me';
-import { GetUserQuery } from '../../generated/graphql';
+import { GetUserQuery, useUpdateUserMutation } from '../../generated/graphql';
 import { useRouter } from 'next/router';
 
 import dayjs from 'dayjs';
+
+const API_KEY = ''; // add
 
 export const Profile: FC<GetUserQuery['getUser']> = ({ UID, photo, login, createdAt }) => {
   const inputFileRef = useRef<HTMLInputElement>(null);
 
   const router = useRouter();
 
+  const [updateUser, { data }] = useUpdateUserMutation(); //update Profile
+
   const { data: me } = useAppSelector(selectMe);
   const { UID: myUID } = me || {};
 
   const isMe = UID === myUID;
-
   const date = dayjs(createdAt).format('MMMM D, YYYY');
 
   const uploadImage = async () => {
     const [file] = inputFileRef.current?.files || [];
 
-    if (file) {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('type', 'photo');
+    if (!file) {
+      return;
+    }
 
-      try {
-        await Axios.post<any>(`http://localhost:5000/upload`, formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-          withCredentials: true,
-        });
-      } catch (err) {
-        console.log(err);
-      }
+    const data = new FormData();
+    data.append('file', file);
+    data.append('upload_preset', 'reddit');
+
+    try {
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${API_KEY}/image/upload`, {
+        method: 'POST',
+        body: data,
+      });
+      const file = await res.json();
+      updateUser({ variables: { photo: file.secure_url } });
+    } catch (err) {
+      console.log(err);
     }
   };
 

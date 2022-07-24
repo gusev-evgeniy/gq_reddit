@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { OutlineNavButton } from '../navigations.tsx/styles';
+import { OutlineNavButton } from '../navigations/styles';
 
 import { MainButton } from '../../styles';
 import { StyledCommentOffer } from './styles';

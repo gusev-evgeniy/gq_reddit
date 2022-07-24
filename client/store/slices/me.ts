@@ -8,13 +8,18 @@ const initialState = {
   loaded: false,
 };
 
+type State = typeof initialState;
+
 export const meSlice = createSlice({
   name: 'me',
   initialState,
   reducers: {
-    setMe: (state, action: PayloadAction<MeQuery['me'] | null>) => {
+    setMe: (state, action: PayloadAction<State['data']>) => {
       state.data = action.payload;
     },
+    updateMe: (state, action: PayloadAction<Partial<State['data']>>) => {
+      state = {...state, ...action.payload };
+    }
   },
   extraReducers: {
     [HYDRATE]: (state, action) => {

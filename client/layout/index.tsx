@@ -8,7 +8,8 @@ import { useMeQuery } from '../generated/graphql';
 
 import useIsomorphicLayoutEffect from '../hook/useIsomorphicLayoutEffect';
 import { Dialogs } from '../components/dialogs';
-import { Navigation } from '../components/navigations.tsx';
+import { Navigation } from '../components/navigations';
+import { Chat } from '../components/chat';
 
 
 type Props = {
@@ -40,6 +41,7 @@ const Layout: FC<Props> = ({ children }) => {
       <Navigation />
       <main>{children}</main>
       <Dialogs />
+      <Chat />
     </>
   );
 };

@@ -12,6 +12,7 @@ query GetPosts($skip: Float!, $sort: String, $filter: String, $author: String) {
       author {
         UID
         login
+        photo
       }
     }
   }

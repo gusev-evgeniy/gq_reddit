@@ -26,7 +26,7 @@
   "include": [
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "components/navigations"  ],
   "exclude": [
     "node_modules"
   ]

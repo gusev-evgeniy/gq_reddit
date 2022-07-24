@@ -20,11 +20,13 @@ export const StyledTopicName = styled.p`
   padding-bottom: 10px;
 `;
 
-export const Ava = styled.div`
+export const Ava = styled.div<{ backgroundImage?: string }>`
   border-radius: 100%;
   width: 100%;
   height: 100%;
   background-color: #ccc;
+  background-size: cover;
+  background-image: ${({ backgroundImage }) => `url(${backgroundImage})` || ''};
 `;
 
 export const MainInput = styled.input`

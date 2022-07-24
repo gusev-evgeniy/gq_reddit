@@ -88,8 +88,8 @@ export const StyledPostHeader = styled.div`
     align-items: center;
 
     .ava_wrapper {
-      width: 24px;
-      height: 24px;
+      width: 30px;
+      height: 30px;
       margin-right: 3px;
     }
 

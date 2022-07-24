@@ -10,6 +10,9 @@ export const StyledNav = styled.nav`
   display: flex;
   justify-content: space-around;
   align-items: center;
+  position: fixed;
+  top: 0;
+  z-index: 1;
 
   .logo-wrapper {
     display: flex;

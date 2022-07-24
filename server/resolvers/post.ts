@@ -123,7 +123,7 @@ export default class Post {
   ) {
     try {
       let [items, totalCount] = await getPostsAndCount({ filter, author, sort, skip });
-
+      console.log('items', items)
       const { UID } = getDataFromJWT(req) || {};
 
       if (UID) {

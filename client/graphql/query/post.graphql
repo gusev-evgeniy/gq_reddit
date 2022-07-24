@@ -10,6 +10,7 @@ query GetPost($uid: String!) {
     author {
       UID
       login
+      photo
     }
   }
 }

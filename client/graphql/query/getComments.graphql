@@ -3,7 +3,7 @@ query GetComments($author: UserInput, $post: PostInput) {
     totalCount,
     items {
       author {
-        login, UID
+        login, UID, photo
       },
       UID, block, createdAt
     }

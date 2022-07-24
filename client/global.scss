@@ -23,7 +23,9 @@ body {
 main {
   width: 90%;
   max-width: 1248px;
-  margin: 0 auto;
+  min-height: calc(100vh - 87px);
+  margin: 59px auto 0 auto;
+
 
   .sub {
     width: 310px;

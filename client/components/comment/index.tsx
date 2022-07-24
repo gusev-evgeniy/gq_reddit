@@ -18,7 +18,7 @@ export const Comment: FC<GetCommentsQuery['getComments']['items'][0]> = ({ autho
     <StyledCommentItem>
       <div className='ava_section'>
         <div className='ava_wrapper'>
-          <Ava />
+          <Ava backgroundImage={author.photo ? author.photo : undefined}/>
         </div>
       </div>
       <div className='data_section'>

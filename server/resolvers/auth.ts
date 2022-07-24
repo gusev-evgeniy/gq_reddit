@@ -68,6 +68,17 @@ export default class Auth {
   }
 
   @Mutation(() => User)
+  @UseMiddleware(AuthMiddleware)
+  async updateUser(@Arg('photo') photo: string, @Ctx() { res }: MyContext) {
+    try {
+      res.locals.user.photo = photo;
+      const user = await User.save(res.locals.user);
+      console.log('user', user);
+      return user;
+    } catch (error) {}
+  }
+
+  @Mutation(() => User)
   async registr(
     @Arg('email', { nullable: false }) email: string,
     @Arg('login', { nullable: false }) login: string,
@@ -116,20 +127,5 @@ export default class Auth {
     );
 
     return 'Success';
-  }
-
-  // @UseMiddleware(AuthMiddleware)
-  @Mutation(() => Boolean)
-  async addProfilePicture(
-    @Arg('picture', () => GraphQLUpload)
-    { createReadStream, filename }: Upload
-  ): Promise<boolean> {
-
-    return new Promise(async (resolve, reject) =>
-      createReadStream()
-        .pipe(createWriteStream(__dirname + `/../images/${filename}`))
-        .on('finish', () => resolve(true))
-        .on('error', () => reject(false))
-    );
   }
 }

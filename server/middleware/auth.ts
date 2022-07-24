@@ -7,13 +7,10 @@ const Auth: MiddlewareFn = async ({ context }, next) => {
   const { req, res } = context as MyContext;
   try {
     const token = req.cookies.token;
-    console.log('token', token);
     if (!token) throw { message: 'Unauthenticated' };
 
     const { login }: any = jwt.verify(token, process.env.JWT_SECRET!);
-    console.log('login', login);
     const user = await UserEntity.findOneBy({ login });
-    console.log('user', user);
 
     if (!user) throw { message: 'Unauthenticated' };
 

@@ -5,7 +5,6 @@ import '../global.scss';
 
 import Layout from '../layout';
 import { wrapper } from '../store/store';
-import { Dialogs } from '../components/dialogs';
 import { client } from '../api';
 import { ApolloProvider } from '@apollo/client';
 
@@ -19,7 +18,6 @@ function MyApp({ Component, pageProps }: AppProps) {
         <Layout>
           <>
             <Component {...pageProps} />
-            <Dialogs />
           </>
         </Layout>
       </ApolloProvider>
