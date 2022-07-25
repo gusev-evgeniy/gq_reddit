@@ -99,6 +99,7 @@ export const FormInput = styled.div<{ isError: boolean }>`
     border-color: ${({ isError }) => (isError ? '#ea0027' : 'rgba(0, 0, 0, 0.1)')};
 
     :hover ~ label,
+    :focus ~ label,
     :not(:placeholder-shown) ~ label {
       background-color: inherit;
       font-size: 8px;

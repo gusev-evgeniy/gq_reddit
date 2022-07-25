@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { AppState } from '../store';
-import { GetPostQuery } from '../../generated/graphql';
+import { GetPostQuery, VoteMutation } from '../../generated/graphql';
 
 export interface OpenPostState {
   post: GetPostQuery['post'] | null;
@@ -21,13 +21,16 @@ export const openPostsSlice = createSlice({
       state.post = action.payload;
       state.loaded = true;
     },
+    updateOpenPost: (state, action: PayloadAction<VoteMutation['vote']>) => {
+      state.post = { ...state.post, ...action.payload };
+    },
     openPostDefault: () => {
       return initialState;
-    }
+    },
   },
 });
 
-export const { setOpenPost, openPostDefault } = openPostsSlice.actions;
+export const { setOpenPost, openPostDefault, updateOpenPost } = openPostsSlice.actions;
 
 export const selectOpenPost = (state: AppState) => state.openPost;
 

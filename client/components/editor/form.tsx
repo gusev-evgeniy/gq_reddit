@@ -1,11 +1,10 @@
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
-import TextareaAutosize from 'react-textarea-autosize';
 import { OutputBlockData } from '@editorjs/editorjs';
 
 import { EditorProps } from '../../types/editor';
 
-import { EditorForm, FormWrapper, TitleTextArea } from './styles';
+import { EditorForm, FormWrapper, StyledTextareaAutosize, TitleTextArea } from './styles';
 import { Block, useCreatePostMutation } from '../../generated/graphql';
 import { SubmitButton } from '../dialogs/auth/submitButton';
 import { useRouter } from 'next/router';
@@ -51,7 +50,7 @@ export const Form = () => {
         <span className='title_length'>
           {title.length}/{MAX_TITLE_LENGTH}
         </span>
-        <TextareaAutosize
+        <StyledTextareaAutosize
           rows={1}
           maxLength={MAX_TITLE_LENGTH}
           placeholder='Tile'

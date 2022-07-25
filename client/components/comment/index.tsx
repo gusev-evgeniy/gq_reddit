@@ -9,9 +9,8 @@ import { Ava } from '../../styles';
 import { CommentFooterButton, StyledCommentItem } from './styles';
 import { GetCommentsQuery } from '../../generated/graphql';
 import { getRelativeDate } from '../../utils/date';
-import { Content } from '../content';
 
-export const Comment: FC<GetCommentsQuery['getComments']['items'][0]> = ({ author, createdAt, block }) => {
+export const Comment: FC<GetCommentsQuery['getComments']['items'][0]> = ({ author, createdAt, text }) => {
   const relativeDate = getRelativeDate(createdAt);
 
   return (
@@ -27,8 +26,7 @@ export const Comment: FC<GetCommentsQuery['getComments']['items'][0]> = ({ autho
           <span className='dot'> &#8226;</span>
           <p className='created_at'>{relativeDate}</p>
         </div>
-        <Content isLarge={true} content={block}/>
-        
+        <div style={{ whiteSpace: 'pre-line' }}>{text}</div>        
         <div className='footer'>
           <div className='rating'>
             <CommentFooterButton>

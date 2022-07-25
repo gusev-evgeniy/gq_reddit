@@ -5,13 +5,13 @@ import { Post } from '../../components/posts/post';
 import { CommentForm } from '../../components/comment/commentForm';
 import { Comments } from '../../components/comment/comments';
 import { LargePostWrapper } from '../../components/posts/styled';
-import { useGetPostLazyQuery } from '../../generated/graphql';
+import { useGetPostQuery, VoteMutation } from '../../generated/graphql';
 import { AuthOffer } from '../../components/comment/authOffer';
 import { CommentsSeparator } from '../../components/comment/styles';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { selectMe } from '../../store/slices/me';
 import { Grid } from '../../styles';
-import { openPostDefault, selectOpenPost, setOpenPost } from '../../store/slices/openPost';
+import { openPostDefault, selectOpenPost, setOpenPost, updateOpenPost } from '../../store/slices/openPost';
 import { commentsDefault } from '../../store/slices/comments';
 
 const PostPage = () => {
@@ -23,19 +23,12 @@ const PostPage = () => {
   const router = useRouter();
   const { id } = router.query;
 
-  const [getPost, { loading, data }] = useGetPostLazyQuery();
-
-  useEffect(() => {
-    if (!loaded) {
-      getPost({ variables: { uid: id as string } });
-    }
-  }, [loaded]);
-
-  useEffect(() => {
-    if (data?.post) {
+  const { loading } = useGetPostQuery({
+    onCompleted(data) {
       dispatch(setOpenPost(data?.post));
-    }
-  }, [data]);
+    },
+    variables: { uid: id as string },
+  });
 
   useEffect(() => {
     return () => {
@@ -43,6 +36,10 @@ const PostPage = () => {
       dispatch(commentsDefault());
     };
   }, []);
+
+  const onLikePost = (vote: VoteMutation['vote']) => {
+    dispatch(updateOpenPost(vote));
+  };
 
   if (loading || !loaded) {
     return (
@@ -60,13 +57,13 @@ const PostPage = () => {
         {!!post && (
           <LargePostWrapper>
             <div className='post_wrapper'>
-              <Post {...post} isLarge={true} />
+              <Post {...post} isLarge={true} onLikePost={onLikePost} />
             </div>
 
             {user.data ? <CommentForm postId={id as string} /> : <AuthOffer />}
 
             <CommentsSeparator />
-            <Comments postId={id as string}/>
+            <Comments postId={id as string} />
           </LargePostWrapper>
         )}
       </>

@@ -1,7 +1,7 @@
 import React, { FC, memo, useEffect } from 'react';
 import Image from 'next/image';
 
-import { GetPostQuery, useVoteMutation } from '../../../generated/graphql';
+import { GetPostQuery, useVoteMutation, VoteMutation } from '../../../generated/graphql';
 import { PostHeader } from './postHeader';
 import { PostFooter } from './postFooter';
 
@@ -12,22 +12,16 @@ import thumb_down_fill from '../../../images/thumb_down_fill.svg';
 
 import { Content } from '../../content';
 import { PostRatingWrapper, VoteButton } from '../styled';
-import { useAppDispatch } from '../../../store/hooks';
-import { updatePost } from '../../../store/slices/posts';
 
-type Props = GetPostQuery['post'] & { isLarge?: boolean };
+type Props = GetPostQuery['post'] & { isLarge?: boolean, onLikePost: (vote: VoteMutation['vote']) => void };
 
-export const Post: FC<Props> = memo(({ title, block, createdAt, isLarge, author, UID, votesCount, myVote, commentsCount }) => {
-  const dispatch = useAppDispatch();
-
-  const [vote, { data }] = useVoteMutation();
-
-  useEffect(() => {
-    if (data?.vote) {
-      dispatch(updatePost(data.vote));
-    }
-  }, [data]);
-  
+export const Post: FC<Props> = memo(({ title, block, createdAt, isLarge, author, UID, votesCount, myVote, commentsCount, onLikePost }) => {
+  const [vote] = useVoteMutation({
+    onCompleted(data) {
+      console.log('data', data);
+      onLikePost(data.vote);
+    },
+  });
 
   const onVote = (value: 1 | -1) => vote({ variables: { postUid: { UID }, value } });
 
@@ -40,7 +34,7 @@ export const Post: FC<Props> = memo(({ title, block, createdAt, isLarge, author,
     e.stopPropagation();
     onVote(1);
   };
-
+  console.log('myVote', myVote);
   return (
     <>
       <PostRatingWrapper isGray={!isLarge}>

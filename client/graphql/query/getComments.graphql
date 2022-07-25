@@ -5,7 +5,7 @@ query GetComments($author: UserInput, $post: PostInput) {
       author {
         login, UID, photo
       },
-      UID, block, createdAt
+      UID, text, createdAt
     }
   }
 }

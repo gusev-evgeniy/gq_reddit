@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import TextareaAutosize from 'react-textarea-autosize';
+
 import { ButtonIcon, StyledItem } from '../../styles';
 
 export const StyledEditorLink = styled(StyledItem)`
@@ -81,26 +83,10 @@ export const TitleTextArea = styled.div`
   margin: 10px;
 
   textarea {
-    resize: none;
-    font-size: 16px;
-    line-height: 16px;
-    font-weight: 500;
-    color: #1c1c1c;
-    width: 100%;
+    padding: 10px 68px 10px 10px;
     border: 1px solid #edeff1;
     background-color: inherit;
     border-radius: 4px;
-    outline: none;
-    padding: 10px 68px 10px 10px;
-    min-height: 38px;
-
-    ::-webkit-scrollbar {
-      display: none;
-    }
-
-    :focus {
-      border-color: black;
-    }
   }
 
   .title_length {
@@ -110,6 +96,27 @@ export const TitleTextArea = styled.div`
     font-size: 13px;
     color: #9d9fa1;
     font-weight: 500;
+  }
+`;
+
+export const StyledTextareaAutosize = styled(TextareaAutosize)`
+  resize: none;
+  font-size: 16px;
+  line-height: 16px;
+  font-weight: 500;
+  color: #1c1c1c;
+  width: 100%;
+  border: none;
+  outline: none;
+  min-height: 38px;
+  padding: 10px 10px 10px 10px;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  :focus {
+    border-color: black;
   }
 `;
 

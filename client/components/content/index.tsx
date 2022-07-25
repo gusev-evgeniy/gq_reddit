@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import { TextContent } from '../posts/styled';
 import { StyledContent } from './styles';
 
 type Props = {

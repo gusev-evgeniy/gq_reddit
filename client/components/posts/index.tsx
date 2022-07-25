@@ -1,12 +1,12 @@
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
-import { useGetPostsLazyQuery } from '../../generated/graphql';
+import { useGetPostsLazyQuery, VoteMutation } from '../../generated/graphql';
 import { Post } from './post';
 import { StyledPostItem } from './styled';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { changeSort, postLoaded, PostState, selectPosts, setPosts, setPostsDefaultState } from '../../store/slices/posts';
+import { changeSort, postLoaded, PostState, selectPosts, setPosts, setPostsDefaultState, updatePost } from '../../store/slices/posts';
 import { Sort } from '../sort';
 
 export const Posts = () => {
@@ -27,10 +27,6 @@ export const Posts = () => {
       getPosts({ variables: { skip: 0, sort, filter } });
       dispatch(postLoaded());
     }
-
-    // return () => {
-    //   dispatch(setPostsDefaultState());
-    // };
   }, [loaded]);
 
   useEffect(() => {
@@ -44,6 +40,10 @@ export const Posts = () => {
 
   const onChangeSort = (sort: PostState['sort']) => {
     dispatch(changeSort(sort));
+  };
+
+  const onLikePost = (vote: VoteMutation['vote']) => {
+    dispatch(updatePost(vote));
   };
 
   const listenToScroll = useDebouncedCallback(() => {
@@ -70,7 +70,7 @@ export const Posts = () => {
               style={{ cursor: 'pointer' }}
               onClick={() => router.push(`post/${post.UID}`)}
             >
-              <Post {...post} />
+              <Post {...post} onLikePost={onLikePost}/>
             </StyledPostItem>
           ))}
         </>

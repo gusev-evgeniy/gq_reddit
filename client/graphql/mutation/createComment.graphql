@@ -1,0 +1,3 @@
+mutation CreateComment($post: PostInput!, $text: String!) {
+  createComment(post: $post, text: $text)
+}

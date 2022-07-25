@@ -74,7 +74,7 @@ export default class Post {
     try {
       const correctValue = value > 0 ? 1 : -1;
 
-      console.log('res.locals.user.UID', res.locals.user.UID)
+      console.log('res.locals.user.UID', res.locals.user.UID);
       let userVote = await VoteEntity.findOneBy({ userId: res.locals.user.UID, postId: postUID.UID });
       let post = await PostEntity.findOneBy({ UID: postUID.UID });
       let myVote = correctValue;
@@ -123,13 +123,12 @@ export default class Post {
   ) {
     try {
       let [items, totalCount] = await getPostsAndCount({ filter, author, sort, skip });
-      console.log('items', items)
       const { UID } = getDataFromJWT(req) || {};
 
       if (UID) {
         items = await extendsPostsByMyVote(items, UID);
       }
-      
+
       return { items, totalCount };
     } catch (error) {
       console.log('error', error);
@@ -137,12 +136,25 @@ export default class Post {
   }
 
   @Query(() => PostEntity, { nullable: true })
-  async post(@Arg('UID', { nullable: false }) UID: string) {
+  async post(@Arg('UID', { nullable: false }) UID: string, @Ctx() { req }: MyContext) {
     try {
-      return await PostEntity.findOne({
+      const post = await PostEntity.findOne({
         where: { UID },
         relations: ['author'],
       });
+
+      if (post.votesCount !== 0) {
+        const { UID: userId } = getDataFromJWT(req) || {};
+  
+        const vote = await VoteEntity.findOne({
+          where: { postId: UID, userId },
+        });
+
+        post.myVote = vote.value;
+      }
+
+
+      return post;
     } catch (error) {
       console.log('error', error);
     }

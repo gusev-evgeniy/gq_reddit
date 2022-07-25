@@ -42,17 +42,12 @@ export default class Comment {
   @UseMiddleware(Auth)
   @Mutation(() => String)
   async createComment(
-    @Arg('block', () => [Block], { nullable: false }) block: [Block],
+    @Arg('text', { nullable: false }) text: string,
     @Arg('post', { nullable: false }) post: PostInput,
     @Ctx() { res }: MyContext
   ) {
-    // const queryRunner = AppDataSource.createQueryRunner();
-
-    // await queryRunner.connect();
-    // await queryRunner.startTransaction();
-
     try {
-      const comment = CommentEntity.create({ block, author: res.locals.user, post });
+      const comment = CommentEntity.create({ text, author: res.locals.user, post });
       await comment.save();
 
       await PostEntity.createQueryBuilder()

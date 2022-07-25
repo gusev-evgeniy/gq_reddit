@@ -29,9 +29,9 @@ export type Comment = {
   __typename?: 'Comment';
   UID: Scalars['String'];
   author: User;
-  block: Scalars['JSON'];
   createdAt: Scalars['DateTime'];
   post: Post;
+  text: Scalars['JSON'];
   updatedAt: Scalars['DateTime'];
 };
 
@@ -63,8 +63,8 @@ export type Mutation = {
 
 
 export type MutationCreateCommentArgs = {
-  block: Array<Block>;
   post: PostInput;
+  text: Scalars['String'];
 };
 
 
@@ -171,7 +171,7 @@ export type VotePostInput = {
 
 export type CreateCommentMutationVariables = Exact<{
   post: PostInput;
-  block: Array<Block> | Block;
+  text: Scalars['String'];
 }>;
 
 
@@ -220,7 +220,7 @@ export type GetCommentsQueryVariables = Exact<{
 }>;
 
 
-export type GetCommentsQuery = { __typename?: 'Query', getComments: { __typename?: 'CommentsResponse', totalCount: number, items: Array<{ __typename?: 'Comment', UID: string, block: any, createdAt: any, author: { __typename?: 'User', login: string, UID: string, photo?: string | null } }> } };
+export type GetCommentsQuery = { __typename?: 'Query', getComments: { __typename?: 'CommentsResponse', totalCount: number, items: Array<{ __typename?: 'Comment', UID: string, text: any, createdAt: any, author: { __typename?: 'User', login: string, UID: string, photo?: string | null } }> } };
 
 export type GetUserQueryVariables = Exact<{
   login: Scalars['String'];
@@ -261,8 +261,8 @@ export type GetPostsQuery = { __typename?: 'Query', posts: { __typename?: 'GetPo
 
 
 export const CreateCommentDocument = gql`
-    mutation CreateComment($post: PostInput!, $block: [Block!]!) {
-  createComment(post: $post, block: $block)
+    mutation CreateComment($post: PostInput!, $text: String!) {
+  createComment(post: $post, text: $text)
 }
     `;
 export type CreateCommentMutationFn = Apollo.MutationFunction<CreateCommentMutation, CreateCommentMutationVariables>;
@@ -281,7 +281,7 @@ export type CreateCommentMutationFn = Apollo.MutationFunction<CreateCommentMutat
  * const [createCommentMutation, { data, loading, error }] = useCreateCommentMutation({
  *   variables: {
  *      post: // value for 'post'
- *      block: // value for 'block'
+ *      text: // value for 'text'
  *   },
  * });
  */
@@ -475,7 +475,7 @@ export const GetCommentsDocument = gql`
         photo
       }
       UID
-      block
+      text
       createdAt
     }
   }

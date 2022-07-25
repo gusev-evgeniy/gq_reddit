@@ -32,7 +32,7 @@ export const postsSlice = createSlice({
     },
     updatePost: (state, action: PayloadAction<VoteMutation['vote']>) => {
       state.items = state.items.map(item =>
-        item.UID === action.payload.UID ? { ...item, ...action.payload } : item
+        item.UID === action.payload?.UID ? { ...item, ...action.payload } : item
       );
     },
     changeSort: (state, action: PayloadAction<PostState['sort']>) => {

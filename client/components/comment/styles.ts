@@ -10,7 +10,7 @@ export const StyledCommentSection = styled.div`
 `;
 
 export const StyledCommentForm = styled(StyledCommentSection)`
-  min-height: 160px;
+  min-height: 120px;
   border-radius: 4px;
   width: 80%;
   padding: 10px 10px 40px 10px;

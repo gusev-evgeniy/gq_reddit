@@ -10,9 +10,9 @@ import Post from './Post';
 @Entity('comment')
 class Comment extends Base {
   @Field(() => GraphQLJSON, { nullable: false })
-  @Column({ type: 'jsonb' })
+  @Column({ type: 'text' })
   @Index()
-  block: object;
+  text: string;
 
   @Field(() => User, { nullable: false })
   @JoinColumn({ name: 'userUID' })
