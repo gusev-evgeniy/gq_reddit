@@ -20,7 +20,7 @@ export default function Home() {
       <Grid>
         <div>
           {!data ? <StyledTopicName>Popular posts</StyledTopicName> : <LinkForm />}
-          <Posts />
+          <Posts emptyText='No posts yet'/>
         </div>
         <div className='sub'></div>
       </Grid>

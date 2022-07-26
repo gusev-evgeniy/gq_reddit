@@ -1,21 +1,18 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { StyledEmptyPost, StyledEmptyText } from '../styled';
 import { PostsEmptyItem } from './item';
 
-export const PostsEmpty = () => {
+type Props = {
+  text: string;
+};
+
+export const PostsEmpty: FC<Props> = ({ text }) => {
   return (
     <StyledEmptyPost>
-      <StyledEmptyText>User don&apos;t have posts yeat </StyledEmptyText>
-      <PostsEmptyItem />
-      <PostsEmptyItem />
-      <PostsEmptyItem />
-      <PostsEmptyItem />
-      <PostsEmptyItem />
-      <PostsEmptyItem />
-      <PostsEmptyItem />
-      <PostsEmptyItem />
-      <PostsEmptyItem />
-      <PostsEmptyItem />
+      <StyledEmptyText>{text}</StyledEmptyText>
+      {Array(10).map((_, i) => (
+        <PostsEmptyItem key={i}/>
+      ))}
     </StyledEmptyPost>
   );
 };

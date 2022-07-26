@@ -41,7 +41,7 @@ const Layout: FC<Props> = ({ children }) => {
       <Navigation />
       <main>{children}</main>
       <Dialogs />
-      <Chat />
+      {/* <Chat /> */}
     </>
   );
 };

@@ -5,21 +5,28 @@ import { MainButton } from '../../styles';
 import { ProfileWrapper, UserImage } from './styles';
 
 import add_photo from '../../images/add_photo.svg';
-import { useAppSelector } from '../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { selectMe } from '../../store/slices/me';
 import { GetUserQuery, useUpdateUserMutation } from '../../generated/graphql';
 import { useRouter } from 'next/router';
 
 import dayjs from 'dayjs';
+import { updateProfilePicture } from '../../store/slices/profile';
 
 const API_KEY = ''; // add
 
 export const Profile: FC<GetUserQuery['getUser']> = ({ UID, photo, login, createdAt }) => {
+  const dispatch = useAppDispatch();
+
   const inputFileRef = useRef<HTMLInputElement>(null);
 
   const router = useRouter();
 
-  const [updateUser, { data }] = useUpdateUserMutation(); //update Profile
+  const [updateUser] = useUpdateUserMutation({
+    onCompleted({ updateUser }) {
+      dispatch(updateProfilePicture(updateUser.photo as string));
+    },
+  }); //update Profile
 
   const { data: me } = useAppSelector(selectMe);
   const { UID: myUID } = me || {};

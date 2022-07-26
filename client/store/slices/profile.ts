@@ -1,25 +1,21 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { AppState } from '../store';
-import { GetPostsQuery, GetUserQuery } from '../../generated/graphql';
+import { GetUserQuery } from '../../generated/graphql';
 import { PostState } from './posts';
 
 export interface ProfileState {
   user: GetUserQuery['getUser'] | null;
-  posts: GetPostsQuery['posts']['items'];
   totalCount: number;
   loaded: boolean;
   loadedPosts: boolean;
-  sort: 'new' | 'best';
 }
 
 const initialState: ProfileState = {
   user: null,
-  posts: [],
   loaded: false,
   loadedPosts: false,
   totalCount: 0,
-  sort: 'new',
 };
 
 export const profileSlice = createSlice({
@@ -30,13 +26,10 @@ export const profileSlice = createSlice({
       state.user = action.payload;
       state.loaded = true;
     },
-    setPostsProfile: (state, action: PayloadAction<GetPostsQuery['posts']>) => {
-      state.posts.push(...action.payload.items);
-      state.totalCount = action.payload.totalCount;
-      state.loadedPosts = true;
-    },
-    changeProfilePostsSort: (state, action: PayloadAction<PostState['sort']>) => {
-      return {...initialState, sort: action.payload};
+    updateProfilePicture: (state, action: PayloadAction<string>) => {
+      if (state.user) {
+        state.user.photo = action.payload;
+      }
     },
     setProfileDefaultState: () => {
       return initialState;
@@ -44,7 +37,7 @@ export const profileSlice = createSlice({
   },
 });
 
-export const { setProfileUser, setPostsProfile, changeProfilePostsSort, setProfileDefaultState } = profileSlice.actions;
+export const { setProfileUser, setProfileDefaultState, updateProfilePicture } = profileSlice.actions;
 
 export const selectProfile = (state: AppState) => state.profile;
 

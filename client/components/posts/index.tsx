@@ -1,15 +1,28 @@
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import React, { FC, useEffect } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
 import { useGetPostsLazyQuery, VoteMutation } from '../../generated/graphql';
 import { Post } from './post';
 import { StyledPostItem } from './styled';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { changeSort, postLoaded, PostState, selectPosts, setPosts, setPostsDefaultState, updatePost } from '../../store/slices/posts';
+import {
+  changeSort,
+  postLoaded,
+  PostState,
+  selectPosts,
+  setPosts,
+  setPostsDefaultState,
+  updatePost,
+} from '../../store/slices/posts';
 import { Sort } from '../sort';
+import { PostsEmpty } from './postsEmpty';
 
-export const Posts = () => {
+type Props = {
+  emptyText: string;
+};
+
+export const Posts: FC<Props> = ({ emptyText }) => {
   const dispatch = useAppDispatch();
 
   const { items, loaded, totalCount, sort, filter } = useAppSelector(selectPosts);
@@ -21,7 +34,7 @@ export const Posts = () => {
     },
     fetchPolicy: 'no-cache',
   });
-  
+
   useEffect(() => {
     if (!loaded) {
       getPosts({ variables: { skip: 0, sort, filter } });
@@ -33,7 +46,7 @@ export const Posts = () => {
     window.addEventListener('scroll', listenToScroll);
     return () => {
       window.removeEventListener('scroll', listenToScroll);
-      
+
       dispatch(setPostsDefaultState());
     };
   }, []);
@@ -56,24 +69,34 @@ export const Posts = () => {
     }
   }, 300);
 
+  if (loading || !loaded) {
+    return (
+      <div>
+        <Sort sortedBy={sort} onChange={onChangeSort} />
+
+        <div>Loading...</div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <Sort sortedBy={sort} onChange={onChangeSort} />
 
-      {loading || !loaded ? (
-        <div>Loading...</div>
-      ) : (
+      {!!items && items.length ? (
         <>
           {items.map(post => (
             <StyledPostItem
               key={post.UID}
               style={{ cursor: 'pointer' }}
-              onClick={() => router.push(`post/${post.UID}`)}
+              onClick={() => router.replace(`/post/${post.UID}`)}
             >
-              <Post {...post} onLikePost={onLikePost}/>
+              <Post {...post} onLikePost={onLikePost} />
             </StyledPostItem>
           ))}
         </>
+      ) : (
+        <PostsEmpty text={emptyText}/>
       )}
     </div>
   );

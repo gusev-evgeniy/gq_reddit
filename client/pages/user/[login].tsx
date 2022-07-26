@@ -3,28 +3,23 @@ import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { Grid } from '../../styles';
-import { Sort } from '../../components/sort';
 import { Profile } from '../../components/profile';
-import { PostsEmpty } from '../../components/posts/postsEmpty';
 import {
-  useGetPostsLazyQuery,
   useGetUserLazyQuery,
 } from '../../generated/graphql';
 import {
   selectProfile,
-  setPostsProfile,
   setProfileDefaultState,
   setProfileUser,
 } from '../../store/slices/profile';
 import { useAppSelector } from '../../store/hooks';
-import { StyledPostItem } from '../../components/posts/styled';
-import { Post } from '../../components/posts/post';
+import { Posts } from '../../components/posts';
 
 const User = () => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const { loaded, user, posts, sort } = useAppSelector(selectProfile);
+  const { loaded, user } = useAppSelector(selectProfile);
 
   const { login } = router.query;
 
@@ -34,17 +29,9 @@ const User = () => {
     },
   });
 
-  const [getPosts] = useGetPostsLazyQuery({
-    onCompleted(data) {
-      dispatch(setPostsProfile(data.posts));
-    },
-    fetchPolicy: 'no-cache',
-  });
-
   useEffect(() => {
     if (!loaded) {
       getUser({ variables: { login: login as string } });
-      getPosts({ variables: { skip: 0, author: login as string } });
     }
   }, [loaded, login]);
 
@@ -64,25 +51,7 @@ const User = () => {
 
   return (
     <Grid>
-      <div>
-        <Sort sortedBy={sort}/>
-
-        {!!posts && posts.length ? (
-          <>
-            {posts.map(post => (
-              <StyledPostItem
-                key={post.UID}
-                style={{ cursor: 'pointer' }}
-                onClick={() => router.replace(`/post/${post.UID}`)}
-              >
-                <Post {...post} />
-              </StyledPostItem>
-            ))}
-          </>
-        ) : (
-          <PostsEmpty />
-        )}
-      </div>
+      <Posts emptyText='User don&apos;t have posts yeat'/>
       {user && <Profile {...user} />}
     </Grid>
   );
