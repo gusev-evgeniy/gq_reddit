@@ -1,3 +1,16 @@
 mutation CreateComment($post: PostInput!, $text: String!) {
-  createComment(post: $post, text: $text)
+  createComment(post: $post, text: $text) {
+    totalCount
+    commentsCount
+    items {
+      author {
+        login
+        UID
+        photo
+      }
+      UID
+      text
+      createdAt
+    }
+  }
 }

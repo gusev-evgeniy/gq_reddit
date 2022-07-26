@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 
 import thumb_up from '../../images/thumb_up.svg';
 import thumb_down from '../../images/thumb_down.svg';
@@ -10,7 +10,7 @@ import { CommentFooterButton, StyledCommentItem } from './styles';
 import { GetCommentsQuery } from '../../generated/graphql';
 import { getRelativeDate } from '../../utils/date';
 
-export const Comment: FC<GetCommentsQuery['getComments']['items'][0]> = ({ author, createdAt, text }) => {
+export const Comment: FC<GetCommentsQuery['getComments']['items'][0]> = memo(({ author, createdAt, text }) => {
   const relativeDate = getRelativeDate(createdAt);
 
   return (
@@ -45,4 +45,7 @@ export const Comment: FC<GetCommentsQuery['getComments']['items'][0]> = ({ autho
       </div>
     </StyledCommentItem>
   );
-};
+});
+
+Comment.displayName = 'Comment';
+

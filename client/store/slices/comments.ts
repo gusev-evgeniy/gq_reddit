@@ -21,13 +21,17 @@ export const commentsSlice = createSlice({
       state.comments.push(...action.payload);
       state.loaded = true;
     },
+    updateComments: (state, action: PayloadAction<GetCommentsQuery['getComments']['items']>) => {
+      console.log('action.payload', action.payload);
+      state.comments = action.payload;
+    },
     commentsDefault: () => {
       return initialState;
     }
   },
 });
 
-export const { setComments, commentsDefault } = commentsSlice.actions;
+export const { setComments, commentsDefault, updateComments } = commentsSlice.actions;
 
 export const selectComments = (state: AppState) => state.comments;
 

@@ -2,7 +2,8 @@ import React, { FC, useState } from 'react';
 
 import { useCreateCommentMutation } from '../../generated/graphql';
 import { useAppDispatch } from '../../store/hooks';
-import { openPostDefault } from '../../store/slices/openPost';
+import { commentsDefault, updateComments } from '../../store/slices/comments';
+import { openPostDefault, updateOpenPost } from '../../store/slices/openPost';
 
 import { SubmitButton } from '../dialogs/auth/submitButton';
 import { StyledTextareaAutosize } from '../editor/styles';
@@ -18,10 +19,10 @@ export const CommentForm: FC<Props> = ({ postId }) => {
   const dispatch = useAppDispatch();
 
   const [createComment, { loading }] = useCreateCommentMutation({
-    onCompleted(data) {
+    onCompleted({ createComment }) {
       setComment('');
-      console.log('data', data);
-      // dispatch(openPostDefault());
+      dispatch(updateComments(createComment.items));
+      dispatch(updateOpenPost({ commentsCount: createComment.commentsCount }));
     },
   });
 

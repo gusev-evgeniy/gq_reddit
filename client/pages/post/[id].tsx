@@ -2,12 +2,12 @@ import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
 import { Post } from '../../components/posts/post';
-import { CommentForm } from '../../components/comment/commentForm';
-import { Comments } from '../../components/comment/comments';
+import { CommentForm } from '../../components/comments/commentForm';
+import { Comments } from '../../components/comments';
 import { LargePostWrapper } from '../../components/posts/styled';
-import { useGetPostQuery, VoteMutation } from '../../generated/graphql';
-import { AuthOffer } from '../../components/comment/authOffer';
-import { CommentsSeparator } from '../../components/comment/styles';
+import { useGetPostLazyQuery, useGetPostQuery, VoteMutation } from '../../generated/graphql';
+import { AuthOffer } from '../../components/comments/authOffer';
+import { CommentsSeparator } from '../../components/comments/styles';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { selectMe } from '../../store/slices/me';
 import { Grid } from '../../styles';
@@ -23,7 +23,7 @@ const PostPage = () => {
   const router = useRouter();
   const { id } = router.query;
 
-  const { loading } = useGetPostQuery({
+  const [getPost, { loading }] = useGetPostLazyQuery({
     onCompleted(data) {
       dispatch(setOpenPost(data?.post));
     },
@@ -37,6 +37,10 @@ const PostPage = () => {
       dispatch(commentsDefault());
     };
   }, []);
+
+  useEffect(() => {
+    if (!loaded) getPost();
+  }, [loaded]);
 
   const onLikePost = (vote: VoteMutation['vote']) => {
     dispatch(updateOpenPost(vote));

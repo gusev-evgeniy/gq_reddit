@@ -21,7 +21,7 @@ export const openPostsSlice = createSlice({
       state.post = action.payload;
       state.loaded = true;
     },
-    updateOpenPost: (state, action: PayloadAction<VoteMutation['vote']>) => {
+    updateOpenPost: (state, action: PayloadAction<Partial<GetPostQuery['post']>>) => {
       state.post = { ...state.post, ...action.payload };
     },
     openPostDefault: () => {

@@ -19,8 +19,6 @@ export const StyledMenu = styled(StyledItem)<{ left: number, top: number }>`
   }
 `;
 
-
-
 export const MenuItem = styled.li`
   width: 100%;
   height: 40px;

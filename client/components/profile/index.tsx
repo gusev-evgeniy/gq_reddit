@@ -13,7 +13,7 @@ import { useRouter } from 'next/router';
 import dayjs from 'dayjs';
 import { updateProfilePicture } from '../../store/slices/profile';
 
-const API_KEY = ''; // add
+const API_KEY = 'dnm04nlu8'; // add
 
 export const Profile: FC<GetUserQuery['getUser']> = ({ UID, photo, login, createdAt }) => {
   const dispatch = useAppDispatch();

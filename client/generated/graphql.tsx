@@ -35,6 +35,13 @@ export type Comment = {
   updatedAt: Scalars['DateTime'];
 };
 
+export type CommentCreateResponse = {
+  __typename?: 'CommentCreateResponse';
+  commentsCount: Scalars['Float'];
+  items: Array<Comment>;
+  totalCount: Scalars['Float'];
+};
+
 export type CommentsResponse = {
   __typename?: 'CommentsResponse';
   items: Array<Comment>;
@@ -53,7 +60,7 @@ export type GetPostResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createComment: Scalars['String'];
+  createComment: CommentCreateResponse;
   createPost: Post;
   logout: Scalars['String'];
   registr: User;
@@ -175,7 +182,7 @@ export type CreateCommentMutationVariables = Exact<{
 }>;
 
 
-export type CreateCommentMutation = { __typename?: 'Mutation', createComment: string };
+export type CreateCommentMutation = { __typename?: 'Mutation', createComment: { __typename?: 'CommentCreateResponse', totalCount: number, commentsCount: number, items: Array<{ __typename?: 'Comment', UID: string, text: any, createdAt: any, author: { __typename?: 'User', login: string, UID: string, photo?: string | null } }> } };
 
 export type CreatePostMutationVariables = Exact<{
   block: Array<Block> | Block;
@@ -262,7 +269,20 @@ export type GetPostsQuery = { __typename?: 'Query', posts: { __typename?: 'GetPo
 
 export const CreateCommentDocument = gql`
     mutation CreateComment($post: PostInput!, $text: String!) {
-  createComment(post: $post, text: $text)
+  createComment(post: $post, text: $text) {
+    totalCount
+    commentsCount
+    items {
+      author {
+        login
+        UID
+        photo
+      }
+      UID
+      text
+      createdAt
+    }
+  }
 }
     `;
 export type CreateCommentMutationFn = Apollo.MutationFunction<CreateCommentMutation, CreateCommentMutationVariables>;

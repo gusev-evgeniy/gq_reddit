@@ -25,6 +25,18 @@ class CommentsResponse {
   totalCount: number;
 }
 
+@ObjectType()
+class CommentCreateResponse {
+  @Field(type => [CommentEntity])
+  items: CommentEntity[];
+
+  @Field(type => Number)
+  totalCount: number;
+
+  @Field(type => Number)
+  commentsCount: number;
+}
+
 @InputType()
 class PostInput extends Post {
   @Field()
@@ -40,7 +52,7 @@ class UserInput extends User {
 @Resolver()
 export default class Comment {
   @UseMiddleware(Auth)
-  @Mutation(() => String)
+  @Mutation(() => CommentCreateResponse)
   async createComment(
     @Arg('text', { nullable: false }) text: string,
     @Arg('post', { nullable: false }) post: PostInput,
@@ -50,14 +62,23 @@ export default class Comment {
       const comment = CommentEntity.create({ text, author: res.locals.user, post });
       await comment.save();
 
-      await PostEntity.createQueryBuilder()
+      const updatedPost = await PostEntity.createQueryBuilder()
         .update('post')
         .set({ commentsCount: () => '"commentsCount" + 1' })
         .where('UID = :UID', { UID: post.UID })
+        .returning('*')
+        .updateEntity(true)
         .execute();
-      // await queryRunner.commitTransaction();
 
-      return 'Success';
+      const { UID, commentsCount } = updatedPost.raw[0] as PostEntity;
+
+      const [items, totalCount] = await CommentEntity.findAndCount({
+        where: { post: { UID } },
+        order: { createdAt: 'DESC' },
+        relations: ['author'],
+      });
+
+      return { items, totalCount, commentsCount };
     } catch (error) {
       console.log('error', error);
       return 'Error';
