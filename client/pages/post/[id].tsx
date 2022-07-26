@@ -28,6 +28,7 @@ const PostPage = () => {
       dispatch(setOpenPost(data?.post));
     },
     variables: { uid: id as string },
+    fetchPolicy: 'no-cache',
   });
 
   useEffect(() => {

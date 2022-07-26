@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { AppState } from '../store';
 import { GetPostsQuery, VoteMutation } from '../../generated/graphql';
+import { profileSlice } from './profile';
 
 export interface PostState {
   items: GetPostsQuery['posts']['items'];
@@ -16,7 +17,7 @@ const initialState: PostState = {
   loaded: false,
   totalCount: 0,
   sort: 'new',
-  filter: ''
+  filter: '',
 };
 
 export const postsSlice = createSlice({
@@ -27,7 +28,7 @@ export const postsSlice = createSlice({
       state.items.push(...action.payload.items);
       state.totalCount = action.payload.totalCount;
     },
-    postLoaded: (state) => {
+    postLoaded: state => {
       state.loaded = true;
     },
     updatePost: (state, action: PayloadAction<VoteMutation['vote']>) => {
@@ -35,13 +36,13 @@ export const postsSlice = createSlice({
         item.UID === action.payload?.UID ? { ...item, ...action.payload } : item
       );
     },
-    changeSort: (state, action: PayloadAction<PostState['sort']>) => {
-      return {...initialState, sort: action.payload};
+    changeSort: (_, action: PayloadAction<PostState['sort']>) => {
+      return { ...initialState, sort: action.payload };
     },
     changeFilter: (state, action: PayloadAction<string>) => {
-      return {...state, filter: action.payload};
+      return { ...state, filter: action.payload };
     },
-    applyFilter: (state) => {
+    applyFilter: state => {
       state.items = [];
       state.loaded = false;
     },
@@ -49,9 +50,22 @@ export const postsSlice = createSlice({
       return initialState;
     },
   },
+  extraReducers: builder => {
+    builder.addCase(profileSlice.actions.updateProfilePicture, (state, action: PayloadAction<string>) => {
+      state.items = state.items.map(item => ({ ...item, author: { ...item.author, photo: action.payload } }));
+    });
+  },
 });
 
-export const { setPosts, setPostsDefaultState, updatePost, changeSort, changeFilter, applyFilter, postLoaded } = postsSlice.actions;
+export const {
+  setPosts,
+  setPostsDefaultState,
+  updatePost,
+  changeSort,
+  changeFilter,
+  applyFilter,
+  postLoaded,
+} = postsSlice.actions;
 
 export const selectPosts = (state: AppState) => state.posts;
 
