@@ -1,12 +1,13 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
-
-import '../global.scss';
+import { ApolloProvider } from '@apollo/client';
 
 import Layout from '../layout';
 import { wrapper } from '../store/store';
 import { client } from '../api';
-import { ApolloProvider } from '@apollo/client';
+
+import '../global.scss';
+
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

@@ -8,16 +8,20 @@ import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 import cookieParser from 'cookie-parser';
-import cors from 'cors';
+import http from 'http';
+import { Server } from 'socket.io';
+
 import PostEntity from './entities/Post';
 import UserEntity from './entities/User';
 import CommentEntity from './entities/Comment';
 import VoteEntity from './entities/Vote';
+import RoomEntity from './entities/Room';
+import MessageEntity from './entities/Message';
 
 import Auth from './resolvers/auth';
 import Post from './resolvers/post';
 import Comment from './resolvers/comment';
-import Vote from './entities/Vote';
+import { getDataFromJWT } from './utils/auth';
 
 const PORT = process.env.PORT || 5050;
 
@@ -33,14 +37,14 @@ const start = async () => {
       database: 'reddit',
       synchronize: true,
       logging: false,
-      entities: [UserEntity, PostEntity, CommentEntity, VoteEntity],
+      entities: [UserEntity, PostEntity, CommentEntity, VoteEntity, RoomEntity, MessageEntity],
       migrations: [],
       subscribers: [],
     });
 
     const apolloServer = new ApolloServer({
       schema: await buildSchema({
-        resolvers: [Auth, Post, Comment, Vote],
+        resolvers: [Auth, Post, Comment],
         validate: false,
       }),
       csrfPrevention: true,
@@ -52,11 +56,14 @@ const start = async () => {
     await apolloServer.start();
 
     const app = express();
-
-    app.use(cors({
-      credentials: true,
-      origin: 'http://localhost:3000'
-    }))
+    const server = http.createServer(app);
+    const io = new Server(server, {
+      cors: {
+        origin: 'http://localhost:3000',
+        methods: ['GET', 'POST'],
+        credentials: true,
+      },
+    });
 
     app.use(express.json());
     app.use(cookieParser());
@@ -67,9 +74,22 @@ const start = async () => {
       // cors: { credentials: true, origin: 'https://studio.apollographql.com' }
     });
 
-    app.use(express.static('upload'));
+    io.on('connection', socket => {
+      // if (socket.handshake.headers.cookie) {
+      //   const { UID } = getDataFromJWT(socket.handshake.headers.cookie.replace('token=', '')) || {};
+      //   console.log('socket.handshake.headers.cookie', socket.handshake.headers.cookie.replace('token=', ''))
+      //   console.log('UID', UID);
+      // }
+      // регистрируем обработчики
+      socket.on('message:get', () => console.log('get'));
+      socket.on('message:creat', () => console.log('post'));
 
-    app.listen(PORT, () => console.log(`App started on port ${PORT}`));
+      socket.on('room:create', () => {
+        console.log('eeeee', socket);
+      });
+    });
+
+    server.listen(PORT, () => console.log(`App started on port ${PORT}`));
   } catch (error) {
     console.log(error);
   }

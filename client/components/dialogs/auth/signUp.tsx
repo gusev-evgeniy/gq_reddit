@@ -60,7 +60,7 @@ export const SignUp: FC<DialogProps> = ({ onClose }) => {
         }
 
         onClose();
-      }, 3000);
+      }, 1000);
     }
   }, [success, onClose, data, dispatch]);
 

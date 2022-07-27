@@ -1,14 +1,10 @@
-import { Posts } from '../components/posts';
-
-import { Grid, StyledTopicName } from '../styles';
-import { LinkForm } from '../components/editor/linkForm';
 import { useAppSelector } from '../store/hooks';
 import { selectMe } from '../store/slices/me';
 
-//TODO fix
-//ssr
-//update create comment
-//navigation sticky
+import { Posts } from '../components/posts';
+import { LinkForm } from '../components/editor/linkForm';
+
+import { Grid, StyledTopicName } from '../styles';
 
 export default function Home() {
   const { data } = useAppSelector(selectMe);

@@ -123,7 +123,7 @@ export default class Post {
   ) {
     try {
       let [items, totalCount] = await getPostsAndCount({ filter, author, sort, skip });
-      const { UID } = getDataFromJWT(req) || {};
+      const { UID } = getDataFromJWT(req.cookies.token) || {};
 
       if (UID) {
         items = await extendsPostsByMyVote(items, UID);
@@ -144,7 +144,7 @@ export default class Post {
       });
 
       if (post.votesCount !== 0) {
-        const { UID: userId } = getDataFromJWT(req) || {};
+        const { UID: userId } = getDataFromJWT(req.cookies.token) || {};
   
         const vote = await VoteEntity.findOne({
           where: { postId: UID, userId },

@@ -12,8 +12,8 @@ import { useRouter } from 'next/router';
 
 import dayjs from 'dayjs';
 import { updateProfilePicture } from '../../store/slices/profile';
-
-const API_KEY = 'dnm04nlu8'; // add
+import { cloudinaryUpload } from '../../api/cloudinary';
+import { socket } from '../../api/socket';
 
 export const Profile: FC<GetUserQuery['getUser']> = ({ UID, photo, login, createdAt }) => {
   const dispatch = useAppDispatch();
@@ -41,19 +41,9 @@ export const Profile: FC<GetUserQuery['getUser']> = ({ UID, photo, login, create
       return;
     }
 
-    const data = new FormData();
-    data.append('file', file);
-    data.append('upload_preset', 'reddit');
-
-    try {
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${API_KEY}/image/upload`, {
-        method: 'POST',
-        body: data,
-      });
-      const file = await res.json();
-      updateUser({ variables: { photo: file.secure_url } });
-    } catch (err) {
-      console.log(err);
+    const photo = await cloudinaryUpload(file);
+    if (photo) {
+      updateUser({ variables: { photo: photo.secure_url } });
     }
   };
 
@@ -61,6 +51,10 @@ export const Profile: FC<GetUserQuery['getUser']> = ({ UID, photo, login, create
     router.push({
       pathname: '/submit',
     });
+  };
+
+  const onChat = () => {
+    socket.emit('room:create', { UID });
   };
 
   return (
@@ -97,7 +91,7 @@ export const Profile: FC<GetUserQuery['getUser']> = ({ UID, photo, login, create
             New Post
           </MainButton>
         ) : (
-          <MainButton width='100%' onClick={() => console.log('chat')}>
+          <MainButton width='100%' onClick={onChat}>
             Chat
           </MainButton>
         )}
