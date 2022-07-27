@@ -133,6 +133,7 @@ export const StyledEmptyText = styled.p`
   position: absolute;
   z-index: 2;
   top: 29%;
+  width: fit-content;
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 18px;

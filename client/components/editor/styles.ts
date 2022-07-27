@@ -102,7 +102,6 @@ export const TitleTextArea = styled.div`
 export const StyledTextareaAutosize = styled(TextareaAutosize)`
   resize: none;
   font-size: 16px;
-  line-height: 16px;
   font-weight: 500;
   color: #1c1c1c;
   width: 100%;

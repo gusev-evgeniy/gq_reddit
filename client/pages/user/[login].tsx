@@ -4,14 +4,8 @@ import { useDispatch } from 'react-redux';
 
 import { Grid } from '../../styles';
 import { Profile } from '../../components/profile';
-import {
-  useGetUserLazyQuery,
-} from '../../generated/graphql';
-import {
-  selectProfile,
-  setProfileDefaultState,
-  setProfileUser,
-} from '../../store/slices/profile';
+import { useGetUserLazyQuery } from '../../generated/graphql';
+import { selectProfile, setProfileDefaultState, setProfileUser } from '../../store/slices/profile';
 import { useAppSelector } from '../../store/hooks';
 import { Posts } from '../../components/posts';
 
@@ -51,7 +45,7 @@ const User = () => {
 
   return (
     <Grid>
-      <Posts emptyText='User don&apos;t have posts yeat'/>
+      <Posts author={user?.login} emptyText={`hmm... u/${user?.login} hasn't posted anything`} />
       {user && <Profile {...user} />}
     </Grid>
   );

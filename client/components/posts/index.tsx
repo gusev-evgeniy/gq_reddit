@@ -20,9 +20,10 @@ import { PostsEmpty } from './postsEmpty';
 
 type Props = {
   emptyText: string;
+  author?: string;
 };
 
-export const Posts: FC<Props> = ({ emptyText }) => {
+export const Posts: FC<Props> = ({ emptyText, author }) => {
   const dispatch = useAppDispatch();
 
   const { items, loaded, totalCount, sort, filter } = useAppSelector(selectPosts);
@@ -37,7 +38,7 @@ export const Posts: FC<Props> = ({ emptyText }) => {
 
   useEffect(() => {
     if (!loaded) {
-      getPosts({ variables: { skip: 0, sort, filter } });
+      getPosts({ variables: { skip: 0, sort, filter, author } });
       dispatch(postLoaded());
     }
   }, [loaded]);

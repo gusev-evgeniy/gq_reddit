@@ -7,9 +7,6 @@ import { createJWT } from '../utils/auth';
 import { MyContext } from '../type';
 
 import AuthMiddleware from '../middleware/auth';
-import GraphQLUpload from 'graphql-upload/GraphQLUpload.js';
-import { Upload } from './graphTypes';
-import { createWriteStream } from 'fs';
 
 @ObjectType()
 class Errors {

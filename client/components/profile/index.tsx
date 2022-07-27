@@ -26,7 +26,7 @@ export const Profile: FC<GetUserQuery['getUser']> = ({ UID, photo, login, create
     onCompleted({ updateUser }) {
       dispatch(updateProfilePicture(updateUser.photo as string));
     },
-  }); //update Profile
+  });
 
   const { data: me } = useAppSelector(selectMe);
   const { UID: myUID } = me || {};

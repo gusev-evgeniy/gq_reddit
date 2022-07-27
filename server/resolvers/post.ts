@@ -150,7 +150,9 @@ export default class Post {
           where: { postId: UID, userId },
         });
 
-        post.myVote = vote.value;
+        if (vote) {
+          post.myVote = vote.value
+        }
       }
 
 

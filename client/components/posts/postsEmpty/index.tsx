@@ -10,9 +10,12 @@ export const PostsEmpty: FC<Props> = ({ text }) => {
   return (
     <StyledEmptyPost>
       <StyledEmptyText>{text}</StyledEmptyText>
-      {Array(10).map((_, i) => (
-        <PostsEmptyItem key={i}/>
-      ))}
+      
+      {Array(10)
+        .fill(0)
+        .map((_, i) => (
+          <PostsEmptyItem key={i} />
+        ))}
     </StyledEmptyPost>
   );
 };

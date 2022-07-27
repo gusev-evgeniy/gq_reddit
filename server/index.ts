@@ -19,7 +19,7 @@ import Post from './resolvers/post';
 import Comment from './resolvers/comment';
 import Vote from './entities/Vote';
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5050;
 
 const start = async () => {
   try {
