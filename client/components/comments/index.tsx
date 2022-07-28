@@ -1,7 +1,7 @@
 import React, { FC, useLayoutEffect } from 'react';
 
 import { Comment } from './comment';
-import { useGetCommentsLazyQuery } from '../../generated/graphql';
+import { useCommentVoteMutation, useGetCommentsLazyQuery } from '../../generated/graphql';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { selectComments, setComments } from '../../store/slices/comments';
 
@@ -13,7 +13,15 @@ export const Comments: FC<Props> = ({ postId }) => {
   const dispatch = useAppDispatch();
 
   const { comments, loaded } = useAppSelector(selectComments);
-  console.log('loaded33333', loaded);
+
+  const [vote] = useCommentVoteMutation({
+    onCompleted(data) {
+      console.log('data', data);
+      // onLikePost(data.votePost);
+    },
+  });
+
+  const onVote = (UID: string, value: 1 | -1) => vote({ variables: { commentUid: { UID }, value } });
 
   const [getComments] = useGetCommentsLazyQuery({
     onCompleted(data) {
@@ -32,7 +40,7 @@ export const Comments: FC<Props> = ({ postId }) => {
   return (
     <>
       {comments.map(item => (
-        <Comment key={item.UID} {...item} />
+        <Comment key={item.UID} {...item} onVote={onVote}/>
       ))}
     </>
   );

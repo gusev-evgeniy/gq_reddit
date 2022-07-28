@@ -5,7 +5,7 @@ import Base from '.';
 import { Field, ObjectType, Resolver } from 'type-graphql';
 import Post from './Post';
 import Comment from './Comment';
-import Vote from './Vote';
+import Vote from './VotePost';
 import Room from './Room';
 import Message from './Message';
 
@@ -47,7 +47,6 @@ class User extends Base {
   @JoinColumn({ name: 'roomUID' })
   @OneToMany(() => Room, room => room.user)
   rooms: Room[];
-
   
   @JoinColumn({ name: 'messageUID' })
   @OneToMany(() => Message, message => message.user)

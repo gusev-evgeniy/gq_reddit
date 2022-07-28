@@ -10,7 +10,11 @@ import { CommentFooterButton, StyledCommentItem } from './styles';
 import { GetCommentsQuery } from '../../generated/graphql';
 import { getRelativeDate } from '../../utils/date';
 
-export const Comment: FC<GetCommentsQuery['getComments']['items'][0]> = memo(({ author, createdAt, text }) => {
+type Props = GetCommentsQuery['getComments']['items'][0] & {
+  onVote: (UID: string, value: 1 | -1) => void;
+};
+
+export const Comment: FC<Props> = memo(({ author, createdAt, text, onVote, UID }) => {
   const relativeDate = getRelativeDate(createdAt);
 
   return (
@@ -29,11 +33,11 @@ export const Comment: FC<GetCommentsQuery['getComments']['items'][0]> = memo(({ 
         <div style={{ whiteSpace: 'pre-line' }}>{text}</div>        
         <div className='footer'>
           <div className='rating'>
-            <CommentFooterButton>
+            <CommentFooterButton onClick={() => onVote(UID, 1)}>
               <Image width='20px' height='20px' src={thumb_up} alt='like comment button' />
             </CommentFooterButton>
             <p>186</p>
-            <CommentFooterButton>
+            <CommentFooterButton  onClick={() => onVote(UID, -1)}>
               <Image width='20px' height='20px' src={thumb_down} alt='dislike comment button' />
             </CommentFooterButton>
           </div>

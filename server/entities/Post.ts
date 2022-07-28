@@ -5,7 +5,7 @@ import Base from '.';
 import { Field, ObjectType, Resolver } from 'type-graphql';
 import User from './User';
 import Comment from './Comment';
-import Vote from './Vote';
+import Vote from './VotePost';
 
 @ObjectType()
 @Resolver(() => Post)

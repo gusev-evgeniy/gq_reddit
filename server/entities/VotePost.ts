@@ -3,8 +3,8 @@ import { Entity, Column, Index, ManyToOne, PrimaryColumn, BaseEntity } from 'typ
 import User from './User';
 import Post from './Post';
 
-@Entity('vote')
-class Vote extends BaseEntity {
+@Entity('vote_post')
+class VotePost extends BaseEntity {
   @PrimaryColumn({ type: 'uuid'})
   userId: string
 
@@ -18,8 +18,8 @@ class Vote extends BaseEntity {
   @ManyToOne(() => User, user => user.votes)
   user: User;
 
-  @ManyToOne(() => Post, post => post.votes, { cascade: true } )
+  @ManyToOne(() => Post, post => post.votes, { cascade: true, nullable: true } )
   post: Post;
 }
 
-export default Vote;
+export default VotePost;

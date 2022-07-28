@@ -4,7 +4,7 @@ import { DataSource } from 'typeorm';
 import Comment from './entities/Comment';
 import Post from './entities/Post';
 import User from './entities/User';
-import Vote from './entities/Vote';
+import Vote from './entities/VotePost';
 
 export default new DataSource({
   type: 'postgres',

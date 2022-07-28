@@ -1,0 +1,5 @@
+mutation PostVote($postUid: VotePostInput!, $value: Float!) {
+  votePost(postUID: $postUid, value: $value) {
+    myVote, UID, votesCount
+  }
+}

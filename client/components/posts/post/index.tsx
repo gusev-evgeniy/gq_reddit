@@ -1,7 +1,7 @@
-import React, { FC, memo, useEffect } from 'react';
+import React, { FC, memo } from 'react';
 import Image from 'next/image';
 
-import { GetPostQuery, useVoteMutation, VoteMutation } from '../../../generated/graphql';
+import { GetPostQuery, PostVoteMutation, usePostVoteMutation } from '../../../generated/graphql';
 import { PostHeader } from './postHeader';
 import { PostFooter } from './postFooter';
 
@@ -13,13 +13,13 @@ import thumb_down_fill from '../../../images/thumb_down_fill.svg';
 import { Content } from '../../content';
 import { PostRatingWrapper, VoteButton } from '../styled';
 
-type Props = GetPostQuery['post'] & { isLarge?: boolean, onLikePost: (vote: VoteMutation['vote']) => void };
+type Props = GetPostQuery['post'] & { isLarge?: boolean, onLikePost: (vote: PostVoteMutation['votePost']) => void };
 
 export const Post: FC<Props> = memo(({ title, block, createdAt, isLarge, author, UID, votesCount, myVote, commentsCount, onLikePost }) => {
-  const [vote] = useVoteMutation({
+  const [vote] = usePostVoteMutation({
     onCompleted(data) {
       console.log('data', data);
-      onLikePost(data.vote);
+      onLikePost(data.votePost);
     },
   });
 

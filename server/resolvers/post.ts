@@ -11,12 +11,12 @@ import {
 } from 'type-graphql';
 
 import PostEntity from '../entities/Post';
-import VoteEntity from '../entities/Vote';
+import VoteEntity from '../entities/VotePost';
 
 import AuthMiddleware from '../middleware/auth';
 import { MyContext } from '../type';
 import { getDataFromJWT } from '../utils/auth';
-import { extendsPostsByMyVote } from '../utils/post';
+import { extendsEntityByMyVote, vote } from '../utils/vote';
 import { getPostsAndCount } from '../utils/query/posts';
 import { Block } from './graphTypes';
 
@@ -66,51 +66,12 @@ export default class Post {
 
   @UseMiddleware(AuthMiddleware)
   @Mutation(() => PostEntity, { nullable: true })
-  async vote(
+  async votePost(
     @Arg('value', { nullable: false }) value: number,
     @Arg('postUID', { nullable: false }) postUID: VotePostInput,
     @Ctx() { res }: MyContext
   ) {
-    try {
-      const correctValue = value > 0 ? 1 : -1;
-
-      console.log('res.locals.user.UID', res.locals.user.UID);
-      let userVote = await VoteEntity.findOneBy({ userId: res.locals.user.UID, postId: postUID.UID });
-      let post = await PostEntity.findOneBy({ UID: postUID.UID });
-      let myVote = correctValue;
-
-      if (userVote) {
-        if (userVote.value !== correctValue) {
-          userVote.value = correctValue;
-          await userVote.save();
-
-          post.votesCount += correctValue * 2;
-        } else {
-          await userVote.remove();
-
-          myVote = null;
-          post.votesCount -= correctValue;
-        }
-      } else {
-        const newVote = VoteEntity.create({
-          postId: postUID.UID,
-          userId: res.locals.user.UID,
-          value: correctValue,
-          post: postUID,
-          user: res.locals.user,
-        });
-        await newVote.save();
-
-        post.votesCount += correctValue;
-      }
-      await post.save();
-
-      post.myVote = myVote;
-
-      return post;
-    } catch (error) {
-      console.log('error', error);
-    }
+    return await vote(res.locals.user, value, postUID, true);
   }
 
   @Query(() => GetPostResponse)
@@ -126,7 +87,7 @@ export default class Post {
       const { UID } = getDataFromJWT(req.cookies.token) || {};
 
       if (UID) {
-        items = await extendsPostsByMyVote(items, UID);
+        items = await extendsEntityByMyVote(items, UID);
       }
 
       return { items, totalCount };

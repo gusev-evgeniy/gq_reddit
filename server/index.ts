@@ -14,14 +14,14 @@ import { Server } from 'socket.io';
 import PostEntity from './entities/Post';
 import UserEntity from './entities/User';
 import CommentEntity from './entities/Comment';
-import VoteEntity from './entities/Vote';
+import VotePostEntity from './entities/VotePost';
+import VoteCommentEntity from './entities/VoteComment';
 import RoomEntity from './entities/Room';
 import MessageEntity from './entities/Message';
 
 import Auth from './resolvers/auth';
 import Post from './resolvers/post';
 import Comment from './resolvers/comment';
-import { getDataFromJWT } from './utils/auth';
 
 const PORT = process.env.PORT || 5050;
 
@@ -37,7 +37,15 @@ const start = async () => {
       database: 'reddit',
       synchronize: true,
       logging: false,
-      entities: [UserEntity, PostEntity, CommentEntity, VoteEntity, RoomEntity, MessageEntity],
+      entities: [
+        UserEntity,
+        PostEntity,
+        CommentEntity,
+        VotePostEntity,
+        RoomEntity,
+        MessageEntity,
+        VoteCommentEntity,
+      ],
       migrations: [],
       subscribers: [],
     });
