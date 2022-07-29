@@ -27,24 +27,6 @@ export interface Upload {
   encoding: string;
   createReadStream: () => Stream;
 }
-
-@ObjectType()
-export class CommentsResponse {
-  @Field(type => [CommentEntity])
-  items: CommentEntity[];
-
-  @Field(type => Number)
-  totalCount: number;
-}
-@ObjectType()
-export class CommentCreateResponse {
-  @Field(type => [CommentEntity])
-  items: CommentEntity[];
-
-  @Field(type => Number)
-  totalCount: number;
-}
-
 @InputType()
 export class PostInput extends PostEntity {
   @Field()
@@ -61,4 +43,22 @@ export class CommentInput extends CommentEntity {
 export class UserInput extends UserEntity {
   @Field()
   UID: string;
+}
+
+@ObjectType()
+export class CommentsResponse {
+  @Field(type => [CommentEntity])
+  items: CommentEntity[];
+
+  @Field({ nullable: true })
+  parent: string;
+
+  @Field({ nullable: true })
+  post: string;
+}
+
+@ObjectType()
+export class CommentCreateResponse extends CommentsResponse{
+  @Field()
+  commentsCount: number;
 }

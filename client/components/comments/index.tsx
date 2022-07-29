@@ -41,7 +41,7 @@ export const Comments: FC<Props> = ({ postId }) => {
   return (
     <>
       {comments.map(item => (
-        <Comment key={item.UID} {...item} onVote={onVote} postId={postId}/>
+        <Comment key={item.UID} {...item} onVote={onVote} postId={postId} marginLeft={0}/>
       ))}
     </>
   );

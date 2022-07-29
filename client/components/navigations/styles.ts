@@ -45,10 +45,10 @@ export const StyledNav = styled.nav`
     padding: 5px;
     background-color: #fff;
     border-radius: 4px;
-    border: 0px;
     display: flex;
     align-items: center;
     margin: 0 auto;
+    border: 1px solid #fff;
 
     .ava_wrapper{ 
       width: 30px;

@@ -19,6 +19,11 @@ class Comment extends Base {
   @Index()
   votesCount: number;
 
+  @Field()
+  @Column({ default: true })
+  @Index()
+  isEmpty: boolean;
+
   @Field({ nullable: true })
   myVote: number;
 

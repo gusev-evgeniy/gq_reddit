@@ -13,15 +13,15 @@ export const getComments = async ({ where, req }: GetComments) => {
   const { UID } = getDataFromJWT(req.cookies.token) || {};
 
   // let items = await getManager().getTreeRepository(CommentEntity).findTrees({ relations: ['author'] });
-  let [items, totalCount] = await CommentEntity.findAndCount({
+  let items = await CommentEntity.find({
     where,
     order: { createdAt: 'DESC' },
-    relations: ['author'],
+    relations: ['author', 'children', 'children.author'],
   });
 
   if (UID) {
     items = await extendsEntityByMyVote(items, UID, false);
   }
 
-  return { items, totalCount };
+  return items;
 }

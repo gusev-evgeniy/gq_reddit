@@ -1,19 +1,13 @@
-import {
-  Arg,
-  Ctx,
-  Mutation,
-  Query,
-  Resolver,
-  UseMiddleware,
-} from 'type-graphql';
+import { Arg, Ctx, Mutation, Query, Resolver, UseMiddleware } from 'type-graphql';
 import CommentEntity from '../entities/Comment';
 import PostEntity from '../entities/Post';
 import Auth from '../middleware/auth';
 import { MyContext } from '../type';
-import {  vote } from '../utils/query/vote';
+import { vote } from '../utils/query/vote';
 import AuthMiddleware from '../middleware/auth';
 import { getComments } from '../utils/query/comment';
 import { CommentCreateResponse, CommentInput, CommentsResponse, PostInput, UserInput } from './graphTypes';
+import { getManager } from 'typeorm';
 
 @Resolver()
 export default class Comment {
@@ -26,10 +20,15 @@ export default class Comment {
     @Ctx() { req, res }: MyContext
   ) {
     try {
+      const objCreate: Partial<CommentEntity> = {
+        text,
+        author: res.locals.user,
+      };
 
-      console.log('parent', parent)
-      
-      const comment = CommentEntity.create({ text, author: res.locals.user, post, parent });
+      if (parent) objCreate.parent = parent;
+      else objCreate.post = post;
+
+      const comment = CommentEntity.create(objCreate);
       await comment.save();
 
       const updatedPost = await PostEntity.createQueryBuilder()
@@ -40,10 +39,21 @@ export default class Comment {
         .updateEntity(true)
         .execute();
 
-      const { UID } = updatedPost.raw[0] as PostEntity;
+      if (parent) {
+        await CommentEntity.createQueryBuilder()
+          .update('comment')
+          .set({ isEmpty: () => 'false' })
+          .where('UID = :UID', { UID: parent.UID })
+          .updateEntity(true)
+          .execute();
+      }
+
+      const { UID, commentsCount } = updatedPost.raw[0] as PostEntity;
       const where = { post: { UID } };
 
-      return await getComments({ where, req });
+      const items = await getComments({ where, req });
+
+      return { items, parent: parent?.UID || null, post: post?.UID || null, commentsCount };
     } catch (error) {
       console.log('error', error);
       return 'Error';
@@ -54,15 +64,20 @@ export default class Comment {
   async getComments(
     @Arg('post', () => PostInput, { nullable: true }) post: PostInput,
     @Arg('author', () => UserInput, { nullable: true }) author: UserInput,
+    @Arg('parent', { nullable: true }) parent: CommentInput,
+
     @Ctx() { req }: MyContext
   ) {
     try {
-      const where: any = {};
+      const where: Partial<CommentEntity> = {};
 
+      if (parent) where.parent = parent;
       if (post) where.post = post;
       if (author) where.author = author;
 
-      return await getComments({ where, req });
+      const items = await getComments({ where, req });
+      console.log('items', items)
+      return { items, post: post?.UID || null, parent: parent?.UID || null};
     } catch (error) {
       console.log('error', error);
       return 'Error';

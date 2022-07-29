@@ -1,6 +1,8 @@
 mutation CreateComment($post: PostInput!, $text: String!, $parent: CommentInput) {
   createComment(post: $post, text: $text, parent: $parent) {
-    totalCount
+    parent
+    post
+    commentsCount
     items {
       UID
       text

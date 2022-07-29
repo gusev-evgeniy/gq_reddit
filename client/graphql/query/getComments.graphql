@@ -1,55 +1,26 @@
+fragment comment on Comment {
+  UID
+  text
+  createdAt
+  votesCount
+  myVote
+  isEmpty
+  author {
+    login
+    UID
+    photo
+  }
+}
+
 query GetComments($author: UserInput, $post: PostInput) {
   getComments(author: $author, post: $post) {
-    totalCount
+    parent
+    post
     items {
-      UID
-      text
-      createdAt
-      votesCount
-      myVote
-      author {
-        login
-        UID
-        photo
+      ...comment
+      children {
+        ...comment
       }
     }
   }
 }
-
-
-# fragment comment on Comment {
-#   UID
-#   text
-#   createdAt
-#   votesCount
-#   myVote
-#   author {
-#     login
-#     UID
-#     photo
-#   }
-# }
-
-# query GetComments($author: UserInput, $post: PostInput) {
-#   getComments(author: $author, post: $post) {
-#     totalCount
-#     items {
-#       ...comment
-#       children {
-#         ...comment
-#         children {
-#           ...comment
-#           children {
-#             ...comment
-#             children {
-#               ...comment
-#               children {
-#                 ...comment
-#               }
-#             }
-#           }
-#         }
-#       }
-#     }
-#   }
-# }

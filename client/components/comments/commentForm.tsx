@@ -11,9 +11,11 @@ import { StyledTextareaAutosize } from '../editor/styles';
 type Props = {
   postId: string;
   parent?: string;
+  autoFocus?: boolean;
+  close?: () => void;
 };
 
-export const CommentForm: FC<Props> = memo(({ postId, parent }) => {
+export const CommentForm: FC<Props> = memo(({ postId, parent, autoFocus = false, close }) => {
   const [comment, setComment] = useState<string>('');
 
   const dispatch = useAppDispatch();
@@ -21,9 +23,10 @@ export const CommentForm: FC<Props> = memo(({ postId, parent }) => {
   const [createComment, { loading }] = useCreateCommentMutation({
     onCompleted({ createComment }) {
       setComment('');
+      if (close) close();
       console.log('createComment', createComment);
       dispatch(addComment(createComment.items));
-      dispatch(updateOpenPost({ commentsCount: createComment.totalCount }));
+      dispatch(updateOpenPost({ commentsCount: createComment.commentsCount }));
     },
   });
 
@@ -31,10 +34,7 @@ export const CommentForm: FC<Props> = memo(({ postId, parent }) => {
     e.preventDefault();
 
     const variables: CreateCommentMutationVariables = { text: comment, post: { UID: postId } };
-
-    if (parent) {
-      variables.parent = { UID: parent };
-    }
+    if (parent) variables.parent = { UID: parent };
 
     createComment({ variables });
   };
@@ -46,7 +46,7 @@ export const CommentForm: FC<Props> = memo(({ postId, parent }) => {
         placeholder='What are your thoughts?'
         value={comment}
         onChange={e => setComment(e.target.value)}
-        
+        autoFocus={autoFocus}
       />
       <div className='button_wrapper' id='button'>
         <SubmitButton disabled={!comment.length} loading={loading} />

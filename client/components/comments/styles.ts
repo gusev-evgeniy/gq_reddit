@@ -51,15 +51,16 @@ export const CommentsSeparator = styled.div`
   margin: 40px auto 40px auto;
 `;
 
-export const StyledCommentItem = styled.div`
+export const StyledCommentItem = styled.div<{marginLeft: number}>`
   display: flex;
   width: 100%;
   margin-bottom: 16px;
+  margin-left: ${({ marginLeft }) => `${marginLeft}px`};
   padding-right: 20px;
 
   .ava_wrapper {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     margin: 10px;
   }
 
@@ -89,6 +90,7 @@ export const StyledCommentItem = styled.div`
     .body {
       margin: 5px;
       white-space: pre-line;
+      line-height: 1.45;
     }
 
     .footer {
