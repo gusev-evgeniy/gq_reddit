@@ -1,19 +1,19 @@
-import React, { FC, useState } from 'react';
+import React, { FC, memo, useState } from 'react';
 
-import { useCreateCommentMutation } from '../../generated/graphql';
+import { useCreateCommentMutation, CreateCommentMutationVariables } from '../../generated/graphql';
 import { useAppDispatch } from '../../store/hooks';
-import { commentsDefault, updateComments } from '../../store/slices/comments';
-import { openPostDefault, updateOpenPost } from '../../store/slices/openPost';
+import { addComment } from '../../store/slices/comments';
+import { updateOpenPost } from '../../store/slices/openPost';
 
 import { SubmitButton } from '../dialogs/auth/submitButton';
 import { StyledTextareaAutosize } from '../editor/styles';
-import { StyledCommentForm } from './styles';
 
 type Props = {
   postId: string;
+  parent?: string;
 };
 
-export const CommentForm: FC<Props> = ({ postId }) => {
+export const CommentForm: FC<Props> = memo(({ postId, parent }) => {
   const [comment, setComment] = useState<string>('');
 
   const dispatch = useAppDispatch();
@@ -21,30 +21,38 @@ export const CommentForm: FC<Props> = ({ postId }) => {
   const [createComment, { loading }] = useCreateCommentMutation({
     onCompleted({ createComment }) {
       setComment('');
-      dispatch(updateComments(createComment.items));
-      dispatch(updateOpenPost({ commentsCount: createComment.commentsCount }));
+      console.log('createComment', createComment);
+      dispatch(addComment(createComment.items));
+      dispatch(updateOpenPost({ commentsCount: createComment.totalCount }));
     },
   });
 
-  const onSubmit = () => {
-    createComment({
-      variables: { text: comment, post: { UID: postId } },
-    });
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const variables: CreateCommentMutationVariables = { text: comment, post: { UID: postId } };
+
+    if (parent) {
+      variables.parent = { UID: parent };
+    }
+
+    createComment({ variables });
   };
 
   return (
-    <StyledCommentForm>
-      <>
-        <StyledTextareaAutosize
-          rows={1}
-          placeholder='What are your thoughts?'
-          value={comment}
-          onChange={e => setComment(e.target.value)}
-        />
-        <div className='button_wrapper' id='button'>
-          <SubmitButton disabled={!comment.length} loading={loading} onClick={onSubmit} />
-        </div>
-      </>
-    </StyledCommentForm>
+    <form onSubmit={onSubmit}>
+      <StyledTextareaAutosize
+        rows={1}
+        placeholder='What are your thoughts?'
+        value={comment}
+        onChange={e => setComment(e.target.value)}
+        
+      />
+      <div className='button_wrapper' id='button'>
+        <SubmitButton disabled={!comment.length} loading={loading} />
+      </div>
+    </form>
   );
-};
+});
+
+CommentForm.displayName = 'CommentForm';

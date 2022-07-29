@@ -16,6 +16,7 @@ export const StyledNav = styled.nav`
 
   .logo-wrapper {
     display: flex;
+    width: 110px;
     flex-direction: row;
     align-items: center;
     justify-content: center;
@@ -39,12 +40,22 @@ export const StyledNav = styled.nav`
   }
 
   .user-button {
-    height: 32px;
-    width: 50px;
-    padding: 2px 0 2px 0;
+    height: 36px;
+    width: fit-content;
+    padding: 5px;
     background-color: #fff;
     border-radius: 4px;
     border: 0px;
+    display: flex;
+    align-items: center;
+    margin: 0 auto;
+
+    .ava_wrapper{ 
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      margin-right: 2px;
+    }
 
     :hover {
       border: 1px solid #edeff1;

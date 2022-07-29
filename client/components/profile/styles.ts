@@ -3,7 +3,7 @@ import { StyledItem } from '../../styles';
 
 export const ProfileWrapper = styled(StyledItem)`
   position: relative;
-  height: 300px;
+  height: fit-content;
 
   .background_image {
     width: 100%;

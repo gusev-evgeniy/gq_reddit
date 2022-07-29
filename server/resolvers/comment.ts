@@ -15,48 +15,11 @@ import Post from '../entities/Post';
 import User from '../entities/User';
 import Auth from '../middleware/auth';
 import { MyContext } from '../type';
-import { getDataFromJWT } from '../utils/auth';
-import { extendsEntityByMyVote, vote } from '../utils/vote';
+import {  vote } from '../utils/vote';
 import AuthMiddleware from '../middleware/auth';
+import { getComments } from '../utils/query/comment';
+import { CommentCreateResponse, CommentInput, CommentsResponse, PostInput, UserInput } from './graphTypes';
 
-@ObjectType()
-class CommentsResponse {
-  @Field(type => [CommentEntity])
-  items: CommentEntity[];
-
-  @Field(type => Number)
-  totalCount: number;
-}
-
-@InputType()
-class VoteInput extends PostEntity {
-  @Field()
-  UID: string;
-}
-
-@ObjectType()
-class CommentCreateResponse {
-  @Field(type => [CommentEntity])
-  items: CommentEntity[];
-
-  @Field(type => Number)
-  totalCount: number;
-
-  @Field(type => Number)
-  commentsCount: number;
-}
-
-@InputType()
-class PostInput extends Post {
-  @Field()
-  UID: string;
-}
-
-@InputType()
-class UserInput extends User {
-  @Field()
-  UID: string;
-}
 
 @Resolver()
 export default class Comment {
@@ -65,10 +28,14 @@ export default class Comment {
   async createComment(
     @Arg('text', { nullable: false }) text: string,
     @Arg('post', { nullable: false }) post: PostInput,
-    @Ctx() { res }: MyContext
+    @Arg('parent', { nullable: true }) parent: CommentInput,
+    @Ctx() { req, res }: MyContext
   ) {
     try {
-      const comment = CommentEntity.create({ text, author: res.locals.user, post });
+
+      console.log('parent', parent)
+      
+      const comment = CommentEntity.create({ text, author: res.locals.user, post, parent });
       await comment.save();
 
       const updatedPost = await PostEntity.createQueryBuilder()
@@ -79,15 +46,10 @@ export default class Comment {
         .updateEntity(true)
         .execute();
 
-      const { UID, commentsCount } = updatedPost.raw[0] as PostEntity;
+      const { UID } = updatedPost.raw[0] as PostEntity;
+      const where = { post: { UID } };
 
-      const [items, totalCount] = await CommentEntity.findAndCount({
-        where: { post: { UID } },
-        order: { createdAt: 'DESC' },
-        relations: ['author'],
-      });
-
-      return { items, totalCount, commentsCount };
+      return await getComments({ where, req });
     } catch (error) {
       console.log('error', error);
       return 'Error';
@@ -96,7 +58,6 @@ export default class Comment {
 
   @Query(() => CommentsResponse)
   async getComments(
-    @Arg('skip', { nullable: true }) skip: number,
     @Arg('post', () => PostInput, { nullable: true }) post: PostInput,
     @Arg('author', () => UserInput, { nullable: true }) author: UserInput,
     @Ctx() { req }: MyContext
@@ -107,21 +68,7 @@ export default class Comment {
       if (post) where.post = post;
       if (author) where.author = author;
 
-      const { UID } = getDataFromJWT(req.cookies.token) || {};
-
-      let [items, totalCount] = await CommentEntity.findAndCount({
-        where,
-        order: { createdAt: 'DESC' },
-        relations: ['author'],
-        skip: skip || 0,
-        take: 50
-      });
-
-      if (UID) {
-        items = await extendsEntityByMyVote(items, UID);
-      }
-
-      return { items, totalCount };
+      return await getComments({ where, req });
     } catch (error) {
       console.log('error', error);
       return 'Error';
@@ -132,7 +79,7 @@ export default class Comment {
   @Mutation(() => CommentEntity, { nullable: true })
   async voteComment(
     @Arg('value', { nullable: false }) value: number,
-    @Arg('commentUID', { nullable: false }) commentUID: VoteInput,
+    @Arg('commentUID', { nullable: false }) commentUID: PostInput,
     @Ctx() { res }: MyContext
   ) {
     return await vote(res.locals.user, value, commentUID, false);

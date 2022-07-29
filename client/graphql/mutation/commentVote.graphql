@@ -1,4 +1,4 @@
-mutation CommentVote($commentUid: VoteInput!, $value: Float!) {
+mutation CommentVote($commentUid: PostInput!, $value: Float!) {
   voteComment(commentUID: $commentUid, value: $value) {
      myVote, UID, votesCount
   }

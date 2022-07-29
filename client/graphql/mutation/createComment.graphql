@@ -1,16 +1,17 @@
-mutation CreateComment($post: PostInput!, $text: String!) {
-  createComment(post: $post, text: $text) {
+mutation CreateComment($post: PostInput!, $text: String!, $parent: CommentInput) {
+  createComment(post: $post, text: $text, parent: $parent) {
     totalCount
-    commentsCount
     items {
+      UID
+      text
+      createdAt
+      votesCount
+      myVote
       author {
         login
         UID
         photo
       }
-      UID
-      text
-      createdAt
     }
   }
 }

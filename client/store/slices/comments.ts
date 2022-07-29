@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { AppState } from '../store';
-import { GetCommentsQuery } from '../../generated/graphql';
+import { CommentVoteMutation, GetCommentsQuery } from '../../generated/graphql';
 
 export interface CommentsState {
   loaded: boolean;
@@ -21,9 +21,13 @@ export const commentsSlice = createSlice({
       state.comments.push(...action.payload);
       state.loaded = true;
     },
-    updateComments: (state, action: PayloadAction<GetCommentsQuery['getComments']['items']>) => {
-      console.log('action.payload', action.payload);
+    addComment: (state, action: PayloadAction<GetCommentsQuery['getComments']['items']>) => {
       state.comments = action.payload;
+    },
+    updateComment: (state, action: PayloadAction<CommentVoteMutation['voteComment']>) => {
+      state.comments = state.comments.map(comment =>
+        comment.UID === action.payload?.UID ? { ...comment, ...action.payload } : comment
+      );
     },
     commentsDefault: () => {
       return initialState;
@@ -31,7 +35,7 @@ export const commentsSlice = createSlice({
   },
 });
 
-export const { setComments, commentsDefault, updateComments } = commentsSlice.actions;
+export const { setComments, commentsDefault, addComment, updateComment } = commentsSlice.actions;
 
 export const selectComments = (state: AppState) => state.comments;
 

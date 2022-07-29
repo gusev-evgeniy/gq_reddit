@@ -104,7 +104,7 @@ export default class Post {
         relations: ['author'],
       });
 
-      if (post.votesCount !== 0) {
+      if (post?.votesCount !== 0) {
         const { UID: userId } = getDataFromJWT(req.cookies.token) || {};
   
         const vote = await VoteEntity.findOne({

@@ -1,11 +1,55 @@
 query GetComments($author: UserInput, $post: PostInput) {
   getComments(author: $author, post: $post) {
-    totalCount,
+    totalCount
     items {
+      UID
+      text
+      createdAt
+      votesCount
+      myVote
       author {
-        login, UID, photo
-      },
-      UID, text, createdAt
+        login
+        UID
+        photo
+      }
     }
   }
 }
+
+
+# fragment comment on Comment {
+#   UID
+#   text
+#   createdAt
+#   votesCount
+#   myVote
+#   author {
+#     login
+#     UID
+#     photo
+#   }
+# }
+
+# query GetComments($author: UserInput, $post: PostInput) {
+#   getComments(author: $author, post: $post) {
+#     totalCount
+#     items {
+#       ...comment
+#       children {
+#         ...comment
+#         children {
+#           ...comment
+#           children {
+#             ...comment
+#             children {
+#               ...comment
+#               children {
+#                 ...comment
+#               }
+#             }
+#           }
+#         }
+#       }
+#     }
+#   }
+# }

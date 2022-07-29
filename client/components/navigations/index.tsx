@@ -11,7 +11,7 @@ import profile from '../../images/user.svg';
 import arrow from '../../images/arrow-down.svg';
 import search from '../../images/search.svg';
 
-import { MainButton } from '../../styles';
+import { Ava, MainButton } from '../../styles';
 import { SearchWrapper, OutlineNavButton, StyledNav, InputWithIcon } from './styles';
 
 import { Menu } from '../contextMenu';
@@ -21,13 +21,13 @@ import { applyFilter, changeFilter, setPostsDefaultState } from '../../store/sli
 
 export const Navigation: FC = () => {
   const dispatch = useAppDispatch();
-  
+
   const [coord, setCoord] = useState<{ left: number; top: number } | null>(null);
-  
+
   const buttonRef = useRef<HTMLDivElement | null>(null);
-  
+
   const { push } = useRouter();
-  
+
   const { data: myData } = useAppSelector(selectMe);
 
   const [logOut] = useLogoutMutation();
@@ -80,7 +80,7 @@ export const Navigation: FC = () => {
         },
       ];
 
-  const onChangeFilter = ({ target,  }: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeFilter = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(changeFilter(target.value));
   };
 
@@ -131,7 +131,14 @@ export const Navigation: FC = () => {
 
         <div onClick={openMenu} ref={buttonRef}>
           <button className='user-button'>
-            <Image width='18px' height='18px' src={profile} alt='user' />
+            {myData?.photo ? (
+              <div className='ava_wrapper'>
+                <Ava backgroundImage={myData.photo} />
+              </div>
+            ) : (
+              <Image width='18px' height='18px' src={profile} alt='user' />
+            )}
+
             <Image width='14px' height='14px' src={arrow} alt='user_options' />
           </button>
         </div>

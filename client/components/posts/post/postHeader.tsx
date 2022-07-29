@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 
 import { Ava } from '../../../styles';
 import { StyledPostHeader } from '../styled';
@@ -19,7 +19,8 @@ type Props = {
 };
 
 export const PostHeader: FC<Props> = ({ createdAt, author, group }) => {
-  const relativeDate = getRelativeDate(createdAt);
+  const relativeDate = useMemo(() => getRelativeDate(createdAt), [createdAt]);
+
   const router = useRouter();
 
   const onClickLogin = (e: React.MouseEvent<HTMLParagraphElement>) => {

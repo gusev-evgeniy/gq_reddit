@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import { FooterButton } from '../../styles';
 
 export const StyledCommentSection = styled.div`
-  margin: 40px auto 0 auto;
   border: 1px solid #edeff1;
   border-radius: 4px;
   width: 80%;
@@ -10,9 +9,7 @@ export const StyledCommentSection = styled.div`
 `;
 
 export const StyledCommentForm = styled(StyledCommentSection)`
-  min-height: 120px;
   border-radius: 4px;
-  width: 80%;
   padding: 10px 10px 40px 10px;
 
   .button_wrapper {
@@ -24,6 +21,18 @@ export const StyledCommentForm = styled(StyledCommentSection)`
   }
 `;
 
+export const StyledPostCommentForm = styled(StyledCommentForm)`
+  min-height: 120px;
+  width: 80%;
+  margin: 40px auto 0 auto;
+`;
+
+export const StyledAnswerCommentForm = styled(StyledCommentForm)`
+  min-height: 80px;
+  width: 70%;
+  margin: 5px 10px 10px 10px;
+`;
+
 export const StyledCommentOffer = styled(StyledCommentSection)`
   display: flex;
   justify-content: space-between;
@@ -32,6 +41,7 @@ export const StyledCommentOffer = styled(StyledCommentSection)`
   font-size: 16px;
   font-weight: 500;
   color: #7c7c7c;
+  margin: 40px auto 0 auto;
 `;
 
 export const CommentsSeparator = styled.div`
@@ -76,8 +86,9 @@ export const StyledCommentItem = styled.div`
       }
     }
 
-    .body_section {
-      margin: 4px 0;
+    .body {
+      margin: 5px;
+      white-space: pre-line;
     }
 
     .footer {

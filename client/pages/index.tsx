@@ -15,7 +15,8 @@ export default function Home() {
 
       <Grid>
         <div>
-          {!data ? <StyledTopicName>Popular posts</StyledTopicName> : <LinkForm />}
+          {/* {!data ? <StyledTopicName>Popular posts</StyledTopicName> : <LinkForm />} */}
+          {data && <LinkForm photo={data.photo as string}/>}
           <Posts emptyText='No posts yet'/>
         </div>
         <div className='sub'></div>

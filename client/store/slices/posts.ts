@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { AppState } from '../store';
-import { GetPostsQuery, VoteMutation } from '../../generated/graphql';
+import { GetPostsQuery, PostVoteMutation } from '../../generated/graphql';
 import { profileSlice } from './profile';
 
 export interface PostState {
@@ -31,7 +31,7 @@ export const postsSlice = createSlice({
     postLoaded: state => {
       state.loaded = true;
     },
-    updatePost: (state, action: PayloadAction<VoteMutation['vote']>) => {
+    updatePost: (state, action: PayloadAction<PostVoteMutation['votePost']>) => {
       state.items = state.items.map(item =>
         item.UID === action.payload?.UID ? { ...item, ...action.payload } : item
       );

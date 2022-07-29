@@ -1,13 +1,12 @@
-import { Entity, Column, Index, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
-import { GraphQLJSON } from 'graphql-type-json';
+import { Entity, Column, Index, ManyToOne, JoinColumn, OneToMany, Tree, TreeParent, TreeChildren } from 'typeorm';
 
 import Base from '.';
 import { Field, ObjectType } from 'type-graphql';
 import User from './User';
 import Post from './Post';
 import VoteComment from './VoteComment';
-
 @ObjectType()
+@Tree('materialized-path')
 @Entity('comment')
 class Comment extends Base {
   @Field(() => String, { nullable: false })
@@ -33,11 +32,12 @@ class Comment extends Base {
   @ManyToOne(() => Post, post => post.comments)
   post: Post;
 
-  @ManyToOne(type => Comment, comment => comment.children)
-  @JoinColumn({ name: "parentId" })
+  @Field(() => Comment, { nullable: false })
+  @TreeParent()
   parent: Comment;
 
-  @OneToMany(type => Comment, comment => comment.parent)
+  @Field(() => [Comment], { nullable: false })
+  @TreeChildren()
   children: Comment[];
 
   @JoinColumn()

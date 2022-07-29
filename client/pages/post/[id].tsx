@@ -5,9 +5,9 @@ import { Post } from '../../components/posts/post';
 import { CommentForm } from '../../components/comments/commentForm';
 import { Comments } from '../../components/comments';
 import { LargePostWrapper } from '../../components/posts/styled';
-import { useGetPostLazyQuery, useGetPostQuery, VoteMutation } from '../../generated/graphql';
+import { PostVoteMutation, useGetPostLazyQuery } from '../../generated/graphql';
 import { AuthOffer } from '../../components/comments/authOffer';
-import { CommentsSeparator } from '../../components/comments/styles';
+import { CommentsSeparator, StyledPostCommentForm } from '../../components/comments/styles';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { selectMe } from '../../store/slices/me';
 import { Grid } from '../../styles';
@@ -42,7 +42,7 @@ const PostPage = () => {
     if (!loaded) getPost();
   }, [loaded]);
 
-  const onLikePost = (vote: VoteMutation['vote']) => {
+  const onLikePost = (vote: PostVoteMutation['votePost']) => {
     dispatch(updateOpenPost(vote));
   };
 
@@ -65,7 +65,13 @@ const PostPage = () => {
               <Post {...post} isLarge={true} onLikePost={onLikePost} />
             </div>
 
-            {user.data ? <CommentForm postId={id as string} /> : <AuthOffer />}
+            {user.data ? (
+              <StyledPostCommentForm>
+                <CommentForm postId={id as string} />
+              </StyledPostCommentForm>
+            ) : (
+              <AuthOffer />
+            )}
 
             <CommentsSeparator />
             <Comments postId={id as string} />

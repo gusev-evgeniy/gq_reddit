@@ -34,7 +34,7 @@ export const Post: FC<Props> = memo(({ title, block, createdAt, isLarge, author,
     e.stopPropagation();
     onVote(1);
   };
-  console.log('myVote', myVote);
+
   return (
     <>
       <PostRatingWrapper isGray={!isLarge}>
