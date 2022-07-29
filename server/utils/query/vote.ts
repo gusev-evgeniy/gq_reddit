@@ -1,10 +1,10 @@
 import { In } from 'typeorm';
-import PostEntity from '../entities/Post';
-import VoteEntity from '../entities/VotePost';
-import VoteCommentEntity from '../entities/VoteComment';
-import CommentEntity from '../entities/Comment';
+import PostEntity from '../../entities/Post';
+import VoteEntity from '../../entities/VotePost';
+import VoteCommentEntity from '../../entities/VoteComment';
+import CommentEntity from '../../entities/Comment';
 
-import User from '../entities/User';
+import User from '../../entities/User';
 
 type Input = {
   UID: string;

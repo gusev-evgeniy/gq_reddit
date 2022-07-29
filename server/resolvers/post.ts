@@ -16,7 +16,7 @@ import VoteEntity from '../entities/VotePost';
 import AuthMiddleware from '../middleware/auth';
 import { MyContext } from '../type';
 import { getDataFromJWT } from '../utils/auth';
-import { extendsEntityByMyVote, vote } from '../utils/vote';
+import { extendsEntityByMyVote, vote } from '../utils/query/vote';
 import { getPostsAndCount } from '../utils/query/posts';
 import { Block } from './graphTypes';
 

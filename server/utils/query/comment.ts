@@ -1,6 +1,6 @@
 import CommentEntity from '../../entities/Comment';
 import { getDataFromJWT } from '../auth';
-import { extendsEntityByMyVote } from '../vote';
+import { extendsEntityByMyVote } from './vote';
 import { Request } from "express";
 import { getManager } from 'typeorm';
 

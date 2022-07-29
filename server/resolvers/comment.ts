@@ -1,25 +1,19 @@
 import {
   Arg,
   Ctx,
-  Field,
-  InputType,
   Mutation,
-  ObjectType,
   Query,
   Resolver,
   UseMiddleware,
 } from 'type-graphql';
 import CommentEntity from '../entities/Comment';
 import PostEntity from '../entities/Post';
-import Post from '../entities/Post';
-import User from '../entities/User';
 import Auth from '../middleware/auth';
 import { MyContext } from '../type';
-import {  vote } from '../utils/vote';
+import {  vote } from '../utils/query/vote';
 import AuthMiddleware from '../middleware/auth';
 import { getComments } from '../utils/query/comment';
 import { CommentCreateResponse, CommentInput, CommentsResponse, PostInput, UserInput } from './graphTypes';
-
 
 @Resolver()
 export default class Comment {
