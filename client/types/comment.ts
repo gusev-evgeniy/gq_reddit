@@ -1,3 +1,5 @@
-import { GetCommentsQuery } from "../generated/graphql";
+import { GetCommentsQuery } from '../generated/graphql';
 
-export type CommentsType = GetCommentsQuery['getComments']['items'];
+export type CommentType = Omit<GetCommentsQuery['getComments']['items'][0], 'children'> & {
+  children?: CommentType[];
+};

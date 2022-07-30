@@ -1,23 +1,25 @@
 import Image from 'next/image';
 import React, { FC, useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
 
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { selectMe, setMe } from '../../store/slices/me';
 import { setDialog } from '../../store/slices/dialog';
+import { applyFilter, changeFilter, setPostsDefaultState } from '../../store/slices/posts';
+
+import { Avatar } from '../avatar';
+import { Menu } from '../contextMenu';
 
 import logo from '../../images/logo.svg';
 import profile from '../../images/user.svg';
 import arrow from '../../images/arrow-down.svg';
 import search from '../../images/search.svg';
 
-import { Ava, MainButton } from '../../styles';
-import { SearchWrapper, OutlineNavButton, StyledNav, InputWithIcon } from './styles';
-
-import { Menu } from '../contextMenu';
-import { useRouter } from 'next/router';
 import { useLogoutMutation } from '../../generated/graphql';
-import { applyFilter, changeFilter, setPostsDefaultState } from '../../store/slices/posts';
+
+import { MainButton } from '../../styles';
+import { SearchWrapper, OutlineNavButton, StyledNav, InputWithIcon } from './styles';
 
 export const Navigation: FC = () => {
   const dispatch = useAppDispatch();
@@ -26,7 +28,7 @@ export const Navigation: FC = () => {
 
   const buttonRef = useRef<HTMLDivElement | null>(null);
 
-  const { push } = useRouter();
+  const { push, asPath } = useRouter();
 
   const { data: myData } = useAppSelector(selectMe);
 
@@ -39,6 +41,10 @@ export const Navigation: FC = () => {
     push(`/user/${myData?.login}`);
     setCoord(null);
   };
+
+  useEffect(() => {
+    setCoord(null);
+  }, [asPath]);
 
   const onLogOut = () => {
     logOut();
@@ -132,9 +138,7 @@ export const Navigation: FC = () => {
         <div onClick={openMenu} ref={buttonRef}>
           <button className='user-button'>
             {myData?.photo ? (
-              <div className='ava_wrapper'>
-                <Ava backgroundImage={myData.photo} />
-              </div>
+              <Avatar photo={myData.photo} />
             ) : (
               <Image width='18px' height='18px' src={profile} alt='user' />
             )}

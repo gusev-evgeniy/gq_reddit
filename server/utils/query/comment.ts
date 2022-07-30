@@ -11,7 +11,7 @@ type GetComments = {
 
 export const getComments = async ({ where, req }: GetComments) => {
   const { UID } = getDataFromJWT(req.cookies.token) || {};
-
+  console.log('where', where)
   // let items = await getManager().getTreeRepository(CommentEntity).findTrees({ relations: ['author'] });
   let items = await CommentEntity.find({
     where,

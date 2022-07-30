@@ -18,7 +18,6 @@ type Props = GetPostQuery['post'] & { isLarge?: boolean, onLikePost: (vote: Post
 export const Post: FC<Props> = memo(({ title, block, createdAt, isLarge, author, UID, votesCount, myVote, commentsCount, onLikePost }) => {
   const [vote] = usePostVoteMutation({
     onCompleted(data) {
-      console.log('data', data);
       onLikePost(data.votePost);
     },
   });

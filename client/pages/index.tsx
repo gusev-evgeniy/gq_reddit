@@ -4,7 +4,7 @@ import { selectMe } from '../store/slices/me';
 import { Posts } from '../components/posts';
 import { LinkForm } from '../components/editor/linkForm';
 
-import { Grid, StyledTopicName } from '../styles';
+import { Grid } from '../styles';
 
 export default function Home() {
   const { data } = useAppSelector(selectMe);
@@ -16,7 +16,7 @@ export default function Home() {
       <Grid>
         <div>
           {/* {!data ? <StyledTopicName>Popular posts</StyledTopicName> : <LinkForm />} */}
-          {data && <LinkForm photo={data.photo as string}/>}
+          {data && <LinkForm photo={data.photo as string} login={data.login}/>}
           <Posts emptyText='No posts yet'/>
         </div>
         <div className='sub'></div>

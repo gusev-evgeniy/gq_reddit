@@ -12,8 +12,8 @@ fragment comment on Comment {
   }
 }
 
-query GetComments($author: UserInput, $post: PostInput) {
-  getComments(author: $author, post: $post) {
+query GetComments($author: UserInput, $parent: CommentInput, $post: PostInput){
+  getComments ( author: $author, parent: $parent, post: $post){
     parent
     post
     items {

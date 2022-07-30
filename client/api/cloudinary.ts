@@ -1,4 +1,4 @@
-const API_KEY = ''; // add key
+const API_KEY = 'dnm04nlu8'; // add key
 
 type CloudinaryType = {
   secure_url: string;

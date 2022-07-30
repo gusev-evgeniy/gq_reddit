@@ -1,30 +1,30 @@
 import Image from 'next/image';
 import React, { FC, memo } from 'react';
-import Link from 'next/link';
 
 import image from '../../images/image.svg';
-import { Ava, MainInput } from '../../styles';
+import { MainInput } from '../../styles';
 import { AddImage, StyledEditorLink } from './styles';
+import { Avatar } from '../avatar';
+import { useRouter } from 'next/router';
 
 type Props = {
   photo: string | null;
+  login: string;
 };
 
-export const LinkForm: FC<Props> = memo(({ photo }) => {
+export const LinkForm: FC<Props> = memo(({ photo, login }) => {
+  const router = useRouter();
+
   return (
-    <Link href='/submit'>
-      <a>
+    <div onClick={() => router.replace(`/submit`)}>
         <StyledEditorLink>
-          <div className='ava_wrapper'>
-            <Ava backgroundImage={photo ? photo : undefined}/>
-          </div>
+          <Avatar photo={photo} login={login} />
           <MainInput type='text' placeholder='Create Post' />
           <AddImage>
             <Image width='30px' height='30px' src={image} alt='user' />
           </AddImage>
         </StyledEditorLink>
-      </a>
-    </Link>
+    </div>
   );
 });
 

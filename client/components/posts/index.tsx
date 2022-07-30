@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import React, { FC, useEffect } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
-import { useGetPostsLazyQuery, VoteMutation } from '../../generated/graphql';
+import { PostVoteMutation, useGetPostsLazyQuery } from '../../generated/graphql';
 import { Post } from './post';
 import { StyledPostItem } from './styled';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -56,7 +56,7 @@ export const Posts: FC<Props> = ({ emptyText, author }) => {
     dispatch(changeSort(sort));
   };
 
-  const onLikePost = (vote: VoteMutation['vote']) => {
+  const onLikePost = (vote: PostVoteMutation['votePost']) => {
     dispatch(updatePost(vote));
   };
 
@@ -75,7 +75,7 @@ export const Posts: FC<Props> = ({ emptyText, author }) => {
       <div>
         <Sort sortedBy={sort} onChange={onChangeSort} />
 
-        <div>Loading...</div>
+        <StyledPostItem><div className="loader">Loading...</div></StyledPostItem>
       </div>
     );
   }

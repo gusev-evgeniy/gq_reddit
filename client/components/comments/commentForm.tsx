@@ -24,8 +24,7 @@ export const CommentForm: FC<Props> = memo(({ postId, parent, autoFocus = false,
     onCompleted({ createComment }) {
       setComment('');
       if (close) close();
-      console.log('createComment', createComment);
-      dispatch(addComment(createComment.items));
+      dispatch(addComment(createComment));
       dispatch(updateOpenPost({ commentsCount: createComment.commentsCount }));
     },
   });

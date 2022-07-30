@@ -1,18 +1,25 @@
+fragment comment on Comment {
+  UID
+  text
+  createdAt
+  votesCount
+  myVote
+  isEmpty
+  author {
+    login
+    UID
+    photo
+  }
+}
+
 mutation CreateComment($post: PostInput!, $text: String!, $parent: CommentInput) {
   createComment(post: $post, text: $text, parent: $parent) {
     parent
     post
-    commentsCount
     items {
-      UID
-      text
-      createdAt
-      votesCount
-      myVote
-      author {
-        login
-        UID
-        photo
+      ...comment
+      children {
+        ...comment
       }
     }
   }

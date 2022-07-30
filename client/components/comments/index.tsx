@@ -13,10 +13,9 @@ export const Comments: FC<Props> = ({ postId }) => {
   const dispatch = useAppDispatch();
 
   const { comments, loaded } = useAppSelector(selectComments);
-  console.log('comments1111111111111111', comments);
+
   const [vote] = useCommentVoteMutation({
     onCompleted({ voteComment }) {
-      console.log('voteComment', voteComment);
       dispatch(updateComment(voteComment));
     },
   });
@@ -25,23 +24,36 @@ export const Comments: FC<Props> = ({ postId }) => {
 
   const [getComments] = useGetCommentsLazyQuery({
     onCompleted({ getComments }) {
-      console.log('getComments', getComments);
-      dispatch(setComments(getComments.items));
+      dispatch(setComments(getComments));
     },
-    variables: { post: { UID: postId as string } },
     fetchPolicy: 'no-cache',
   });
 
   useLayoutEffect(() => {
     if (!loaded) {
-      getComments();
+      getComments({
+        variables: { post: { UID: postId as string } },
+      });
     }
   }, [loaded]);
+
+  const loadAnswers = (UID: string) => {
+    getComments({
+      variables: { parent: { UID } },
+    });
+  };
 
   return (
     <>
       {comments.map(item => (
-        <Comment key={item.UID} {...item} onVote={onVote} postId={postId} marginLeft={0}/>
+        <Comment
+          key={item.UID}
+          {...item}
+          onVote={onVote}
+          postId={postId}
+          marginLeft={0}
+          loadAnswers={loadAnswers}
+        />
       ))}
     </>
   );

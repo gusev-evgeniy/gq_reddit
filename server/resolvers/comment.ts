@@ -48,8 +48,12 @@ export default class Comment {
           .execute();
       }
 
-      const { UID, commentsCount } = updatedPost.raw[0] as PostEntity;
-      const where = { post: { UID } };
+      const { commentsCount } = updatedPost.raw[0] as PostEntity;
+
+      const where: Partial<CommentEntity> = {};
+
+      if (parent) where.parent = parent;
+      else if (post) where.post = post;
 
       const items = await getComments({ where, req });
 
@@ -71,9 +75,10 @@ export default class Comment {
     try {
       const where: Partial<CommentEntity> = {};
 
-      if (parent) where.parent = parent;
-      if (post) where.post = post;
       if (author) where.author = author;
+
+      if (parent) where.parent = parent;
+      else if (post) where.post = post;
 
       const items = await getComments({ where, req });
       console.log('items', items)

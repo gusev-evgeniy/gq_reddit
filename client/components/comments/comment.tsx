@@ -7,36 +7,59 @@ import thumb_down from '../../images/thumb_down.svg';
 import comment from '../../images/comment.svg';
 import thumb_down_fill from '../../images/thumb_down_fill.svg';
 
-import { Ava } from '../../styles';
-import { CommentFooterButton, StyledAnswerCommentForm, StyledCommentItem } from './styles';
-import { GetCommentsQuery } from '../../generated/graphql';
+import { CommentFooterButton, ShowAnswersButton, StyledAnswerCommentForm, StyledCommentItem } from './styles';
 import { getRelativeDate } from '../../utils/date';
 import { CommentForm } from './commentForm';
+import { CommentType } from '../../types/comment';
+import { useRouter } from 'next/router';
+import { Avatar } from '../avatar';
 
-type Comment = Omit<GetCommentsQuery['getComments']['items'][0], 'children'>;
-type Props = Comment & {
+type Props = CommentType & {
   onVote: (UID: string, value: 1 | -1) => void;
   postId: string;
   marginLeft: number;
-  children?: Comment[];
+  loadAnswers: (UID: string) => void;
 };
 
 export const Comment: FC<Props> = memo(
-  ({ author, createdAt, text, onVote, UID, votesCount, myVote, postId, children, marginLeft }) => {
+  ({
+    author,
+    createdAt,
+    text,
+    onVote,
+    UID,
+    votesCount,
+    myVote,
+    postId,
+    children,
+    marginLeft,
+    isEmpty,
+    loadAnswers,
+  }) => {
     const [openForm, setOpenForm] = useState(false);
     const relativeDate = useMemo(() => getRelativeDate(createdAt), [createdAt]);
+
+    const router = useRouter();
+
+    const openProfile = (e: React.MouseEvent<HTMLParagraphElement>) => {
+      e.stopPropagation();
+      router.push({
+        pathname: '/user/[login]',
+        query: { login: author.login },
+      });
+    };
 
     return (
       <>
         <StyledCommentItem marginLeft={marginLeft}>
           <div className='ava_section'>
-            <div className='ava_wrapper'>
-              <Ava backgroundImage={author.photo ? author.photo : undefined} />
-            </div>
+            <Avatar photo={author.photo} login={author.login} />
           </div>
           <div className='data_section'>
             <div className='header'>
-              <p className='name'>{author.login}</p>
+              <p className='name' onClick={openProfile}>
+                {author.login}
+              </p>
               <span className='dot'> &#8226;</span>
               <p className='created_at'>{relativeDate}</p>
             </div>
@@ -73,10 +96,14 @@ export const Comment: FC<Props> = memo(
                 <CommentForm postId={postId} parent={UID} close={() => setOpenForm(false)} autoFocus={true} />
               </StyledAnswerCommentForm>
             )}
+
+            {!isEmpty && !children?.length && (
+              <ShowAnswersButton onClick={() => loadAnswers(UID)}>Show Answers</ShowAnswersButton>
+            )}
           </div>
         </StyledCommentItem>
 
-        {!!children && children.length && (
+        {!!children && children?.length > 0 && (
           <>
             {children.map(item => (
               <Comment
@@ -84,7 +111,8 @@ export const Comment: FC<Props> = memo(
                 {...item}
                 onVote={onVote}
                 postId={postId}
-                marginLeft={marginLeft + 20}
+                marginLeft={marginLeft + 25}
+                loadAnswers={loadAnswers}
               />
             ))}
           </>

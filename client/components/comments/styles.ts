@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { FooterButton } from '../../styles';
+import { ButtonIcon, FooterButton } from '../../styles';
 
 export const StyledCommentSection = styled.div`
   border: 1px solid #edeff1;
@@ -51,7 +51,7 @@ export const CommentsSeparator = styled.div`
   margin: 40px auto 40px auto;
 `;
 
-export const StyledCommentItem = styled.div<{marginLeft: number}>`
+export const StyledCommentItem = styled.div<{ marginLeft: number }>`
   display: flex;
   width: 100%;
   margin-bottom: 16px;
@@ -78,7 +78,13 @@ export const StyledCommentItem = styled.div<{marginLeft: number}>`
 
       .name {
         font-size: 13px;
+        cursor: pointer;
         font-weight: 500;
+        border-bottom: 1px solid #fff;
+
+        :hover {
+          border-color: #000;
+        }
       }
 
       .created_at {
@@ -115,4 +121,8 @@ export const StyledCommentItem = styled.div<{marginLeft: number}>`
 
 export const CommentFooterButton = styled(FooterButton)`
   padding: 4px;
+`;
+
+export const ShowAnswersButton = styled(ButtonIcon)`
+  padding: 4px 10px;
 `;

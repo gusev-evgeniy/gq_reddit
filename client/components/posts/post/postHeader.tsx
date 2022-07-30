@@ -1,9 +1,9 @@
 import React, { FC, useMemo } from 'react';
 
-import { Ava } from '../../../styles';
 import { StyledPostHeader } from '../styled';
 import { getRelativeDate } from '../../../utils/date';
 import { useRouter } from 'next/router';
+import { Avatar } from '../../avatar';
 
 type Props = {
   createdAt: string;
@@ -23,7 +23,7 @@ export const PostHeader: FC<Props> = ({ createdAt, author, group }) => {
 
   const router = useRouter();
 
-  const onClickLogin = (e: React.MouseEvent<HTMLParagraphElement>) => {
+  const openProfile = (e: React.MouseEvent<HTMLParagraphElement>) => {
     e.stopPropagation();
     router.push({
       pathname: '/user/[login]',
@@ -34,15 +34,13 @@ export const PostHeader: FC<Props> = ({ createdAt, author, group }) => {
   return (
     <StyledPostHeader>
       <div className='info'>
-        <div className='ava_wrapper'>
-          <Ava backgroundImage={ author.photo ? author.photo : undefined}/>
-        </div>
+        <Avatar photo={author.photo} login={author.login} />
         {/* <p className='group'>r/wallStreet</p> */}
         <span className='dot'> &#8226;</span>
         <p className='author'>
           Posted by
           {` `}
-          <span onClick={onClickLogin}>
+          <span onClick={openProfile}>
             <a>u/{author.login}</a>
           </span>
           {` `}

@@ -202,6 +202,8 @@ export type CommentVoteMutationVariables = Exact<{
 
 export type CommentVoteMutation = { __typename?: 'Mutation', voteComment?: { __typename?: 'Comment', myVote?: number | null, UID: string, votesCount: number } | null };
 
+export type CommentFragment = { __typename?: 'Comment', UID: string, text: string, createdAt: any, votesCount: number, myVote?: number | null, isEmpty: boolean, author: { __typename?: 'User', login: string, UID: string, photo?: string | null } };
+
 export type CreateCommentMutationVariables = Exact<{
   post: PostInput;
   text: Scalars['String'];
@@ -209,7 +211,7 @@ export type CreateCommentMutationVariables = Exact<{
 }>;
 
 
-export type CreateCommentMutation = { __typename?: 'Mutation', createComment: { __typename?: 'CommentCreateResponse', parent?: string | null, post?: string | null, commentsCount: number, items: Array<{ __typename?: 'Comment', UID: string, text: string, createdAt: any, votesCount: number, myVote?: number | null, author: { __typename?: 'User', login: string, UID: string, photo?: string | null } }> } };
+export type CreateCommentMutation = { __typename?: 'Mutation', createComment: { __typename?: 'CommentCreateResponse', parent?: string | null, post?: string | null, items: Array<{ __typename?: 'Comment', UID: string, text: string, createdAt: any, votesCount: number, myVote?: number | null, isEmpty: boolean, children: Array<{ __typename?: 'Comment', UID: string, text: string, createdAt: any, votesCount: number, myVote?: number | null, isEmpty: boolean, author: { __typename?: 'User', login: string, UID: string, photo?: string | null } }>, author: { __typename?: 'User', login: string, UID: string, photo?: string | null } }> } };
 
 export type CreatePostMutationVariables = Exact<{
   block: Array<Block> | Block;
@@ -248,10 +250,9 @@ export type UpdateUserMutationVariables = Exact<{
 
 export type UpdateUserMutation = { __typename?: 'Mutation', updateUser: { __typename?: 'User', photo?: string | null } };
 
-export type CommentFragment = { __typename?: 'Comment', UID: string, text: string, createdAt: any, votesCount: number, myVote?: number | null, isEmpty: boolean, author: { __typename?: 'User', login: string, UID: string, photo?: string | null } };
-
 export type GetCommentsQueryVariables = Exact<{
   author?: InputMaybe<UserInput>;
+  parent?: InputMaybe<CommentInput>;
   post?: InputMaybe<PostInput>;
 }>;
 
@@ -351,22 +352,15 @@ export const CreateCommentDocument = gql`
   createComment(post: $post, text: $text, parent: $parent) {
     parent
     post
-    commentsCount
     items {
-      UID
-      text
-      createdAt
-      votesCount
-      myVote
-      author {
-        login
-        UID
-        photo
+      ...comment
+      children {
+        ...comment
       }
     }
   }
 }
-    `;
+    ${CommentFragmentDoc}`;
 export type CreateCommentMutationFn = Apollo.MutationFunction<CreateCommentMutation, CreateCommentMutationVariables>;
 
 /**
@@ -568,8 +562,8 @@ export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutati
 export type UpdateUserMutationResult = Apollo.MutationResult<UpdateUserMutation>;
 export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<UpdateUserMutation, UpdateUserMutationVariables>;
 export const GetCommentsDocument = gql`
-    query GetComments($author: UserInput, $post: PostInput) {
-  getComments(author: $author, post: $post) {
+    query GetComments($author: UserInput, $parent: CommentInput, $post: PostInput) {
+  getComments(author: $author, parent: $parent, post: $post) {
     parent
     post
     items {
@@ -595,6 +589,7 @@ export const GetCommentsDocument = gql`
  * const { data, loading, error } = useGetCommentsQuery({
  *   variables: {
  *      author: // value for 'author'
+ *      parent: // value for 'parent'
  *      post: // value for 'post'
  *   },
  * });
