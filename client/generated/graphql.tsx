@@ -211,7 +211,7 @@ export type CreateCommentMutationVariables = Exact<{
 }>;
 
 
-export type CreateCommentMutation = { __typename?: 'Mutation', createComment: { __typename?: 'CommentCreateResponse', parent?: string | null, post?: string | null, items: Array<{ __typename?: 'Comment', UID: string, text: string, createdAt: any, votesCount: number, myVote?: number | null, isEmpty: boolean, children: Array<{ __typename?: 'Comment', UID: string, text: string, createdAt: any, votesCount: number, myVote?: number | null, isEmpty: boolean, author: { __typename?: 'User', login: string, UID: string, photo?: string | null } }>, author: { __typename?: 'User', login: string, UID: string, photo?: string | null } }> } };
+export type CreateCommentMutation = { __typename?: 'Mutation', createComment: { __typename?: 'CommentCreateResponse', parent?: string | null, post?: string | null, commentsCount: number, items: Array<{ __typename?: 'Comment', UID: string, text: string, createdAt: any, votesCount: number, myVote?: number | null, isEmpty: boolean, children: Array<{ __typename?: 'Comment', UID: string, text: string, createdAt: any, votesCount: number, myVote?: number | null, isEmpty: boolean, author: { __typename?: 'User', login: string, UID: string, photo?: string | null } }>, author: { __typename?: 'User', login: string, UID: string, photo?: string | null } }> } };
 
 export type CreatePostMutationVariables = Exact<{
   block: Array<Block> | Block;
@@ -352,6 +352,7 @@ export const CreateCommentDocument = gql`
   createComment(post: $post, text: $text, parent: $parent) {
     parent
     post
+    commentsCount
     items {
       ...comment
       children {

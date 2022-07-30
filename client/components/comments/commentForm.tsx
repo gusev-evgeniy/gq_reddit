@@ -32,7 +32,7 @@ export const CommentForm: FC<Props> = memo(({ postId, parent, autoFocus = false,
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const variables: CreateCommentMutationVariables = { text: comment, post: { UID: postId } };
+    const variables: CreateCommentMutationVariables = { text: comment.trim(), post: { UID: postId } };
     if (parent) variables.parent = { UID: parent };
 
     createComment({ variables });
@@ -48,7 +48,7 @@ export const CommentForm: FC<Props> = memo(({ postId, parent, autoFocus = false,
         autoFocus={autoFocus}
       />
       <div className='button_wrapper' id='button'>
-        <SubmitButton disabled={!comment.length} loading={loading} />
+        <SubmitButton disabled={!comment.trim().length} loading={loading} />
       </div>
     </form>
   );

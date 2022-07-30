@@ -15,7 +15,7 @@ export const getComments = async ({ where, req }: GetComments) => {
   // let items = await getManager().getTreeRepository(CommentEntity).findTrees({ relations: ['author'] });
   let items = await CommentEntity.find({
     where,
-    order: { createdAt: 'DESC' },
+    order: { createdAt: 'DESC', children: { createdAt: 'DESC' } },
     relations: ['author', 'children', 'children.author'],
   });
 

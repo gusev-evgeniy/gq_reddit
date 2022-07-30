@@ -25,25 +25,22 @@ export const Form = () => {
 
   const router = useRouter();
 
-  const [setCreate, { loading, data, error }] = useCreatePostMutation();
-
-  if (data?.createPost) {
-    dispatch(openPostDefault());
-    router.push(`/post/${data?.createPost.UID}`);
-  }
+  const [setCreate, { loading }] = useCreatePostMutation({
+    variables: { title: title.trim(), block: blocks as Block[] },
+    onCompleted({ createPost }) {
+      dispatch(openPostDefault());
+      router.push(`/post/${createPost.UID}`);
+    },
+  });
 
   const onKeyChange = ({ target }: React.KeyboardEvent<HTMLTextAreaElement>) => {
     setTitle((target as HTMLTextAreaElement).value);
   };
 
   const onSubmit = () => {
-    setCreate({
-      variables: { title, block: blocks as Block[] }
-    });
+    setCreate();
   };
 
-  const disabled = title.length === 0;
-  
   return (
     <FormWrapper>
       <TitleTextArea>
@@ -58,10 +55,10 @@ export const Form = () => {
         />
       </TitleTextArea>
       <EditorForm>
-        <Editor onChange={(arr: OutputBlockData[]) => setBlocks(arr)} placeholder='Text (optional)'/>
+        <Editor onChange={(arr: OutputBlockData[]) => setBlocks(arr)} placeholder='Text (optional)' />
       </EditorForm>
       <div className='button_wrapper'>
-        <SubmitButton disabled={disabled} loading={loading} onClick={onSubmit}/>
+        <SubmitButton disabled={!title.trim().length} loading={loading} onClick={onSubmit} />
       </div>
     </FormWrapper>
   );

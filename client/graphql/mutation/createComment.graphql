@@ -16,6 +16,7 @@ mutation CreateComment($post: PostInput!, $text: String!, $parent: CommentInput)
   createComment(post: $post, text: $text, parent: $parent) {
     parent
     post
+    commentsCount
     items {
       ...comment
       children {
