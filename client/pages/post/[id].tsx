@@ -1,18 +1,23 @@
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
+import { selectMe } from '../../store/slices/me';
+import { openPostDefault, selectOpenPost, setOpenPost, updateOpenPost } from '../../store/slices/openPost';
+import { commentsDefault } from '../../store/slices/comments';
+
 import { Post } from '../../components/posts/post';
 import { CommentForm } from '../../components/comments/commentForm';
 import { Comments } from '../../components/comments';
 import { LargePostWrapper } from '../../components/posts/styled';
-import { PostVoteMutation, useGetPostLazyQuery } from '../../generated/graphql';
 import { AuthOffer } from '../../components/comments/authOffer';
-import { CommentsSeparator, StyledPostCommentForm } from '../../components/comments/styles';
+
+import { PostVoteMutation, useGetPostLazyQuery } from '../../generated/graphql';
+
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { selectMe } from '../../store/slices/me';
+
+import { CommentsSeparator, StyledPostCommentForm } from '../../components/comments/styles';
 import { Grid } from '../../styles';
-import { openPostDefault, selectOpenPost, setOpenPost, updateOpenPost } from '../../store/slices/openPost';
-import { commentsDefault } from '../../store/slices/comments';
+import { PostSkeleton } from '../../components/posts/skeleton';
 
 const PostPage = () => {
   const dispatch = useAppDispatch();
@@ -50,7 +55,12 @@ const PostPage = () => {
     return (
       <Grid>
         <LargePostWrapper>
-          <div className='loading'>loading...</div>
+          <div className='post_wrapper'>
+            <PostSkeleton isLarge={true} />
+          </div>
+          <StyledPostCommentForm>
+            <CommentForm postId={id as string} />
+          </StyledPostCommentForm>
         </LargePostWrapper>
       </Grid>
     );

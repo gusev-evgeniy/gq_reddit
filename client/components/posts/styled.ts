@@ -91,6 +91,7 @@ export const StyledPostHeader = styled.div`
       width: 30px;
       height: 30px;
       margin-right: 3px;
+      border-radius: 100%;
     }
 
     .group {
@@ -105,6 +106,7 @@ export const StyledPostHeader = styled.div`
     .author {
       color: rgb(120, 124, 126);
       font-weight: 500;
+      cursor: pointer;
 
       a:hover {
         border-bottom: 1px solid rgb(120, 124, 126);

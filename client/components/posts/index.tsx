@@ -4,7 +4,7 @@ import { useDebouncedCallback } from 'use-debounce';
 
 import { PostVoteMutation, useGetPostsLazyQuery } from '../../generated/graphql';
 import { Post } from './post';
-import { StyledPostItem } from './styled';
+import { PostRatingWrapper, StyledPostHeader, StyledPostItem, VoteButton } from './styled';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
   changeSort,
@@ -17,6 +17,14 @@ import {
 } from '../../store/slices/posts';
 import { Sort } from '../sort';
 import { PostsEmpty } from './postsEmpty';
+import Image from 'next/image';
+
+import thumb_up from '../../images/thumb_up.svg';
+import thumb_down from '../../images/thumb_down.svg';
+import { PostHeader } from './post/postHeader';
+import { Avatar } from '../avatar';
+import { PostFooter } from './post/postFooter';
+import { PostSkeleton } from './skeleton';
 
 type Props = {
   emptyText: string;
@@ -75,7 +83,11 @@ export const Posts: FC<Props> = ({ emptyText, author }) => {
       <div>
         <Sort sortedBy={sort} onChange={onChangeSort} />
 
-        <StyledPostItem><div className="loader">Loading...</div></StyledPostItem>
+        {Array(5).fill(undefined).map((_, index) => (
+          <StyledPostItem key={index}>
+            <PostSkeleton/>
+          </StyledPostItem>
+        ))}
       </div>
     );
   }
@@ -97,7 +109,7 @@ export const Posts: FC<Props> = ({ emptyText, author }) => {
           ))}
         </>
       ) : (
-        <PostsEmpty text={emptyText}/>
+        <PostsEmpty text={emptyText} />
       )}
     </div>
   );
