@@ -85,6 +85,7 @@ const PostPage = () => {
 
             <CommentsSeparator />
             <Comments postId={id as string} />
+            <div className='bottom'></div>
           </LargePostWrapper>
         )}
       </>

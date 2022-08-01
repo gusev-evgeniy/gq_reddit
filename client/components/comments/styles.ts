@@ -51,21 +51,24 @@ export const CommentsSeparator = styled.div`
   margin: 40px auto 40px auto;
 `;
 
-export const StyledCommentItem = styled.div<{ marginLeft: number }>`
+export const StyledCommentItem = styled.div`
   display: flex;
   width: 100%;
   margin-bottom: 16px;
-  margin-left: ${({ marginLeft }) => `${marginLeft}px`};
   padding-right: 20px;
 
   .ava_wrapper {
     width: 30px;
     height: 30px;
-    margin: 10px;
+    margin: 10px 0 10px 10px;
   }
 
   .data_section {
     width: 100%;
+    z-index: 2;
+    padding-left: 10px;
+    padding-top: 5px;
+    background-color: #fff;
 
     .header {
       width: inherit;
@@ -125,4 +128,25 @@ export const CommentFooterButton = styled(FooterButton)`
 
 export const ShowAnswersButton = styled(ButtonIcon)`
   padding: 4px 10px;
+`;
+
+export const Trad = styled.div`
+  width: 2px;
+  background-color: #edeff1;
+  position: absolute;
+  left: 23px;
+  top: 40px;
+  bottom: -40px;
+  cursor: pointer;
+
+  :hover {
+    background-color: #0079d3;
+  }
+`;
+
+export const StyledChildrenTrad = styled.div<{ marginLeft: number }>`
+  height: fit-content;
+  position: relative;
+  width: ${({ marginLeft }) => `calc${(100% - marginLeft)}`};
+  margin-left: ${({ marginLeft }) => `${marginLeft}px`};
 `;

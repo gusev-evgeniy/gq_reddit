@@ -45,7 +45,7 @@ export const PostRatingWrapper = styled.div<{ isGray: boolean }>`
 export const LargePostWrapper = styled(StyledPostSource)`
   flex-direction: column;
   margin-bottom: 20px;
-
+  
   .post_wrapper {
     display: flex;
   }
@@ -53,6 +53,15 @@ export const LargePostWrapper = styled(StyledPostSource)`
   .loading {
     width: 100%;
     height: 60vh;
+  }
+
+  .bottom {
+    height: 20px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: inherit;
+    z-index: 10;
   }
 `;
 

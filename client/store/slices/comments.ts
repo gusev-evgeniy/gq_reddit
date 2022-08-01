@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { AppState } from '../store';
 import { CommentVoteMutation, CreateCommentMutation, GetCommentsQuery } from '../../generated/graphql';
-import { CommentType } from '../../types/comment';
+import { CommentType, UpdateCommentType } from '../../types/comment';
 
 export interface CommentsState {
   loaded: boolean;
@@ -22,14 +22,14 @@ export const commentsSlice = createSlice({
       const { items, parent } = action.payload;
 
       state.comments = _addComment(state.comments, items, parent);
+      console.log('state.comments', state.comments);
       state.loaded = true;
     },
     addComment: (state, action: PayloadAction<CreateCommentMutation['createComment']>) => {
       const { items, parent } = action.payload;
-      console.log('action.payload', action.payload);
       state.comments = _addComment(state.comments, items, parent);
     },
-    updateComment: (state, action: PayloadAction<CommentVoteMutation['voteComment']>) => {
+    updateComment: (state, action: PayloadAction<UpdateCommentType>) => {
       state.comments = _updateComments(state.comments, action.payload);
     },
     commentsDefault: () => {
@@ -50,12 +50,12 @@ const _addComment = (
   parent: string | null | undefined
 ) => {
   if (!parent) {
-    return items;
+    return items.map(item => ({ ...item, isOpen: !!item.children?.length }));
   }
 
   return comments.reduce((acc, curr) => {
     if (curr.UID === parent) {
-      acc.push({ ...curr, children: items, isEmpty: false });
+      acc.push({ ...curr, children: items, isEmpty: false, isOpen: true });
       return acc;
     }
 
@@ -71,7 +71,7 @@ const _addComment = (
 
 const _updateComments = (
   comments: CommentsState['comments'],
-  payload: CommentVoteMutation['voteComment']
+  payload: UpdateCommentType
 ) => {
   return comments.reduce((acc, curr) => {
     if (curr.UID === payload?.UID) {

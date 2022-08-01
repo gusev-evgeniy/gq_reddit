@@ -4,6 +4,7 @@ import { Comment } from './comment';
 import { useCommentVoteMutation, useGetCommentsLazyQuery } from '../../generated/graphql';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { selectComments, setComments, updateComment } from '../../store/slices/comments';
+import { UpdateCommentType } from '../../types/comment';
 
 type Props = {
   postId: string;
@@ -16,11 +17,9 @@ export const Comments: FC<Props> = ({ postId }) => {
 
   const [vote] = useCommentVoteMutation({
     onCompleted({ voteComment }) {
-      dispatch(updateComment(voteComment));
+      if (voteComment) updateCommentHandler(voteComment);
     },
   });
-
-  const onVote = (UID: string, value: 1 | -1) => vote({ variables: { commentUid: { UID }, value } });
 
   const [getComments] = useGetCommentsLazyQuery({
     onCompleted({ getComments }) {
@@ -36,6 +35,12 @@ export const Comments: FC<Props> = ({ postId }) => {
       });
     }
   }, [loaded]);
+
+  const updateCommentHandler = (obj: UpdateCommentType) => {
+    dispatch(updateComment(obj));
+  };
+
+  const onVote = (UID: string, value: 1 | -1) => vote({ variables: { commentUid: { UID }, value } });
 
   const loadAnswers = (UID: string) => {
     getComments({
@@ -53,6 +58,7 @@ export const Comments: FC<Props> = ({ postId }) => {
           postId={postId}
           marginLeft={0}
           loadAnswers={loadAnswers}
+          updateCommentHandler={updateCommentHandler}
         />
       ))}
     </>

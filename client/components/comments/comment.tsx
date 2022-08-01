@@ -7,10 +7,10 @@ import thumb_down from '../../images/thumb_down.svg';
 import comment from '../../images/comment.svg';
 import thumb_down_fill from '../../images/thumb_down_fill.svg';
 
-import { CommentFooterButton, ShowAnswersButton, StyledAnswerCommentForm, StyledCommentItem } from './styles';
+import { StyledChildrenTrad, CommentFooterButton, ShowAnswersButton, StyledAnswerCommentForm, StyledCommentItem, Trad } from './styles';
 import { getRelativeDate } from '../../utils/date';
 import { CommentForm } from './commentForm';
-import { CommentType } from '../../types/comment';
+import { CommentType, UpdateCommentType } from '../../types/comment';
 import { useRouter } from 'next/router';
 import { Avatar } from '../avatar';
 
@@ -19,6 +19,7 @@ type Props = CommentType & {
   postId: string;
   marginLeft: number;
   loadAnswers: (UID: string) => void;
+  updateCommentHandler: (obj: UpdateCommentType) => void;
 };
 
 export const Comment: FC<Props> = memo(
@@ -35,9 +36,14 @@ export const Comment: FC<Props> = memo(
     marginLeft,
     isEmpty,
     loadAnswers,
+    isOpen,
+    updateCommentHandler
   }) => {
     const [openForm, setOpenForm] = useState(false);
     const relativeDate = useMemo(() => getRelativeDate(createdAt), [createdAt]);
+    console.log('!isEmpty', !isEmpty);
+    console.log('!isOpen', !isOpen);
+    console.log('!children?.length', children?.length);
 
     const router = useRouter();
 
@@ -49,9 +55,20 @@ export const Comment: FC<Props> = memo(
       });
     };
 
+    const onToggleAnswers = () => {
+      updateCommentHandler({ UID, isOpen: !isOpen });
+    };
+
+    const onShowAnswersHandler = () => {
+      const answersLoaded = !!children?.length;
+
+      if (answersLoaded) onToggleAnswers();
+      else loadAnswers(UID);
+    };
+
     return (
-      <>
-        <StyledCommentItem marginLeft={marginLeft}>
+      <StyledChildrenTrad marginLeft={marginLeft}>
+        <StyledCommentItem >
           <div className='ava_section'>
             <Avatar photo={author.photo} login={author.login} />
           </div>
@@ -97,27 +114,29 @@ export const Comment: FC<Props> = memo(
               </StyledAnswerCommentForm>
             )}
 
-            {!isEmpty && !children?.length && (
-              <ShowAnswersButton onClick={() => loadAnswers(UID)}>Show Answers</ShowAnswersButton>
+            {!isEmpty && !isOpen && (
+              <ShowAnswersButton onClick={onShowAnswersHandler}>Show Answers</ShowAnswersButton>
             )}
           </div>
         </StyledCommentItem>
 
-        {!!children && children?.length > 0 && (
-          <>
-            {children.map(item => (
-              <Comment
-                key={item.UID}
-                {...item}
-                onVote={onVote}
-                postId={postId}
-                marginLeft={marginLeft + 25}
-                loadAnswers={loadAnswers}
-              />
-            ))}
-          </>
-        )}
-      </>
+          {!!children && children?.length > 0 && isOpen && (
+            <>
+              {children.map(item => (
+                <Comment
+                  key={item.UID}
+                  {...item}
+                  onVote={onVote}
+                  postId={postId}
+                  marginLeft={25}
+                  loadAnswers={loadAnswers}
+                  updateCommentHandler={updateCommentHandler}
+                />
+              ))}
+              <Trad data-uid={UID} onClick={onToggleAnswers}/>
+            </>
+          )}
+      </StyledChildrenTrad>
     );
   }
 );
